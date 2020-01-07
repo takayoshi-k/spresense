@@ -90,7 +90,7 @@ typedef struct _prv_instance_
      */
     struct _prv_instance_ * next;   // matches lwm2m_list_t::next
     uint16_t shortID;               // matches lwm2m_list_t::id
-    uint8_t  test;
+    float  test;
     double   dec;
 } prv_instance_t;
 
@@ -142,27 +142,33 @@ static uint8_t prv_read(uint16_t instanceId,
     targetP = (prv_instance_t *)lwm2m_list_find(objectP->instanceList, instanceId);
     if (NULL == targetP) return COAP_404_NOT_FOUND;
 
+    printf("%s(%d): numDataP = %d\n", __func__, __LINE__, *numDataP);
+
     if (*numDataP == 0)
     {
         *dataArrayP = lwm2m_data_new(2);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
-        *numDataP = 2;
-        (*dataArrayP)[0].id = 1;
-        (*dataArrayP)[1].id = 3;
+        *numDataP = 1;
+        (*dataArrayP)[0].id = 5700;
     }
+
+    printf("%s(%d): numDataP = %d\n", __func__, __LINE__, *numDataP);
 
     for (i = 0 ; i < *numDataP ; i++)
     {
+        printf("%s(%d): id = %d\n", __func__, __LINE__, (*dataArrayP)[i].id);
         switch ((*dataArrayP)[i].id)
         {
-        case 1:
-            lwm2m_data_encode_int(targetP->test, *dataArrayP + i);
+        case 5700:
+            lwm2m_data_encode_float(targetP->test, *dataArrayP + i);
             break;
+#if 0
         case 2:
             return COAP_405_METHOD_NOT_ALLOWED;
         case 3:
             lwm2m_data_encode_float(targetP->dec, *dataArrayP + i);
             break;
+#endif
         default:
             return COAP_404_NOT_FOUND;
         }
@@ -178,15 +184,15 @@ static uint8_t prv_discover(uint16_t instanceId,
 {
     int i;
 
+    printf("%s(%d): numDataP = %d\n", __func__, __LINE__, *numDataP);
+
     // is the server asking for the full object ?
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(3);
+        *dataArrayP = lwm2m_data_new(1);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
-        *numDataP = 3;
-        (*dataArrayP)[0].id = 1;
-        (*dataArrayP)[1].id = 2;
-        (*dataArrayP)[2].id = 3;
+        *numDataP = 1;
+        (*dataArrayP)[0].id = 5700;
     }
     else
     {
@@ -194,9 +200,7 @@ static uint8_t prv_discover(uint16_t instanceId,
         {
             switch ((*dataArrayP)[i].id)
             {
-            case 1:
-            case 2:
-            case 3:
+            case 5700:
                 break;
             default:
                 return COAP_404_NOT_FOUND;
@@ -222,6 +226,9 @@ static uint8_t prv_write(uint16_t instanceId,
     {
         switch (dataArray[i].id)
         {
+        case 5700:
+            return COAP_405_METHOD_NOT_ALLOWED;
+#if 0
         case 1:
         {
             int64_t value;
@@ -241,6 +248,7 @@ static uint8_t prv_write(uint16_t instanceId,
                 return COAP_400_BAD_REQUEST;
             }
             break;
+#endif
         default:
             return COAP_404_NOT_FOUND;
         }
@@ -349,14 +357,14 @@ lwm2m_object_t * get_test_object(void)
         memset(testObj, 0, sizeof(lwm2m_object_t));
 
         testObj->objID = TEST_OBJECT_ID;
-        for (i=0 ; i < 3 ; i++)
+        for (i=0 ; i < 1 ; i++)
         {
             targetP = (prv_instance_t *)lwm2m_malloc(sizeof(prv_instance_t));
             if (NULL == targetP) return NULL;
             memset(targetP, 0, sizeof(prv_instance_t));
-            targetP->shortID = 10 + i;
-            targetP->test    = 20 + i;
-            targetP->dec     = -30 + i + (double)i/100.0;
+            targetP->shortID = 5700;
+            targetP->test    = 23.567f;
+            // targetP->dec     = -30 + i + (double)i/100.0;
             testObj->instanceList = LWM2M_LIST_ADD(testObj->instanceList, targetP);
         }
         /*
@@ -369,9 +377,9 @@ lwm2m_object_t * get_test_object(void)
         testObj->readFunc = prv_read;
         testObj->discoverFunc = prv_discover;
         testObj->writeFunc = prv_write;
-        testObj->executeFunc = prv_exec;
-        testObj->createFunc = prv_create;
-        testObj->deleteFunc = prv_delete;
+        // testObj->executeFunc = prv_exec;
+        // testObj->createFunc = prv_create;
+        // testObj->deleteFunc = prv_delete;
     }
 
     return testObj;

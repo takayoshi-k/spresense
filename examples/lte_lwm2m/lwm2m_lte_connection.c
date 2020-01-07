@@ -547,6 +547,7 @@ int app_lwm2m_connect_to_lte(void)
   int                     ret;
   int                     result = LTE_RESULT_OK;
   struct lte_apn_setting  apnsetting;
+  int8_t IMEI[LTE_SIMINFO_IMSI_LEN];
 
   /* Create a message queue. It is used to receive result from the
    * asynchronous API callback.*/
@@ -650,6 +651,16 @@ int app_lwm2m_connect_to_lte(void)
   if ((ret < 0) || (result == LTE_RESULT_ERROR))
     {
       goto errout_with_lte_fin;
+    }
+
+  ret = lte_get_imei_sync(IMEI);
+  if (ret == 0)
+    {
+      printf("Using %s\n", IMEI);
+    }
+  else
+    {
+      printf("Error of lte_get_imei_sync()\n");
     }
 
   return 0;

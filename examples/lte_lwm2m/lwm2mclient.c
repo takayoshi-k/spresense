@@ -805,6 +805,47 @@ void print_usage(void)
     fprintf(stdout, "\r\n");
 }
 
+// #define LESHAN_SERVER
+// #define DOCOMO_SERVER
+#define DOCOMO_SERVER_NOBOOTSTRAP
+
+#ifdef LESHAN_SERVER
+  #define TEST_SERVER_NAME "leshan.eclipseprojects.io"
+  #define TEST_SERVER_PORT "5684"
+  #define TEST_SERVER_ID   "test-spresense"
+  #define TEST_SERVER_KEY  "42444b2d5453"
+  #define TEST_CLIENT_NAME  "spresense"
+#endif
+
+#ifdef DOCOMO_SERVER
+  #define TEST_SERVER_NAME "bs.lwm2m.stage.docomodev.net"
+  #define TEST_SERVER_PORT "5684"
+  #define TEST_SERVER_ID   "xaEGG5XmDWptsUQmi0Og3kwHWgl6jzrY"
+  #define TEST_SERVER_KEY  "634943486c386c6579503274644e4654"
+  #define TEST_CLIENT_NAME  "351521100130855"
+#endif
+
+#ifdef DOCOMO_SERVER_NOBOOTSTRAP
+  #define TEST_SERVER_NAME "lwm2m.stage.docomodev.net"
+  #define TEST_SERVER_PORT "5684"
+  #define TEST_SERVER_ID   "DEVICE_TEST"
+  #define TEST_SERVER_KEY  "3132333435363738"
+  #define TEST_CLIENT_NAME  "351521100130855"
+#endif
+
+#define CREATE_OBJECT(func_name, array, cnt, max_cnt, emsg) \
+  do {                            \
+    if( ((cnt)+1) < (max_cnt) ){  \
+      array[cnt] = func_name();   \
+      if (array[cnt] == NULL)     \
+      {                           \
+        fprintf(stderr, emsg);    \
+        return -1;                \
+      }                           \
+      cnt++;                      \
+    }                             \
+  } while(0)
+
 int lte_lwm2m_main(int argc, char *argv[])
 {
     client_data_t data;
@@ -812,9 +853,13 @@ int lte_lwm2m_main(int argc, char *argv[])
     lwm2m_context_t * lwm2mH = NULL;
     int i;
     const char * localPort = "56830";
-    const char * server = NULL;
-    const char * serverPort = LWM2M_STANDARD_PORT_STR;
-    char * name = "testlwm2mclient";
+    // const char * server = NULL;
+    const char * server = TEST_SERVER_NAME;
+    // const char * serverPort = LWM2M_STANDARD_PORT_STR;
+    const char * serverPort = TEST_SERVER_PORT;
+    // char * name = "testlwm2mclient";
+    // char * name = "351521100130855";
+    char * name = TEST_CLIENT_NAME;
     int lifetime = 300;
     int batterylevelchanging = 0;
     time_t reboot_time = 0;
@@ -822,12 +867,16 @@ int lte_lwm2m_main(int argc, char *argv[])
     bool bootstrapRequested = false;
     bool serverPortChanged = false;
 
+    uint16_t objcnt = 0;
+
 #ifdef LWM2M_BOOTSTRAP
     lwm2m_client_state_t previousState = STATE_INITIAL;
 #endif
 
-    char * pskId = NULL;
-    char * psk = NULL;
+    // char * pskId = NULL;
+    char * pskId = TEST_SERVER_ID;
+    // char * psk = NULL;
+    char * psk = TEST_SERVER_KEY;
     uint16_t pskLen = -1;
     char * pskBuffer = NULL;
 
@@ -864,7 +913,8 @@ int lte_lwm2m_main(int argc, char *argv[])
     };
 
     memset(&data, 0, sizeof(client_data_t));
-    data.addressFamily = AF_INET6;
+    // data.addressFamily = AF_INET6;
+    data.addressFamily = AF_INET;
 
     opt = 1;
     while (opt < argc)
@@ -989,6 +1039,7 @@ int lte_lwm2m_main(int argc, char *argv[])
      * Those functions are located in their respective object file.
      */
 #ifdef WITH_TINYDTLS
+    printf("Use DTLS : %s:%s, %s, %s\n", server, serverPort, pskId, psk);
     if (psk != NULL)
     {
         pskLen = strlen(psk) / 2;
@@ -1028,88 +1079,58 @@ int lte_lwm2m_main(int argc, char *argv[])
     sprintf (serverUri, "coap://%s:%s", server, serverPort);
 #endif
 #ifdef LWM2M_BOOTSTRAP
-    objArray[0] = get_security_object(serverId, serverUri, pskId, pskBuffer, pskLen, bootstrapRequested);
+    objArray[objcnt] = get_security_object(serverId, serverUri, pskId, pskBuffer, pskLen, bootstrapRequested);
 #else
-    objArray[0] = get_security_object(serverId, serverUri, pskId, pskBuffer, pskLen, false);
+    objArray[objcnt] = get_security_object(serverId, serverUri, pskId, pskBuffer, pskLen, false);
 #endif
-    if (NULL == objArray[0])
+    if (NULL == objArray[objcnt])
     {
         fprintf(stderr, "Failed to create security object\r\n");
         return -1;
     }
-    data.securityObjP = objArray[0];
+    data.securityObjP = objArray[objcnt];
+    objcnt++;
 
-    objArray[1] = get_server_object(serverId, "U", lifetime, false);
-    if (NULL == objArray[1])
+    objArray[objcnt] = get_server_object(serverId, "U", lifetime, false);
+    if (NULL == objArray[objcnt])
     {
         fprintf(stderr, "Failed to create server object\r\n");
         return -1;
     }
+    objcnt++;
 
-    objArray[2] = get_object_device();
-    if (NULL == objArray[2])
-    {
-        fprintf(stderr, "Failed to create Device object\r\n");
-        return -1;
-    }
 
-    objArray[3] = get_object_firmware();
-    if (NULL == objArray[3])
-    {
-        fprintf(stderr, "Failed to create Firmware object\r\n");
-        return -1;
-    }
+    CREATE_OBJECT(get_object_device, objArray, objcnt, OBJ_COUNT, "Failed to create Device object\r\n");
 
-    objArray[4] = get_object_location();
-    if (NULL == objArray[4])
-    {
-        fprintf(stderr, "Failed to create location object\r\n");
-        return -1;
-    }
 
-    objArray[5] = get_test_object();
-    if (NULL == objArray[5])
-    {
-        fprintf(stderr, "Failed to create test object\r\n");
-        return -1;
-    }
+    CREATE_OBJECT(get_object_firmware, objArray, objcnt, OBJ_COUNT, "Failed to create Firmware object\r\n");
+    CREATE_OBJECT(get_object_location, objArray, objcnt, OBJ_COUNT, "Failed to create Location object\r\n");
+    CREATE_OBJECT(get_test_object, objArray, objcnt, OBJ_COUNT, "Failed to create Test object\r\n");
+    CREATE_OBJECT(get_object_conn_m, objArray, objcnt, OBJ_COUNT, "Failed to create Connectivity monitoring object\r\n");
+    CREATE_OBJECT(get_object_conn_s, objArray, objcnt, OBJ_COUNT, "Failed to create Connectivity statistics object\r\n");
 
-    objArray[6] = get_object_conn_m();
-    if (NULL == objArray[6])
-    {
-        fprintf(stderr, "Failed to create connectivity monitoring object\r\n");
-        return -1;
-    }
-
-    objArray[7] = get_object_conn_s();
-    if (NULL == objArray[7])
-    {
-        fprintf(stderr, "Failed to create connectivity statistics object\r\n");
-        return -1;
-    }
-
+#if 0
+    uint16_t accobj_id = objcnt - 1;
+    CREATE_OBJECT(acc_ctrl_create_object, objArray, objcnt, OBJ_COUNT, "Failed to create Access control object\r\n");
+    /* Access Control Instances */
     int instId = 0;
-    objArray[8] = acc_ctrl_create_object();
-    if (NULL == objArray[8])
-    {
-        fprintf(stderr, "Failed to create Access Control object\r\n");
-        return -1;
-    }
-    else if (acc_ctrl_obj_add_inst(objArray[8], instId, 3, 0, serverId)==false)
+    if (acc_ctrl_obj_add_inst(objArray[accobj_id], instId, 3, 0, serverId)==false)
     {
         fprintf(stderr, "Failed to create Access Control object instance\r\n");
         return -1;
     }
-    else if (acc_ctrl_oi_add_ac_val(objArray[8], instId, 0, 0b000000000001111)==false)
+    else if (acc_ctrl_oi_add_ac_val(objArray[accobj_id], instId, 0, 0b000000000001111)==false)
     {
         fprintf(stderr, "Failed to create Access Control ACL default resource\r\n");
         return -1;
     }
-    else if (acc_ctrl_oi_add_ac_val(objArray[8], instId, 999, 0b000000000000001)==false)
+    else if (acc_ctrl_oi_add_ac_val(objArray[accobj_id], instId, 999, 0b000000000000001)==false)
     {
         fprintf(stderr, "Failed to create Access Control ACL resource for serverId: 999\r\n");
         return -1;
     }
+#endif
+
     /*
      * The liblwm2m library is now initialized with the functions that will be in
      * charge of communication
@@ -1129,7 +1150,7 @@ int lte_lwm2m_main(int argc, char *argv[])
      * We configure the liblwm2m library with the name of the client - which shall be unique for each client -
      * the number of objects we will be passing through and the objects array
      */
-    result = lwm2m_configure(lwm2mH, name, NULL, NULL, OBJ_COUNT, objArray);
+    result = lwm2m_configure(lwm2mH, name, NULL, NULL, objcnt, objArray);
     if (result != 0)
     {
         fprintf(stderr, "lwm2m_configure() failed: 0x%X\r\n", result);
@@ -1314,6 +1335,13 @@ int lte_lwm2m_main(int argc, char *argv[])
                     output_buffer(stderr, buffer, numBytes, 0);
 
                     connP = connection_find(data.connList, &addr, addrLen);
+#if 0
+                    if (connP == NULL )
+                    {
+                      connP = connection_new_incoming(data.connList, data.sock, (const struct sockaddr *)&addr, addrLen);
+                    }
+#endif
+
                     if (connP != NULL)
                     {
                         /*

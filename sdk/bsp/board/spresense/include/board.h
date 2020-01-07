@@ -197,7 +197,8 @@ enum board_power_device {
 
 #if defined(CONFIG_LCD_ON_MAIN_BOARD) /* Display connected to main board. */
 
-#define DISPLAY_RST     PIN_I2S0_BCK
+// #define DISPLAY_RST     PIN_I2S0_BCK
+#define DISPLAY_RST     PIN_I2S0_DATA_OUT
 #define DISPLAY_DC      PIN_I2S0_LRCK
 
 #define DISPLAY_SPI     5
