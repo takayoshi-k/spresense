@@ -1,0 +1,4 @@
+
+ifeq ($(CONFIG_EXAMPLES_LWM2MLIGHT),y)
+CONFIGURED_APPS += lwm2mlight
+endif

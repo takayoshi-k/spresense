@@ -1,0 +1,26 @@
+
+config EXAMPLES_LWM2MLIGHT
+	bool "wakaama LwM2M lightclient sample"
+	default n
+	---help---
+		Enable the lwm2mlight app
+
+if EXAMPLES_LWM2MLIGHT
+
+config EXAMPLES_LWM2MLIGHT_PROGNAME
+	string "Program name"
+	default "lwm2mlight"
+	depends on BUILD_KERNEL
+	---help---
+		This is the name of the program that will be use when the NSH ELF
+		program is installed.
+
+config EXAMPLES_LWM2MLIGHT_PRIORITY
+	int "lwm2mlight task priority"
+	default 100
+
+config EXAMPLES_LWM2MLIGHT_STACKSIZE
+	int "lwm2mlight stack size"
+	default 8192
+
+endif
