@@ -56,15 +56,12 @@
  *
  *                  Multiple
  * Object |  ID   | Instances | Mandatory |
- *  Test  | 31024 |    Yes    |    No     |
+ *  Test  | 32100 |    No     |    No     |
  *
  *  Resources:
- *              Supported    Multiple
- *  Name | ID | Operations | Instances | Mandatory |  Type   | Range | Units |      Description      |
- *  test |  1 |    R/W     |    No     |    Yes    | Integer | 0-255 |       |                       |
- *  exec |  2 |     E      |    No     |    Yes    |         |       |       |                       |
- *  dec  |  3 |    R/W     |    No     |    Yes    |  Float  |       |       |                       |
- *  sig  |  4 |    R/W     |    No     |    Yes    | Integer |       |       | 16-bit signed integer |
+ *                           Supported    Multiple
+ *  Name           | ID    | Operations | Instances | Mandatory |  Type   | Range | Units |      Description      |
+ *  recognized num |  5700 |    RO      |    No     |    Yes    | String  |       |       |                       |
  *
  */
 
@@ -74,8 +71,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <signal.h>
 #include <limits.h>
 
+#define DOCOMO_DEMO_OBJECT_ID   (32100)
+#define DOCOMO_DEMO_INSTANCE_NO (1)
+#define DOCOMO_DEMO_RESOURCE_RECOGNIZED_VALUE (5527)
+
+#if 0
 static void prv_output_buffer(uint8_t * buffer,
                               int length)
 {
@@ -112,6 +115,8 @@ static void prv_output_buffer(uint8_t * buffer,
         i += 16;
     }
 }
+#endif
+
 
 /*
  * Multiple instance objects can use userdata to store data that will be shared between the different instances.
@@ -126,10 +131,10 @@ typedef struct _prv_instance_
      */
     struct _prv_instance_ * next;   // matches lwm2m_list_t::next
     uint16_t shortID;               // matches lwm2m_list_t::id
-    uint8_t  test;
-    double   dec;
-    int16_t  sig;
+    char recognition_num[16];
 } prv_instance_t;
+
+static prv_instance_t *gLocalInst = NULL;
 
 static uint8_t prv_read(uint16_t instanceId,
                         int * numDataP,
@@ -144,28 +149,20 @@ static uint8_t prv_read(uint16_t instanceId,
 
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(3);
+        *dataArrayP = lwm2m_data_new(DOCOMO_DEMO_INSTANCE_NO);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
-        *numDataP = 3;
-        (*dataArrayP)[0].id = 1;
-        (*dataArrayP)[1].id = 3;
-        (*dataArrayP)[2].id = 4;
+        *numDataP = DOCOMO_DEMO_INSTANCE_NO;
+
+        (*dataArrayP)[0].id = DOCOMO_DEMO_RESOURCE_RECOGNIZED_VALUE ;
     }
 
     for (i = 0 ; i < *numDataP ; i++)
     {
         switch ((*dataArrayP)[i].id)
         {
-        case 1:
-            lwm2m_data_encode_int(targetP->test, *dataArrayP + i);
-            break;
-        case 2:
-            return COAP_405_METHOD_NOT_ALLOWED;
-        case 3:
-            lwm2m_data_encode_float(targetP->dec, *dataArrayP + i);
-            break;
-        case 4:
-            lwm2m_data_encode_int(targetP->sig, *dataArrayP + i);
+        case DOCOMO_DEMO_RESOURCE_RECOGNIZED_VALUE:
+            printf("[DOCOMO Demo] send data >>%s<<\n", targetP->recognition_num);
+            lwm2m_data_encode_string(targetP->recognition_num, *dataArrayP + i);
             break;
         default:
             return COAP_404_NOT_FOUND;
@@ -185,13 +182,11 @@ static uint8_t prv_discover(uint16_t instanceId,
     // is the server asking for the full object ?
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(4);
+        *dataArrayP = lwm2m_data_new(DOCOMO_DEMO_INSTANCE_NO);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
-        *numDataP = 4;
-        (*dataArrayP)[0].id = 1;
-        (*dataArrayP)[1].id = 2;
-        (*dataArrayP)[2].id = 3;
-        (*dataArrayP)[3].id = 4;
+        *numDataP = DOCOMO_DEMO_INSTANCE_NO;
+
+        (*dataArrayP)[0].id = DOCOMO_DEMO_RESOURCE_RECOGNIZED_VALUE ;
     }
     else
     {
@@ -199,10 +194,7 @@ static uint8_t prv_discover(uint16_t instanceId,
         {
             switch ((*dataArrayP)[i].id)
             {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
+            case DOCOMO_DEMO_RESOURCE_RECOGNIZED_VALUE :
                 break;
             default:
                 return COAP_404_NOT_FOUND;
@@ -212,6 +204,7 @@ static uint8_t prv_discover(uint16_t instanceId,
     return COAP_205_CONTENT;
 }
 
+#if 0
 static uint8_t prv_write(uint16_t instanceId,
                          int numData,
                          lwm2m_data_t * dataArray,
@@ -264,7 +257,9 @@ static uint8_t prv_write(uint16_t instanceId,
 
     return COAP_204_CHANGED;
 }
+#endif
 
+#if 0
 static uint8_t prv_delete(uint16_t id,
                           lwm2m_object_t * objectP)
 {
@@ -277,7 +272,9 @@ static uint8_t prv_delete(uint16_t id,
 
     return COAP_202_DELETED;
 }
+#endif
 
+#if 0
 static uint8_t prv_create(uint16_t instanceId,
                           int numData,
                           lwm2m_data_t * dataArray,
@@ -307,7 +304,9 @@ static uint8_t prv_create(uint16_t instanceId,
 
     return result;
 }
+#endif
 
+#if 0
 static uint8_t prv_exec(uint16_t instanceId,
                         uint16_t resourceId,
                         uint8_t * buffer,
@@ -335,6 +334,34 @@ static uint8_t prv_exec(uint16_t instanceId,
         return COAP_404_NOT_FOUND;
     }
 }
+#endif
+
+static pid_t target_pid = -1;
+static lwm2m_uri_t update_uri = {
+  .objectId   = DOCOMO_DEMO_OBJECT_ID,
+  .instanceId = DOCOMO_DEMO_INSTANCE_NO,
+  .resourceId = DOCOMO_DEMO_RESOURCE_RECOGNIZED_VALUE
+};
+
+void updateRecognitionValue(int inst_no, char *data)
+{
+  if( gLocalInst != NULL && target_pid > 0)
+    {
+      strncpy(gLocalInst->recognition_num, data, 16);
+      gLocalInst->recognition_num[15] = '\0';
+      kill(target_pid, SIGUSR1);
+    }
+}
+
+void set_lwm2m_signalpid(pid_t tgt_pid)
+{
+  target_pid = tgt_pid;
+}
+
+lwm2m_uri_t *get_target_uri(void)
+{
+  return &update_uri;
+}
 
 lwm2m_object_t * get_test_object(void)
 {
@@ -344,23 +371,28 @@ lwm2m_object_t * get_test_object(void)
 
     if (NULL != testObj)
     {
-        int i;
         prv_instance_t * targetP;
 
         memset(testObj, 0, sizeof(lwm2m_object_t));
 
-        testObj->objID = 31024;
-        for (i=0 ; i < 3 ; i++)
-        {
-            targetP = (prv_instance_t *)lwm2m_malloc(sizeof(prv_instance_t));
-            if (NULL == targetP) return NULL;
-            memset(targetP, 0, sizeof(prv_instance_t));
-            targetP->shortID = 10 + i;
-            targetP->test    = 20 + i;
-            targetP->dec     = -30 + i + (double)i/100.0;
-            targetP->sig     = 0 - i;
-            testObj->instanceList = LWM2M_LIST_ADD(testObj->instanceList, targetP);
-        }
+        testObj->objID = DOCOMO_DEMO_OBJECT_ID;
+
+        /* Create an Instance data */
+        targetP = (prv_instance_t *)lwm2m_malloc(sizeof(prv_instance_t));
+        if (NULL == targetP) return NULL;
+        memset(targetP, 0, sizeof(prv_instance_t));
+        targetP->shortID = DOCOMO_DEMO_INSTANCE_NO;
+        targetP->recognition_num[0] = 'N';
+        targetP->recognition_num[1] = 'o';
+        targetP->recognition_num[2] = ' ';
+        targetP->recognition_num[3] = 'C';
+        targetP->recognition_num[4] = 'a';
+        targetP->recognition_num[5] = 'r';
+        targetP->recognition_num[6] = 'd';
+        targetP->recognition_num[7] = '\0';
+        testObj->instanceList = LWM2M_LIST_ADD(testObj->instanceList, targetP);
+        gLocalInst = targetP;
+
         /*
          * From a single instance object, two more functions are available.
          * - The first one (createFunc) create a new instance and filled it with the provided informations. If an ID is
@@ -369,10 +401,10 @@ lwm2m_object_t * get_test_object(void)
          *   allocated to it)
          */
         testObj->readFunc = prv_read;
-        testObj->writeFunc = prv_write;
-        testObj->executeFunc = prv_exec;
-        testObj->createFunc = prv_create;
-        testObj->deleteFunc = prv_delete;
+        // testObj->writeFunc = prv_write;
+        // testObj->executeFunc = prv_exec;
+        // testObj->createFunc = prv_create;
+        // testObj->deleteFunc = prv_delete;
         testObj->discoverFunc = prv_discover;
     }
 

@@ -94,6 +94,8 @@ extern char * get_server_uri(lwm2m_object_t * objectP, uint16_t secObjInstID);
 
 extern lwm2m_object_t * get_test_object(void);
 extern void free_test_object(lwm2m_object_t * object);
+extern void set_lwm2m_signalpid(pid_t tgt_pid);
+extern lwm2m_uri_t *get_target_uri(void);
 
 /* =================================================================== */
 /* Server Setting. */
@@ -148,102 +150,11 @@ typedef struct
 } client_data_t;
 
 
-void handle_sigint(int signum)
+void handle_sigusr1(int signum)
 {
-    g_quit = 1;
+  printf("Signal detected\n");
 }
 
-#if 0
-void * lwm2m_connect_server(uint16_t secObjInstID,
-                            void * userData)
-{
-    client_data_t * dataP;
-    char * uri;
-    char * host;
-    char * port;
-    connection_t * newConnP = NULL;
-
-    dataP = (client_data_t *)userData;
-
-    uri = get_server_uri(dataP->securityObjP, secObjInstID);
-
-    if (uri == NULL) return NULL;
-
-    fprintf(stdout, "Connecting to %s\r\n", uri);
-
-    // parse uri in the form "coaps://[host]:[port]"
-    if (0 == strncmp(uri, "coaps://", strlen("coaps://")))
-    {
-        host = uri+strlen("coaps://");
-    }
-    else if (0 == strncmp(uri, "coap://", strlen("coap://")))
-    {
-        host = uri+strlen("coap://");
-    }
-    else
-    {
-        goto exit;
-    }
-    port = strrchr(host, ':');
-    if (port == NULL) goto exit;
-    // remove brackets
-    if (host[0] == '[')
-    {
-        host++;
-        if (*(port - 1) == ']')
-        {
-            *(port - 1) = 0;
-        }
-        else goto exit;
-    }
-    // split strings
-    *port = 0;
-    port++;
-
-    newConnP = connection_create(dataP->connList, dataP->sock, host, port, dataP->addressFamily);
-    if (newConnP == NULL) {
-        fprintf(stderr, "Connection creation failed.\r\n");
-    }
-    else {
-        dataP->connList = newConnP;
-    }
-
-exit:
-    lwm2m_free(uri);
-    return (void *)newConnP;
-}
-
-void lwm2m_close_connection(void * sessionH,
-                            void * userData)
-{
-    client_data_t * app_data;
-    connection_t * targetP;
-
-    app_data = (client_data_t *)userData;
-    targetP = (connection_t *)sessionH;
-
-    if (targetP == app_data->connList)
-    {
-        app_data->connList = targetP->next;
-        lwm2m_free(targetP);
-    }
-    else
-    {
-        connection_t * parentP;
-
-        parentP = app_data->connList;
-        while (parentP != NULL && parentP->next != targetP)
-        {
-            parentP = parentP->next;
-        }
-        if (parentP != NULL)
-        {
-            parentP->next = targetP->next;
-            lwm2m_free(targetP);
-        }
-    }
-}
-#endif
 
 void * lwm2m_connect_server(uint16_t secObjInstID,
                             void * userData)
@@ -300,16 +211,6 @@ void lwm2m_close_connection(void * sessionH,
     }
 }
 
-void print_usage(void)
-{
-    fprintf(stdout, "Usage: lwm2mclient [OPTION]\r\n");
-    fprintf(stdout, "Launch a LWM2M client.\r\n");
-    fprintf(stdout, "Options:\r\n");
-    fprintf(stdout, "  -n NAME\tSet the endpoint name of the Client. Default: testlightclient\r\n");
-    fprintf(stdout, "  -l PORT\tSet the local UDP port of the Client. Default: 56830\r\n");
-    fprintf(stdout, "  -4\t\tUse IPv4 connection. Default: IPv6 connection\r\n");
-    fprintf(stdout, "\r\n");
-}
 
 void print_state(lwm2m_context_t * lwm2mH)
 {
@@ -428,7 +329,6 @@ void print_state(lwm2m_context_t * lwm2mH)
 #define OBJ_COUNT 4
 
 
-// int lightclient_main(int argc, char *argv[])
 int lightclient_main(void)
 {
     client_data_t data;
@@ -436,7 +336,6 @@ int lightclient_main(void)
     lwm2m_object_t * objArray[OBJ_COUNT];
 
     const char * localPort = "56830";
-    // char * name = "testlwm2mclient";
 
     int result;
 
@@ -444,47 +343,6 @@ int lightclient_main(void)
 
     data.addressFamily = AF_INET;
 
-#if 0
-    opt = 1;
-    while (opt < argc)
-    {
-        if (argv[opt] == NULL
-            || argv[opt][0] != '-'
-            || argv[opt][2] != 0)
-        {
-            print_usage();
-            return 0;
-        }
-        switch (argv[opt][1])
-        {
-        case 'n':
-            opt++;
-            if (opt >= argc)
-            {
-                print_usage();
-                return 0;
-            }
-            name = argv[opt];
-            break;
-        case 'l':
-            opt++;
-            if (opt >= argc)
-            {
-                print_usage();
-                return 0;
-            }
-            localPort = argv[opt];
-            break;
-        case '4':
-            data.addressFamily = AF_INET;
-            break;
-        default:
-            print_usage();
-            return 0;
-        }
-        opt += 1;
-    }
-#endif
 
     /*
      *This call an internal function that create an IPv6 socket on the port 5683.
@@ -564,7 +422,9 @@ int lightclient_main(void)
     /*
      * We catch Ctrl-C signal for a clean exit
      */
-    // signal(SIGINT, handle_sigint);
+    signal(SIGUSR1, handle_sigusr1);
+    set_lwm2m_signalpid(getpid());
+    printf("Set signal pid=%d\n", getpid());
 
     fprintf(stdout, "LWM2M Client \"%s\" started on port %s.\r\nUse Ctrl-C to exit.\r\n\n", TEST_CLIENT_NAME, localPort);
 
@@ -605,7 +465,12 @@ int lightclient_main(void)
 
         if (result < 0)
         {
-            if (errno != EINTR)
+            if (errno == EINTR)
+            {
+              printf("Update is occured\n");
+              lwm2m_resource_value_changed(lwm2mH, get_target_uri());
+            }
+            else
             {
               fprintf(stderr, "Error in select(): %d %s\r\n", errno, strerror(errno));
             }

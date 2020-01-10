@@ -1,0 +1,26 @@
+
+config EXAMPLES_UPRECG
+	bool "Update Recognized Number for Test"
+	default n
+	---help---
+		Enable the uprecg app
+
+if EXAMPLES_UPRECG
+
+config EXAMPLES_UPRECG_PROGNAME
+	string "Program name"
+	default "uprecg"
+	depends on BUILD_KERNEL
+	---help---
+		This is the name of the program that will be use when the NSH ELF
+		program is installed.
+
+config EXAMPLES_UPRECG_PRIORITY
+	int "uprecg task priority"
+	default 100
+
+config EXAMPLES_UPRECG_STACKSIZE
+	int "uprecg stack size"
+	default 2048
+
+endif

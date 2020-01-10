@@ -1,0 +1,4 @@
+
+ifeq ($(CONFIG_EXAMPLES_UPRECG),y)
+CONFIGURED_APPS += uprecg
+endif
