@@ -1,0 +1,33 @@
+
+config EXAMPLES_TF_HELLOWORLD
+	tristate "Tensorflow lite micro Hello World example"
+	default y
+	---help---
+		Enable the tf_helloworld app
+
+if EXAMPLES_TF_HELLOWORLD
+
+config EXAMPLES_TF_HELLOWORLD_PROGNAME
+	string "Program name"
+	default "tf_helloworld"
+	---help---
+		This is the name of the program that will be use when the NSH ELF
+		program is installed.
+
+config EXAMPLES_TF_HELLOWORLD_PRIORITY
+	int "tf_helloworld task priority"
+	default 100
+
+config EXAMPLES_TF_HELLOWORLD_STACKSIZE
+	int "tf_helloworld stack size"
+	default 16384
+
+config EXAMPLES_TF_HELLOWORLD_DEBUGLOG
+	bool "tf_helloworld Debug log Enable"
+	default n
+
+config EXAMPLES_TF_HELLOWORLD_TENSORFLOW_VERSION
+	string "Version TAG of Tensorflow to download "
+	default "v2.3.0"
+
+endif

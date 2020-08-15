@@ -1,0 +1,4 @@
+
+ifeq ($(CONFIG_EXAMPLES_TF_HELLOWORLD),y)
+CONFIGURED_APPS += tf_helloworld
+endif
