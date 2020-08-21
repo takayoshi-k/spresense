@@ -213,6 +213,8 @@ CXXSRCS = $(TF_LM_CXXSRCS) \
 					$(TENSORFLOW_LM)/examples/hello_world/output_handler_test.cc \
 					$(TENSORFLOW_LM)/examples/hello_world/output_handler.cc
 
+PATCHES = $(shell find $(CUR_DIR)/patches -name "*.patch")
+
 MAINSRC = tf_helloworld_main.cc
 
 clean:: tensorflow_lite_clean
@@ -229,8 +231,9 @@ download_tensorflow:
 		echo Clone $(TENSORFLOW_GITHUB_URL) tag $(TENSORFLOW_TAG);	\
 		git clone $(TENSORFLOW_GITHUB_URL) -b $(TENSORFLOW_TAG) --depth 1;	\
 		echo Download third party libraries;	\
-		(cd $(TENSORFLOW_DIR); make -f tensorflow/lite/micro/tools/make/Makefile TAGS=cmsis-nn third_party_downloads);	\
-		(cd $(TENSORFLOW_DIR); files=( "$(shell find $(CUR_DIR)/patches -name "*.patch")" ); for ff in $$files; do git apply $$ff; done); \
+		cd $(TENSORFLOW_DIR); make -f tensorflow/lite/micro/tools/make/Makefile TAGS=cmsis-nn third_party_downloads;	\
+		files="$(PATCHES)"; \
+		for ff in $$files; do git apply $$ff; done; \
 	fi
 
 delete_dfiles:
