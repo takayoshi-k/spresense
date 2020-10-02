@@ -40,6 +40,8 @@
 TOPDIR ?= ../nuttx
 DELIM ?= $(strip /)
 
+-include $(TOPDIR)/.config
+
 # XXX: Sorry, this make file only for Linux/Cygwin
 
 # Setup for Windows vs Linux/Cygwin/OSX environments
@@ -86,7 +88,11 @@ PHONY :=
 
 NUTTXNAME = nuttx
 BIN       = $(NUTTXNAME)$(EXEEXT)
+ifeq ($(CONFIG_CXD56_SUBCORE),y)
+SPK       = nuttx_sub.spk
+else
 SPK       = $(NUTTXNAME).spk
+endif
 
 KDEFINE = ${shell $(TOPDIR)/tools/define.sh "$(CC)" __KERNEL__}
 

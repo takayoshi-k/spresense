@@ -39,7 +39,11 @@ include ${TOPDIR}/arch/arm/src/armv7-m/Toolchain.defs
 
 # Setup for the kind of memory that we are executing from
 
+ifeq ($(CONFIG_CXD56_SUBCORE),y)
+LDSCRIPT = ramconfig_subcore.ld
+else
 LDSCRIPT = ramconfig.ld
+endif
 
 SDKDIR := $(TOPDIR)/../sdk
 
