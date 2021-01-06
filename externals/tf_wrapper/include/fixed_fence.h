@@ -1,7 +1,8 @@
+/* This file is generated automatically. */
 /****************************************************************************
- * externals/tensorflow/wrapper_src/spresense_audio_provider.c
+ * fixed_fence.h
  *
- *   Copyright 2021 Sony Semiconductor Solutions Corporation
+ *   Copyright 2019 Sony Semiconductor Solutions Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,25 +34,16 @@
  *
  ****************************************************************************/
 
-#ifndef _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-#define _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
+#ifndef FIXED_FENCE_H_INCLUDED
+#define FIXED_FENCE_H_INCLUDED
 
-#include <stdint.h>
+#include "memutils/memory_manager/MemMgrTypes.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace MemMgrLite {
 
-int spresense_audio_getsamples(
-    int start_ms, int duration_ms, int required_fs,
-    int *sample_size, int16_t ** audio_samples);
+extern PoolAddr const FixedAreaFences[] = {
+}; /* end of FixedAreaFences */
 
-int32_t spresense_audio_lasttimestamp(void);
+}  /* end of namespace MemMgrLite */
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-
-
+#endif /* FIXED_FENCE_H_INCLUDED */

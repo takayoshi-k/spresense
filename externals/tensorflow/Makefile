@@ -73,10 +73,9 @@ tensorflow_clean:
 	fi
 
 download_tensorflow:
-	echo Downloading... $(TENSORFLOW_DIR)
 	$(Q) if [ ! -d $(TENSORFLOW_DIR) ]; then \
 		echo Clone $(TENSORFLOW_GITHUB_URL) tag $(TENSORFLOW_TAG);  \
-		git clone $(TENSORFLOW_GITHUB_URL) -b $(TENSORFLOW_TAG) --depth 1;  \
+		git clone $(TENSORFLOW_GITHUB_URL) -b $(TENSORFLOW_TAG) --depth 1; \
 		files="$(PATCHES)"; \
 		cd $(TENSORFLOW_DIR); \
 		for ff in $$files; do git apply $$ff; done; \

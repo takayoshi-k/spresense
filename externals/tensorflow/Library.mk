@@ -35,6 +35,6 @@
 
 ifeq ($(CONFIG_EXTERNALS_TENSORFLOW),y)
   EXTRA_LIBPATHS += -L "$(EXTLIBDIR)$(DELIM)tensorflow"
-  EXTRA_LIBS     += -ltensorflow-microlite -lspresense_tf_example_wrapper
+  EXTRA_LIBS     += -ltensorflow-microlite
 endif
 

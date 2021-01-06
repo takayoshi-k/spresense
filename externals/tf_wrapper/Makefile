@@ -38,12 +38,20 @@
 
 CUR_DIR=$(shell pwd)
 
-BIN = libspresense_tf_example_wrapper$(LIBEXT)
+BIN = libtf_example_wrapper$(LIBEXT)
 
-CSRCS = 
+CXXSRCS = spresense_audio_provider.cxx tf_wrapper_audio_util.cxx
 CSRCS += spresense_image_provider.c
 
 CFLAGS += -I ../tensorflow/wrapper_include
+CXXFLAGS += -I ../tensorflow/wrapper_include
+
+AUDIODIR = $(SDKDIR)$(DELIM)modules$(DELIM)audio
+
+CXXFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" "$(AUDIODIR)"}
+CXXFLAGS += -D_POSIX
+CXXFLAGS += -DUSE_MEMMGR_FENCE
+CXXFLAGS += -DATTENTION_USE_FILENAME_LINE
 
 include $(APPDIR)/Application.mk
 

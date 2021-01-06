@@ -1,7 +1,8 @@
+/* This file is generated automatically. */
 /****************************************************************************
- * externals/tensorflow/wrapper_src/spresense_audio_provider.c
+ * pool_layout.h
  *
- *   Copyright 2021 Sony Semiconductor Solutions Corporation
+ *   Copyright 2019 Sony Semiconductor Solutions Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,25 +34,38 @@
  *
  ****************************************************************************/
 
-#ifndef _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-#define _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
+#ifndef POOL_LAYOUT_H_INCLUDED
+#define POOL_LAYOUT_H_INCLUDED
 
-#include <stdint.h>
+#include "memutils/memory_manager/MemMgrTypes.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace MemMgrLite {
 
-int spresense_audio_getsamples(
-    int start_ms, int duration_ms, int required_fs,
-    int *sample_size, int16_t ** audio_samples);
+MemPool*  static_pools_block[NUM_MEM_SECTIONS][NUM_MEM_POOLS];
+MemPool** static_pools[NUM_MEM_SECTIONS] = {
+  static_pools_block[0],
+};
+uint8_t layout_no[NUM_MEM_SECTIONS] = {
+  BadLayoutNo,
+};
+uint8_t pool_num[NUM_MEM_SECTIONS] = {
+  NUM_MEM_S0_POOLS,
+};
+extern const PoolSectionAttr MemoryPoolLayouts[NUM_MEM_SECTIONS][NUM_MEM_LAYOUTS][7] = {
+  {  /* Section:0 */
+    {/* Layout:0 */
+     /* pool_ID          type       seg fence  addr        size         */
+      { S0_ES_BUF_POOL                 , BasicType,   5, true, 0x000c0008, 0x0000f000 },  /* AUDIO_WORK_AREA */
+      { S0_PREPROC_BUF_POOL            , BasicType,   5, true, 0x000cf010, 0x0000f000 },  /* AUDIO_WORK_AREA */
+      { S0_INPUT_BUF_POOL              , BasicType,   5, true, 0x000de018, 0x0000f000 },  /* AUDIO_WORK_AREA */
+      { S0_ENC_APU_CMD_POOL            , BasicType,   3, true, 0x000ed020, 0x00000114 },  /* AUDIO_WORK_AREA */
+      { S0_SRC_APU_CMD_POOL            , BasicType,   3, true, 0x000ed140, 0x00000114 },  /* AUDIO_WORK_AREA */
+      { S0_PRE_APU_CMD_POOL            , BasicType,   3, true, 0x000ed260, 0x00000114 },  /* AUDIO_WORK_AREA */
+      { S0_NULL_POOL, 0, 0, false, 0, 0 },
+    },
+  },
+}; /* end of MemoryPoolLayouts */
 
-int32_t spresense_audio_lasttimestamp(void);
+}  /* end of namespace MemMgrLite */
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-
-
+#endif /* POOL_LAYOUT_H_INCLUDED */

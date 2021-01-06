@@ -1,7 +1,8 @@
+/* This file is generated automatically. */
 /****************************************************************************
- * externals/tensorflow/wrapper_src/spresense_audio_provider.c
+ * msgq_pool.h
  *
- *   Copyright 2021 Sony Semiconductor Solutions Corporation
+ *   Copyright 2019 Sony Semiconductor Solutions Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,25 +34,22 @@
  *
  ****************************************************************************/
 
-#ifndef _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-#define _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
+#ifndef MSGQ_POOL_H_INCLUDED
+#define MSGQ_POOL_H_INCLUDED
 
-#include <stdint.h>
+#include "msgq_id.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern const MsgQueDef MsgqPoolDefs[NUM_MSGQ_POOLS] = {
+   /* n_drm, n_size, n_num, h_drm, h_size, h_num */
+  { 0x00000000, 0, 0, 0x00000000, 0, 0, 0 }, /* MSGQ_NULL */
+  { 0xfd264, 88, 30, 0xffffffff, 0, 0 }, /* MSGQ_AUD_MGR */
+  { 0xfdcb4, 64, 2, 0xffffffff, 0, 0 }, /* MSGQ_AUD_APP */
+  { 0xfdd34, 20, 5, 0xffffffff, 0, 0 }, /* MSGQ_AUD_DSP */
+  { 0xfdd98, 48, 5, 0xffffffff, 0, 0 }, /* MSGQ_AUD_RECORDER */
+  { 0xfde88, 24, 16, 0xffffffff, 0, 0 }, /* MSGQ_AUD_CAP */
+  { 0xfe008, 16, 8, 0xffffffff, 0, 0 }, /* MSGQ_AUD_CAP_SYNC */
+  { 0xfe088, 48, 10, 0xffffffff, 0, 0 }, /* MSGQ_AUD_FRONTEND */
+  { 0xfe268, 20, 5, 0xffffffff, 0, 0 }, /* MSGQ_AUD_PREDSP */
+};
 
-int spresense_audio_getsamples(
-    int start_ms, int duration_ms, int required_fs,
-    int *sample_size, int16_t ** audio_samples);
-
-int32_t spresense_audio_lasttimestamp(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-
-
+#endif /* MSGQ_POOL_H_INCLUDED */

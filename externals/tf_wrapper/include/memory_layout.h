@@ -1,7 +1,7 @@
 /****************************************************************************
- * externals/tensorflow/wrapper_src/spresense_audio_provider.c
+ * audio_pcm_capture/include/memory_layout.h
  *
- *   Copyright 2021 Sony Semiconductor Solutions Corporation
+ *   Copyright 2019 Sony Semiconductor Solutions Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,26 +32,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
+#ifndef __AUDIO_LAYOUT_H_INCLUDED__
+#define __AUDIO_LAYOUT_H_INCLUDED__
 
-#ifndef _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-#define _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
+#define MEM_LAYOUT_PCM_CAPTURE (0)
 
-#include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-int spresense_audio_getsamples(
-    int start_ms, int duration_ms, int required_fs,
-    int *sample_size, int16_t ** audio_samples);
-
-int32_t spresense_audio_lasttimestamp(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // _EXTERNALS_TENSORFLOW_WRAPPER_SRC_SPRESENSE_AUDIO_PROVIDER_H_
-
-
+#endif /* __AUDIO_LAYOUT_H_INCLUDED__ */

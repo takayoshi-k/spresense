@@ -49,6 +49,8 @@
 #include <nuttx/video/video.h>
 #include <arch/board/cxd56_imageproc.h>
 
+#include "spresense_image_provider.h"
+
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -80,7 +82,7 @@ static unsigned char *clip_mem;
 const imageproc_rect_t clip_rect = {
   .x1 = (IMAGE_WIDTH  / 2) - IMG_WIDTH_SAMPLE_REQUIRED,
   .y1 = (IMAGE_HEIGHT / 2) - IMG_HEIGHT_SAMPLE_REQUIRED,
-  .x2 = (IMAGE_WIDTH  / 2) + IMG_WIDTH_SAMPLE_REQUIRED -1,
+  .x2 = (IMAGE_WIDTH  / 2) + IMG_WIDTH_SAMPLE_REQUIRED  -1,
   .y2 = (IMAGE_HEIGHT / 2) + IMG_HEIGHT_SAMPLE_REQUIRED -1
 };
 

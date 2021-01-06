@@ -35,6 +35,6 @@
 
 ifeq ($(CONFIG_EXTERNALS_TENSORFLOW),y)
   EXTRA_LIBPATHS += -L "$(EXTLIBDIR)$(DELIM)tf_wrapper"
-  EXTRA_LIBS     += -lspresense_tf_example_wrapper
+  EXTRA_LIBS     += -ltf_example_wrapper
 endif
 

@@ -34,7 +34,5 @@
 ############################################################################
 
 ifeq ($(CONFIG_EXTERNALS_TENSORFLOW),y)
-ifeq ($(CONFIG_EXTERNALS_TENSORFLOW_EXAMPLE_PERSONDETECTION),y)
 CONFIGURED_APPS += tf_wrapper
-endif
 endif
