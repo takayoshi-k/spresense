@@ -45,6 +45,7 @@ MODULE    = $(CONFIG_EXAMPLES_AUDIO_PCM_CAPTURE)
 
 # Audio Example
 
+CXXSRCS = audio_util.cxx
 MAINSRC = audio_pcm_capture_main.cxx
 
 # Audio Example paths
