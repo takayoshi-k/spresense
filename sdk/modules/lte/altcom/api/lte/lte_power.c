@@ -61,11 +61,24 @@
 
 #define POWERON_DATA_LEN     (0)
 
+/* TODO: Temporary workaround  start */
+
+#define POWERON_RETRY_MAX    (3)
+#define POWERON_REASON_KEEP  (-1)
+
+/* TODO: Temporary workaround  end */
+
 /****************************************************************************
  * Private Data
  ****************************************************************************/
 
 static FAR struct hal_if_s *g_halif = NULL;
+
+/* TODO: Temporary workaround  start */
+
+static int g_poweron_retry = 0;
+
+/* TODO: Temporary workaround  end */
 
 /****************************************************************************
  * Private Functions
@@ -109,12 +122,77 @@ static void restart_callback_job(FAR void *arg)
       /* Send API command to modem */
 
       ret = altcom_send_and_free(cmdbuff);
+      if (0 > ret)
+        {
+          DBGIF_LOG1_ERROR("Failed to send power on command:%d\n", ret);
+        }
     }
 
   if (0 > ret)
     {
-      lte_power_off();
+      /* TODO: Temporary workaround  start */
+
+      if (g_poweron_retry < POWERON_RETRY_MAX)
+        {
+          g_poweron_retry++;
+
+          DBGIF_LOG1_DEBUG("Attempts to reset the modem. retry:%d\n",
+                            g_poweron_retry);
+
+          /* Attempts to reset the modem to restore it to normal. */
+
+          ret = altcom_power_off();
+          if (0 > ret)
+            {
+              /* Since the user called lte_power_off(), keep the power off
+               * state and clear the retry counter.
+               */
+
+              g_poweron_retry = 0;
+              DBGIF_LOG1_WARNING(
+                "Power off failed because lte_power_off() was called:%d\n",
+                ret);
+            }
+          else
+            {
+              ret = altcom_power_on(POWERON_REASON_KEEP);
+              if (0 > ret)
+                {
+                  /* Since the user called lte_finalize(), keep the power off
+                   * state and clear the retry counter.
+                   */
+
+                  g_poweron_retry = 0;
+                  DBGIF_LOG1_WARNING(
+                    "Power on failed because lte_finalize() was called:%d\n",
+                    ret);
+                }
+            }
+        }
+      else
+        {
+          ret = altcom_power_off();
+          if (0 > ret)
+            {
+              DBGIF_LOG1_ERROR("Faild to power off:%d\n", ret);
+            }
+
+          DBGIF_LOG1_ERROR("retry over:%d\n", g_poweron_retry);
+        }
+
+      /* TODO: Temporary workaround  end */
     }
+
+  /* TODO: Temporary workaround  start */
+
+  else
+    {
+      /* Clear the retry counter because the transmission was successful. */
+
+      g_poweron_retry = 0;
+    }
+
+  /* TODO: Temporary workaround  end */
 }
 
 /****************************************************************************
@@ -208,7 +286,7 @@ int32_t lte_power_on(void)
 {
   int32_t ret;
 
-  ret = altcom_power_on();
+  ret = altcom_power_on(LTE_RESTART_USER_INITIATED);
   if (ret < 0 && ret != -EALREADY)
     {
       DBGIF_LOG1_ERROR("lte_power_on() error. %d\n", ret);
@@ -231,7 +309,7 @@ int32_t lte_power_on(void)
  *
  ****************************************************************************/
 
-int32_t altcom_power_on(void)
+int32_t altcom_power_on(int32_t reason)
 {
   int32_t ret;
   int32_t state = altcom_get_status();
@@ -253,7 +331,10 @@ int32_t altcom_power_on(void)
         if (ret == 0)
           {
             altcom_set_status(ALTCOM_STATUS_POWERON_ONGOING);
-            lte_set_report_reason(LTE_RESTART_USER_INITIATED);
+            if (reason != POWERON_REASON_KEEP)
+              {
+                lte_set_report_reason(reason);
+              }
           }
 
         break;
@@ -297,6 +378,15 @@ int32_t lte_power_off(void)
     {
       DBGIF_LOG1_ERROR("lte_power_off() error. %d\n", ret);
     }
+
+  /* TODO: Temporary workaround  start */
+
+  else
+    {
+      g_poweron_retry = 0;
+    }
+
+  /* TODO: Temporary workaround  end */
 
   return ret;
 }
