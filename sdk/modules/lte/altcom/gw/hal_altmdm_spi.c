@@ -95,6 +95,7 @@ struct hal_altmdm_spi_obj_s
  ****************************************************************************/
 
 static hal_restart_cb_t g_hal_restart_cb = NULL;
+static sys_mutex_t g_hal_restart_cb_mtx;
 static struct altmdm_pm_wakelock_s g_wakelock = {};
 
 /****************************************************************************
@@ -117,9 +118,15 @@ static struct altmdm_pm_wakelock_s g_wakelock = {};
 
 static void restart_callback(uint32_t state)
 {
-  if (g_hal_restart_cb)
+  hal_restart_cb_t callback;
+
+  sys_lock_mutex(&g_hal_restart_cb_mtx);
+  callback = g_hal_restart_cb;
+  sys_unlock_mutex(&g_hal_restart_cb_mtx);
+
+  if (callback)
     {
-      g_hal_restart_cb(state);
+      callback(state);
     }
   else
     {
@@ -552,7 +559,9 @@ static int32_t hal_altmdm_spi_poweron(
       return -EINVAL;
     }
 
+  sys_lock_mutex(&g_hal_restart_cb_mtx);
   g_hal_restart_cb = restart_cb;
+  sys_unlock_mutex(&g_hal_restart_cb_mtx);
 
   ret = modem_powerctrl(true);
 
@@ -582,7 +591,9 @@ static int32_t hal_altmdm_spi_poweroff(FAR struct hal_if_s *thiz)
       return -EINVAL;
     }
 
+  sys_lock_mutex(&g_hal_restart_cb_mtx);
   g_hal_restart_cb = NULL;
+  sys_unlock_mutex(&g_hal_restart_cb_mtx);
 
   ret = modem_powerctrl(false);
 
@@ -672,12 +683,22 @@ FAR struct hal_if_s *hal_altmdm_spi_create(void)
       (void)BUFFPOOL_FREE(obj);
       return NULL;
     }
+
+  ret = sys_create_mutex(&g_hal_restart_cb_mtx, &param);
+  if (ret < 0)
+    {
+      DBGIF_LOG1_ERROR("Failed to create mutex :%d\n", ret);
+      sys_delete_mutex(&obj->objmtx);
+      (void)BUFFPOOL_FREE(obj);
+      return NULL;
+    }
   
   obj->buff =
     (FAR uint8_t *)BUFFPOOL_ALLOC(HAL_ALTMDM_SPI_BUFFER_SIZE_MAX);
   if (!obj->buff)
     {
       DBGIF_LOG_ERROR("Failed to allocate memory\n");
+      sys_delete_mutex(&g_hal_restart_cb_mtx);
       (void)sys_delete_mutex(&obj->objmtx);
       (void)BUFFPOOL_FREE(obj);
       return NULL;
@@ -690,6 +711,7 @@ FAR struct hal_if_s *hal_altmdm_spi_create(void)
   if (ret < 0)
     {
       DBGIF_LOG1_ERROR("Failed to board_altmdm_initialize() :%d\n", ret);
+      sys_delete_mutex(&g_hal_restart_cb_mtx);
       (void)sys_delete_mutex(&obj->objmtx);
       (void)BUFFPOOL_FREE(obj->buff);
       (void)BUFFPOOL_FREE(obj);
@@ -733,6 +755,12 @@ int32_t hal_altmdm_spi_delete(FAR struct hal_if_s *thiz)
 
   obj = (FAR struct hal_altmdm_spi_obj_s *)thiz;
   ret = sys_delete_mutex(&obj->objmtx);
+  if (ret < 0)
+    {
+      DBGIF_ASSERT( ret >= 0, "mutex delete failed.");
+    }
+
+  ret = sys_delete_mutex(&g_hal_restart_cb_mtx);
   if (ret < 0)
     {
       DBGIF_ASSERT( ret >= 0, "mutex delete failed.");
