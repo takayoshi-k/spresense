@@ -187,10 +187,13 @@ int32_t altcom_set_status(int32_t status)
       ;;
     }
 
+  sys_lock_mutex(&g_table_mtx);
   prev_stat = g_altcom_status;
-  DBGIF_LOG2_INFO("LTE library status %d -> %d.\n", prev_stat, status);
   g_altcom_status = status;
-  altcomstatus_callcb(g_altcom_status, prev_stat);
+  sys_unlock_mutex(&g_table_mtx);
+
+  DBGIF_LOG2_INFO("LTE library status %d -> %d.\n", prev_stat, status);
+  altcomstatus_callcb(status, prev_stat);
 
   if (delflag)
     {

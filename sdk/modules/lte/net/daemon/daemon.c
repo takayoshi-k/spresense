@@ -2832,7 +2832,7 @@ static int daemon_api_request(int read_fd, int usock_fd,
         break;
 
       case DAEMONAPI_REQUEST_POWER_ON:
-        priv->poweron_result = altcom_power_on();
+        priv->poweron_result = altcom_power_on(LTE_RESTART_USER_INITIATED);
         if (priv->poweron_result < 0)
           {
             priv->poweron_inprogress = false;
