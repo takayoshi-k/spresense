@@ -78,38 +78,4 @@ int32_t lte_set_report_reason(int32_t reason);
 
 int32_t lte_do_restartcallback(void);
 
-/****************************************************************************
- * Name: altcom_set_report_init
- *
- * Description:
- *   Initialize the resource.
- *
- * Input Parameters:
- *   None
- *
- * Returned Value:
- *   On success, 0 is returned.
- *   On failure, negative value is returned.
- *
- ****************************************************************************/
-
-int32_t altcom_set_report_init(void);
-
-/****************************************************************************
- * Name: altcom_set_report_fin
- *
- * Description:
- *   Finalize the resource.
- *
- * Input Parameters:
- *   None
- *
- * Returned Value:
- *   On success, 0 is returned.
- *   On failure, negative value is returned.
- *
- ****************************************************************************/
-
-int32_t altcom_set_report_fin(void);
-
 #endif /* __MODULES_LTE_ALTCOM_INCLUDE_API_LTE_REPORT_RESTART_H */

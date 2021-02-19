@@ -83,7 +83,6 @@
 #include "lte_geterrinfo.h"
 #include "apicmdhdlr_select.h"
 #include "altcom_select_ext.h"
-#include "lte_report_restart.h"
 #ifdef CONFIG_LTE_NET_MBEDTLS
 #include "apicmdhdlr_config_verify_callback.h"
 #endif
@@ -613,16 +612,7 @@ static CODE int32_t lte_buildmain(FAR void *arg)
       goto errout_with_callbacks;
     }
 
-  ret = altcom_set_report_init();
-  if (ret < 0)
-    {
-      goto errout_with_selectasync;
-    }
-
   return 0;
-
-errout_with_selectasync:
-  altcom_select_async_fin();
 
 errout_with_callbacks:
   altcomcallbacks_fin();
@@ -665,11 +655,6 @@ static CODE int32_t lte_destroy(void)
 {
   int32_t ret;
 
-  ret = altcom_set_report_fin();
-  if (ret < 0)
-    {
-      return ret;
-    }
 
   ret = altcom_select_async_fin();
   if (ret < 0)
