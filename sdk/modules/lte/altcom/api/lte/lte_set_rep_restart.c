@@ -60,7 +60,6 @@
  ****************************************************************************/
 
 static int32_t g_lte_set_represtart_reason = LTE_RESTART_USER_INITIATED;
-static sys_mutex_t g_reason_mtx;
 
 /****************************************************************************
  * Public Functions
@@ -110,9 +109,7 @@ int32_t lte_set_report_reason(int32_t reason)
 {
   int32_t ret = 0;
 
-  sys_lock_mutex(&g_reason_mtx);
   g_lte_set_represtart_reason = reason;
-  sys_unlock_mutex(&g_reason_mtx);
 
   return ret;
 }
@@ -187,63 +184,3 @@ int32_t altcom_set_report_restart(restart_report_cb_t restart_callback)
     }
   return 0;
 }
-
-/****************************************************************************
- * Name: altcom_set_report_init
- *
- * Description:
- *   Initialize the resource.
- *
- * Input Parameters:
- *   None
- *
- * Returned Value:
- *   On success, 0 is returned.
- *   On failure, negative value is returned.
- *
- ****************************************************************************/
-
-int32_t altcom_set_report_init(void)
-{
-  int ret;
-  sys_cremtx_s param = {0};
-
-  ret = sys_create_mutex(&g_reason_mtx, &param);
-  if (0 > ret)
-    {
-      DBGIF_LOG1_ERROR("sys_create_mutex() %d.\n", ret);
-      return ret;
-    }
-
-  return 0;
-}
-
-/****************************************************************************
- * Name: altcom_set_report_fin
- *
- * Description:
- *   Finalize the resource.
- *
- * Input Parameters:
- *   None
- *
- * Returned Value:
- *   On success, 0 is returned.
- *   On failure, negative value is returned.
- *
- ****************************************************************************/
-
-int32_t altcom_set_report_fin(void)
-{
-  int ret;
-
-  ret = sys_delete_mutex(&g_reason_mtx);
-  if (0 > ret)
-    {
-      DBGIF_LOG1_ERROR("sys_delete_mutex() %d.\n", ret);
-      return ret;
-    }
-
-  return 0;
-}
-
