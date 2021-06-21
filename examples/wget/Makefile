@@ -1,5 +1,5 @@
 ############################################################################
-# externals/sslutils/Makefile
+# examples/wget/Makefile
 #
 #   Copyright 2021 Sony Semiconductor Solutions Corporation
 #
@@ -33,11 +33,16 @@
 #
 ############################################################################
 
-include $(APPDIR)/Make.defs
+-include $(APPDIR)/Make.defs
 -include $(SDKDIR)/Make.defs
 
-BIN = libsslutils$(LIBEXT)
+PROGNAME = $(CONFIG_EXAMPLES_SPRESENSE_WGET_PROGNAME)
+PRIORITY = $(CONFIG_EXAMPLES_SPRESENSE_WGET_PRIORITY)
+STACKSIZE = $(CONFIG_EXAMPLES_SPRESENSE_WGET_STACKSIZE)
+MODULE = $(CONFIG_EXAMPLES_SPRESENSE_WGET)
 
-CSRCS = mbedtls_sslutils.c
+ASRCS =
+CSRCS =
+MAINSRC = wget_main.c
 
 include $(APPDIR)/Application.mk
