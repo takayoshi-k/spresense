@@ -1,3 +1,6 @@
+[![twitter spresense handle][]][twitter spresense badge]
+[![twitter devworld handle][]][twitter devworld badge]
+
 # Welcome to SPRESENSE project
 
 Clone this repository and update submodules. You can choose from 2 ways in below.
@@ -41,3 +44,8 @@ $ git submodule foreach git checkout master
 # Build
 
 Build instructions are documented at [sdk repository](https://github.com/SonySemiconductorSolutions/spresense/tree/master/sdk).
+
+[twitter spresense handle]: https://img.shields.io/twitter/follow/SpresensebySony?style=social&logo=twitter
+[twitter spresense badge]: https://twitter.com/intent/follow?screen_name=SpresensebySony
+[twitter devworld handle]: https://img.shields.io/twitter/follow/SonyDevWorld?style=social&logo=twitter
+[twitter devworld badge]: https://twitter.com/intent/follow?screen_name=SonyDevWorld
