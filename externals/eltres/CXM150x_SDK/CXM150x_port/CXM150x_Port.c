@@ -94,7 +94,12 @@ static void (*g_CXM150x_uart_rx_callback)(uint32_t, uint32_t) = NULL;
 // ===========================================================================
 int32_t wrapper_CXM150x_set_uart_rx_buf(uint8_t *rcv_char_buf){
     g_rcv_buf = rcv_char_buf;
-
+#ifdef CONFIG_EXTERNALS_ELTRES_ADDON
+    if (CXM150x_POWER_OFF == wrapper_CXM150x_get_power()){
+        board_gpio_config(ELTRES_PIN_ENABLE, 0, false, false, PIN_FLOAT);
+        board_gpio_write(ELTRES_PIN_ENABLE, 0);
+    }
+#endif
     if (g_uart_recv_thread == (pthread_t)0){
         /* Create UART reception thread */
         struct sched_param param;
