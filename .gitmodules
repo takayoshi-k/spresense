@@ -10,6 +10,3 @@
 [submodule "sdk/apps"]
 	path = sdk/apps
 	url = ../spresense-nuttx-apps.git
-[submodule "externals/mossfw/mossfw"]
-	path = externals/mossfw/mossfw
-	url = git@github.com:SonySemiconductorSolutions/spresense-mossfw.git
