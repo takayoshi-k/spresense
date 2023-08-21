@@ -51,7 +51,7 @@ struct camera_data_s
 };
 static struct camera_data_s __attribute__ ((aligned(64))) g_camdata;
 
-#if 1
+#if 0
 #define SEND_JPEG
 #endif
 
