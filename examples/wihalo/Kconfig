@@ -1,0 +1,29 @@
+
+config EXAMPLES_WIHALO
+	tristate "wihalo app"
+	default n
+	depends on SPI
+	select SPI_DRIVER
+	select CXD56_SPI4
+	select SYSTEM_SPITOOL
+	---help---
+		Enable the wihalo app
+
+if EXAMPLES_WIHALO
+
+config EXAMPLES_WIHALO_PROGNAME
+	string "Program name"
+	default "wihalo"
+	---help---
+		This is the name of the program that will be use when the NSH ELF
+		program is installed.
+
+config EXAMPLES_WIHALO_PRIORITY
+	int "wihalo task priority"
+	default 100
+
+config EXAMPLES_WIHALO_STACKSIZE
+	int "wihalo stack size"
+	default 4096
+
+endif

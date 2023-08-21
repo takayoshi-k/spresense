@@ -1,0 +1,847 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	//
+ASRCS	Makefile	/^ASRCS =$/;"	m
+ATCMD_CB_EVENT	nrc-atcmd.h	/^	ATCMD_CB_EVENT,$/;"	e	enum:ATCMD_CB_TYPE
+ATCMD_CB_INFO	nrc-atcmd.h	/^	ATCMD_CB_INFO = 0,$/;"	e	enum:ATCMD_CB_TYPE
+ATCMD_CB_RXD	nrc-atcmd.h	/^	ATCMD_CB_RXD$/;"	e	enum:ATCMD_CB_TYPE
+ATCMD_CB_TYPE	nrc-atcmd.h	/^enum ATCMD_CB_TYPE$/;"	g
+ATCMD_DATA_LEN_MAX	nrc-atcmd.h	/^#define ATCMD_DATA_LEN_MAX	/;"	d
+ATCMD_EVENT	nrc-atcmd.h	/^enum ATCMD_EVENT$/;"	g
+ATCMD_EVENT_END	nrc-atcmd.h	/^	ATCMD_EVENT_END,$/;"	e	enum:ATCMD_EVENT
+ATCMD_EVENT_NUM	nrc-atcmd.h	/^	ATCMD_EVENT_NUM = ATCMD_EVENT_END,$/;"	e	enum:ATCMD_EVENT
+ATCMD_EVENT_START	nrc-atcmd.h	/^	ATCMD_EVENT_START = 0,$/;"	e	enum:ATCMD_EVENT
+ATCMD_HEVENT_SEND_DROP	nrc-atcmd.h	/^	ATCMD_HEVENT_SEND_DROP,$/;"	e	enum:ATCMD_EVENT
+ATCMD_HEVENT_SEND_ERROR	nrc-atcmd.h	/^	ATCMD_HEVENT_SEND_ERROR,$/;"	e	enum:ATCMD_EVENT
+ATCMD_HEVENT_SEND_EXIT	nrc-atcmd.h	/^	ATCMD_HEVENT_SEND_EXIT,$/;"	e	enum:ATCMD_EVENT
+ATCMD_HEVENT_SEND_IDLE	nrc-atcmd.h	/^	ATCMD_HEVENT_SEND_IDLE,$/;"	e	enum:ATCMD_EVENT
+ATCMD_INFO	nrc-atcmd.h	/^enum ATCMD_INFO$/;"	g
+ATCMD_INFO_END	nrc-atcmd.h	/^	ATCMD_INFO_END,$/;"	e	enum:ATCMD_INFO
+ATCMD_INFO_NUM	nrc-atcmd.h	/^	ATCMD_INFO_NUM = ATCMD_INFO_END$/;"	e	enum:ATCMD_INFO
+ATCMD_INFO_START	nrc-atcmd.h	/^	ATCMD_INFO_START = 0,$/;"	e	enum:ATCMD_INFO
+ATCMD_MSG_DATA	nrc-atcmd.c	/^		ATCMD_MSG_DATA,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_ERROR	nrc-atcmd.c	/^		ATCMD_MSG_ERROR = -1,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_HEVENT	nrc-atcmd.c	/^		ATCMD_MSG_HEVENT,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_INFO	nrc-atcmd.c	/^		ATCMD_MSG_INFO,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_LEN_MAX	nrc-atcmd.h	/^#define ATCMD_MSG_LEN_MAX	/;"	d
+ATCMD_MSG_LEN_MIN	nrc-atcmd.h	/^#define ATCMD_MSG_LEN_MIN	/;"	d
+ATCMD_MSG_NONE	nrc-atcmd.c	/^		ATCMD_MSG_NONE = 255,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_OK	nrc-atcmd.c	/^		ATCMD_MSG_OK = 0,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_SEVENT	nrc-atcmd.c	/^		ATCMD_MSG_SEVENT,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_MSG_TYPE	nrc-atcmd.c	/^	enum ATCMD_MSG_TYPE$/;"	g	function:nrc_atcmd_recv	file:
+ATCMD_MSG_WEVENT	nrc-atcmd.c	/^		ATCMD_MSG_WEVENT,$/;"	e	enum:nrc_atcmd_recv::ATCMD_MSG_TYPE	file:
+ATCMD_PACKET_END	nrc-atcmd.h	/^#define ATCMD_PACKET_END	/;"	d
+ATCMD_PACKET_END_SIZE	nrc-atcmd.h	/^#define ATCMD_PACKET_END_SIZE	/;"	d
+ATCMD_PACKET_HEADER_SIZE	nrc-atcmd.h	/^#define ATCMD_PACKET_HEADER_SIZE	/;"	d
+ATCMD_PACKET_LEN_MAX	nrc-atcmd.h	/^#define ATCMD_PACKET_LEN_MAX	/;"	d
+ATCMD_PACKET_LEN_MIN	nrc-atcmd.h	/^#define ATCMD_PACKET_LEN_MIN	/;"	d
+ATCMD_PACKET_PAYLOAD_LEN_MAX	nrc-atcmd.h	/^#define ATCMD_PACKET_PAYLOAD_LEN_MAX	/;"	d
+ATCMD_PACKET_START	nrc-atcmd.h	/^#define ATCMD_PACKET_START	/;"	d
+ATCMD_PACKET_START_SIZE	nrc-atcmd.h	/^#define ATCMD_PACKET_START_SIZE	/;"	d
+ATCMD_RET_ERROR	nrc-atcmd.h	/^	ATCMD_RET_ERROR = -1,$/;"	e	enum:ATCMD_RET_TYPE
+ATCMD_RET_NONE	nrc-atcmd.h	/^	ATCMD_RET_NONE$/;"	e	enum:ATCMD_RET_TYPE
+ATCMD_RET_OK	nrc-atcmd.h	/^	ATCMD_RET_OK = 0,$/;"	e	enum:ATCMD_RET_TYPE
+ATCMD_RET_TYPE	nrc-atcmd.h	/^enum ATCMD_RET_TYPE$/;"	g
+ATCMD_SEVENT_CLOSE	nrc-atcmd.h	/^	ATCMD_SEVENT_CLOSE,$/;"	e	enum:ATCMD_EVENT
+ATCMD_SEVENT_CONNECT	nrc-atcmd.h	/^	ATCMD_SEVENT_CONNECT,$/;"	e	enum:ATCMD_EVENT
+ATCMD_SEVENT_RECV_ERROR	nrc-atcmd.h	/^	ATCMD_SEVENT_RECV_ERROR,$/;"	e	enum:ATCMD_EVENT
+ATCMD_SEVENT_SEND_DROP	nrc-atcmd.h	/^	ATCMD_SEVENT_SEND_DROP,$/;"	e	enum:ATCMD_EVENT
+ATCMD_SEVENT_SEND_ERROR	nrc-atcmd.h	/^	ATCMD_SEVENT_SEND_ERROR,$/;"	e	enum:ATCMD_EVENT
+ATCMD_SEVENT_SEND_EXIT	nrc-atcmd.h	/^	ATCMD_SEVENT_SEND_EXIT,$/;"	e	enum:ATCMD_EVENT
+ATCMD_SEVENT_SEND_IDLE	nrc-atcmd.h	/^	ATCMD_SEVENT_SEND_IDLE,$/;"	e	enum:ATCMD_EVENT
+ATCMD_TX_NONE	gomi/main.c	/^		ATCMD_TX_NONE = 0,$/;"	e	enum:raspi_cli_run_loop::__anonfb923af60203	file:
+ATCMD_TX_NORMAL	gomi/main.c	/^		ATCMD_TX_NORMAL,$/;"	e	enum:raspi_cli_run_loop::__anonfb923af60203	file:
+ATCMD_TX_PASSTHROUGH	gomi/main.c	/^		ATCMD_TX_PASSTHROUGH$/;"	e	enum:raspi_cli_run_loop::__anonfb923af60203	file:
+ATCMD_WEVENT_CONNECT_FAIL	nrc-atcmd.h	/^	ATCMD_WEVENT_CONNECT_FAIL,$/;"	e	enum:ATCMD_EVENT
+ATCMD_WEVENT_CONNECT_SUCCESS	nrc-atcmd.h	/^	ATCMD_WEVENT_CONNECT_SUCCESS,$/;"	e	enum:ATCMD_EVENT
+ATCMD_WEVENT_DISCONNECT	nrc-atcmd.h	/^	ATCMD_WEVENT_DISCONNECT,$/;"	e	enum:ATCMD_EVENT
+ATCMD_WEVENT_SCAN_DONE	nrc-atcmd.h	/^	ATCMD_WEVENT_SCAN_DONE = ATCMD_EVENT_START,$/;"	e	enum:ATCMD_EVENT
+BuildInformation	build-information.c	/^const char *BuildInformation = "mbpro.local-Fri Jun 23 12:31:06 2023";$/;"	v	typeref:typename:const char *
+CFGNAME	wihalo.c	/^const char *CFGNAME = "\/mnt\/spif\/wihalo.cfg";$/;"	v	typeref:typename:const char *
+CLI_BUFSZ	cli.h	/^#define CLI_BUFSZ /;"	d
+CLI_TYPE	cli.h	/^} CLI_TYPE, *PCLI_TYPE;$/;"	t	typeref:struct:CLI_TYPE_
+CLI_TYPE_	cli.h	/^typedef struct CLI_TYPE_ {$/;"	s
+CSRCS	Makefile	/^CSRCS = nrc-hspi.c nrc-atcmd.c cli.c util.c nrc-iperf.c whapp.c build-information.c$/;"	m
+CliGetNextToken	cli.c	/^char* CliGetNextToken()$/;"	f	typeref:typename:char *
+CliProcess	cli.c	/^int CliProcess(const CLI_TYPE *cli, char *cli_input, uint8_t sh)$/;"	f	typeref:typename:int
+CliProcessHelp	cli.c	/^void CliProcessHelp(const CLI_TYPE *cli) {$/;"	f	typeref:typename:void
+DBUF_LEN	whapp.c	/^	#define DBUF_LEN	/;"	d	file:
+DEFAULT_SPI_CLOCK	gomi/main.c	/^#define DEFAULT_SPI_CLOCK	/;"	d	file:
+DEFAULT_SPI_DEVICE	gomi/main.c	/^#define DEFAULT_SPI_DEVICE	/;"	d	file:
+DEFAULT_UART_BAUDRATE	gomi/main.c	/^#define DEFAULT_UART_BAUDRATE	/;"	d	file:
+DEFAULT_UART_DEVICE	gomi/main.c	/^#define DEFAULT_UART_DEVICE	/;"	d	file:
+ECHO_PORT	whapp.c	/^	#define ECHO_PORT	/;"	d	file:
+EVENT_TYPE_CLOSED	wihalo.h	/^#define EVENT_TYPE_CLOSED /;"	d
+EVENT_TYPE_CONNECT	wihalo.h	/^#define EVENT_TYPE_CONNECT /;"	d
+EVENT_TYPE_RCVERR	wihalo.h	/^#define EVENT_TYPE_RCVERR /;"	d
+EVENT_TYPE_SENDIDLE	wihalo.h	/^#define EVENT_TYPE_SENDIDLE /;"	d
+FLAGS_AUTO_START	common.h	/^#define FLAGS_AUTO_START	/;"	d
+FLAGS_AUTO_START_BIT	common.h	/^#define FLAGS_AUTO_START_BIT	/;"	d
+FLAGS_DEFAULT	common.h	/^#define FLAGS_DEFAULT /;"	d
+FLAGS_EIRQ_BIT	common.h	/^#define FLAGS_EIRQ_BIT	/;"	d
+FLAGS_IPERF_BIT	common.h	/^#define FLAGS_IPERF_BIT	/;"	d
+FLAGS_IPERF_TIMES	common.h	/^#define FLAGS_IPERF_TIMES	/;"	d
+FLAGS_IRQ_ENABLE	common.h	/^#define FLAGS_IRQ_ENABLE	/;"	d
+FLAGS_PASSMODE	common.h	/^#define FLAGS_PASSMODE	/;"	d
+FLAGS_PASSMODE_BIT	common.h	/^#define FLAGS_PASSMODE_BIT	/;"	d
+FLAGS_SHOW_ATRX	common.h	/^#define FLAGS_SHOW_ATRX	/;"	d
+FLAGS_SHOW_ATRX_BIT	common.h	/^#define FLAGS_SHOW_ATRX_BIT	/;"	d
+FLAGS_SHOW_ATTX	common.h	/^#define FLAGS_SHOW_ATTX	/;"	d
+FLAGS_SHOW_ATTX_BIT	common.h	/^#define FLAGS_SHOW_ATTX_BIT	/;"	d
+FLAGS_SHOW_DATA	common.h	/^#define FLAGS_SHOW_DATA	/;"	d
+FLAGS_SHOW_DATA_BIT	common.h	/^#define FLAGS_SHOW_DATA_BIT	/;"	d
+FLAGS_STN_AP	common.h	/^#define FLAGS_STN_AP	/;"	d
+FLAGS_STN_AP_BIT	common.h	/^#define FLAGS_STN_AP_BIT	/;"	d
+FirmwareNumber	build-information.c	/^const long FirmwareNumber = 513;$/;"	v	typeref:typename:const long
+Function	cli.h	/^	int (*Function)(void);$/;"	m	struct:CLI_TYPE_	typeref:typename:int (*)(void)
+HSPI_ACK_VALUE	nrc-hspi.h	/^#define HSPI_ACK_VALUE	/;"	d
+HSPI_ACTIVE	nrc-hspi.c	/^static int HSPI_ACTIVE (void)$/;"	f	typeref:typename:int	file:
+HSPI_ADDR	nrc-hspi.h	/^#define HSPI_ADDR(/;"	d
+HSPI_BURST	nrc-hspi.h	/^#define HSPI_BURST	/;"	d
+HSPI_DATA	nrc-hspi.h	/^#define HSPI_DATA(/;"	d
+HSPI_EIRQ_ALL	nrc-hspi.h	/^#define HSPI_EIRQ_ALL	/;"	d
+HSPI_EIRQ_EDGE	nrc-hspi.h	/^#define HSPI_EIRQ_EDGE	/;"	d
+HSPI_EIRQ_HIGH	nrc-hspi.h	/^#define HSPI_EIRQ_HIGH	/;"	d
+HSPI_EIRQ_LEVEL	nrc-hspi.h	/^#define HSPI_EIRQ_LEVEL	/;"	d
+HSPI_EIRQ_LOW	nrc-hspi.h	/^#define HSPI_EIRQ_LOW	/;"	d
+HSPI_EIRQ_READY	nrc-hspi.h	/^#define HSPI_EIRQ_READY	/;"	d
+HSPI_EIRQ_RXQ	nrc-hspi.h	/^#define HSPI_EIRQ_RXQ	/;"	d
+HSPI_EIRQ_SLEEP	nrc-hspi.h	/^#define HSPI_EIRQ_SLEEP	/;"	d
+HSPI_EIRQ_TXQ	nrc-hspi.h	/^#define HSPI_EIRQ_TXQ	/;"	d
+HSPI_FIXED	nrc-hspi.h	/^#define HSPI_FIXED	/;"	d
+HSPI_LENGTH	nrc-hspi.h	/^#define HSPI_LENGTH(/;"	d
+HSPI_OPCODE_READ_DATA	nrc-hspi.h	/^#define HSPI_OPCODE_READ_DATA(/;"	d
+HSPI_OPCODE_READ_REG	nrc-hspi.h	/^#define HSPI_OPCODE_READ_REG(/;"	d
+HSPI_OPCODE_WRITE_DATA	nrc-hspi.h	/^#define HSPI_OPCODE_WRITE_DATA(/;"	d
+HSPI_OPCODE_WRITE_REG	nrc-hspi.h	/^#define HSPI_OPCODE_WRITE_REG(/;"	d
+HSPI_QUEUE_STATUS	nrc-hspi.c	/^#define HSPI_QUEUE_STATUS(/;"	d	file:
+HSPI_QUE_ALL	nrc-hspi.h	/^	HSPI_QUE_ALL = HSPI_QUE_NUM$/;"	e	enum:__anonb20d419f1003
+HSPI_QUE_NUM	nrc-hspi.h	/^	HSPI_QUE_NUM,$/;"	e	enum:__anonb20d419f1003
+HSPI_READ	nrc-hspi.h	/^#define HSPI_READ	/;"	d
+HSPI_REG_BOARD_ID	nrc-hspi.h	/^#define HSPI_REG_BOARD_ID	/;"	d
+HSPI_REG_CHIP_ID	nrc-hspi.h	/^#define HSPI_REG_CHIP_ID	/;"	d
+HSPI_REG_DEVICE_STATUS	nrc-hspi.h	/^#define HSPI_REG_DEVICE_STATUS	/;"	d
+HSPI_REG_DEV_MSG_0	nrc-hspi.h	/^#define HSPI_REG_DEV_MSG_0	/;"	d
+HSPI_REG_DEV_MSG_1	nrc-hspi.h	/^#define HSPI_REG_DEV_MSG_1	/;"	d
+HSPI_REG_DEV_MSG_2	nrc-hspi.h	/^#define HSPI_REG_DEV_MSG_2	/;"	d
+HSPI_REG_DEV_MSG_3	nrc-hspi.h	/^#define HSPI_REG_DEV_MSG_3	/;"	d
+HSPI_REG_EIRQ	nrc-hspi.h	/^#define HSPI_REG_EIRQ	/;"	d
+HSPI_REG_EIRQ_ENABLE	nrc-hspi.h	/^#define HSPI_REG_EIRQ_ENABLE	/;"	d
+HSPI_REG_EIRQ_MODE	nrc-hspi.h	/^#define HSPI_REG_EIRQ_MODE	/;"	d
+HSPI_REG_EIRQ_STATUS	nrc-hspi.h	/^#define HSPI_REG_EIRQ_STATUS	/;"	d
+HSPI_REG_EIRQ_STATUS_LATCH	nrc-hspi.h	/^#define HSPI_REG_EIRQ_STATUS_LATCH	/;"	d
+HSPI_REG_IRQ	nrc-hspi.h	/^#define HSPI_REG_IRQ	/;"	d
+HSPI_REG_MODEM_ID	nrc-hspi.h	/^#define HSPI_REG_MODEM_ID	/;"	d
+HSPI_REG_MSG	nrc-hspi.h	/^#define HSPI_REG_MSG	/;"	d
+HSPI_REG_QUEUE_STATUS	nrc-hspi.h	/^#define HSPI_REG_QUEUE_STATUS	/;"	d
+HSPI_REG_RXQ	nrc-hspi.h	/^#define HSPI_REG_RXQ	/;"	d
+HSPI_REG_RXQ_THRES	nrc-hspi.h	/^#define HSPI_REG_RXQ_THRES	/;"	d
+HSPI_REG_RXQ_WINDOW	nrc-hspi.h	/^#define HSPI_REG_RXQ_WINDOW	/;"	d
+HSPI_REG_STATUS	nrc-hspi.h	/^#define HSPI_REG_STATUS	/;"	d
+HSPI_REG_SW_ID	nrc-hspi.h	/^#define HSPI_REG_SW_ID	/;"	d
+HSPI_REG_SYS	nrc-hspi.h	/^#define HSPI_REG_SYS	/;"	d
+HSPI_REG_TXQ	nrc-hspi.h	/^#define HSPI_REG_TXQ	/;"	d
+HSPI_REG_TXQ_THRES	nrc-hspi.h	/^#define HSPI_REG_TXQ_THRES	/;"	d
+HSPI_REG_TXQ_WINDOW	nrc-hspi.h	/^#define HSPI_REG_TXQ_WINDOW	/;"	d
+HSPI_REG_WAKEUP	nrc-hspi.h	/^#define HSPI_REG_WAKEUP	/;"	d
+HSPI_RXQ	nrc-hspi.h	/^	HSPI_RXQ,	  	\/\/ from host to target$/;"	e	enum:__anonb20d419f1003
+HSPI_RXQ_SLOT_COUNT	nrc-hspi.c	/^#define HSPI_RXQ_SLOT_COUNT(/;"	d	file:
+HSPI_RXQ_SLOT_COUNT_UPDATE	nrc-hspi.c	/^#define HSPI_RXQ_SLOT_COUNT_UPDATE(/;"	d	file:
+HSPI_RXQ_SLOT_NUM	nrc-hspi.c	/^#define HSPI_RXQ_SLOT_NUM(/;"	d	file:
+HSPI_RXQ_SLOT_SIZE	nrc-hspi.c	/^#define HSPI_RXQ_SLOT_SIZE(/;"	d	file:
+HSPI_SLOT_CNT_MAX	nrc-hspi.h	/^#define HSPI_SLOT_CNT_MAX	/;"	d
+HSPI_SLOT_HDR_SIZE	nrc-hspi.h	/^#define HSPI_SLOT_HDR_SIZE	/;"	d
+HSPI_SLOT_SEQ_MAX	nrc-hspi.h	/^#define HSPI_SLOT_SEQ_MAX	/;"	d
+HSPI_SLOT_SIZE_MAX	nrc-hspi.h	/^#define HSPI_SLOT_SIZE_MAX	/;"	d
+HSPI_SLOT_START	nrc-hspi.h	/^#define HSPI_SLOT_START	/;"	d
+HSPI_SLOT_START_SIZE	nrc-hspi.h	/^#define HSPI_SLOT_START_SIZE	/;"	d
+HSPI_START	nrc-hspi.h	/^#define HSPI_START	/;"	d
+HSPI_TXQ	nrc-hspi.h	/^	HSPI_TXQ = 0,	\/\/ from target to host$/;"	e	enum:__anonb20d419f1003
+HSPI_TXQ_SLOT_COUNT	nrc-hspi.c	/^#define HSPI_TXQ_SLOT_COUNT(/;"	d	file:
+HSPI_TXQ_SLOT_COUNT_UPDATE	nrc-hspi.c	/^#define HSPI_TXQ_SLOT_COUNT_UPDATE(/;"	d	file:
+HSPI_TXQ_SLOT_NUM	nrc-hspi.c	/^#define HSPI_TXQ_SLOT_NUM(/;"	d	file:
+HSPI_TXQ_SLOT_SIZE	nrc-hspi.c	/^#define HSPI_TXQ_SLOT_SIZE(/;"	d	file:
+HSPI_WRITE	nrc-hspi.h	/^#define HSPI_WRITE	/;"	d
+HSPI_XFER_LEN_MAX	nrc-hspi.h	/^#define HSPI_XFER_LEN_MAX	/;"	d
+HSPI_XFER_NUM_MAX	nrc-hspi.h	/^#define HSPI_XFER_NUM_MAX	/;"	d
+HSPI_XFER_RETRY_MAX	nrc-hspi.h	/^#define HSPI_XFER_RETRY_MAX	/;"	d
+Help	cli.h	/^	const char *Help;$/;"	m	struct:CLI_TYPE_	typeref:typename:const char *
+IPERF_CLIENT_HDR0_SIZE	nrc-iperf.h	/^#define IPERF_CLIENT_HDR0_SIZE	/;"	d
+IPERF_CLIENT_HDR1_SIZE	nrc-iperf.h	/^#define IPERF_CLIENT_HDR1_SIZE	/;"	d
+IPERF_DEFAULT_CLIENT_PORT	nrc-iperf.h	/^#define IPERF_DEFAULT_CLIENT_PORT	/;"	d
+IPERF_DEFAULT_REPORT_INTERVAL	nrc-iperf.h	/^#define IPERF_DEFAULT_REPORT_INTERVAL	/;"	d
+IPERF_DEFAULT_SEND_TIME	nrc-iperf.h	/^#define IPERF_DEFAULT_SEND_TIME	/;"	d
+IPERF_DEFAULT_SERVER_PORT	nrc-iperf.h	/^#define IPERF_DEFAULT_SERVER_PORT	/;"	d
+IPERF_DEFAULT_TCP_DATA_SIZE	nrc-iperf.h	/^#define IPERF_DEFAULT_TCP_DATA_SIZE	/;"	d
+IPERF_DEFAULT_UDP_DATAGRAM_SIZE	nrc-iperf.h	/^#define IPERF_DEFAULT_UDP_DATAGRAM_SIZE	/;"	d
+IPERF_DEFAULT_UDP_RATE	nrc-iperf.h	/^#define IPERF_DEFAULT_UDP_RATE	/;"	d
+IPERF_FLAG_HDR_VER1	nrc-iperf.h	/^#define IPERF_FLAG_HDR_VER1	/;"	d
+IPERF_IPADDR_ANY	nrc-iperf.h	/^#define IPERF_IPADDR_ANY	/;"	d
+IPERF_IPADDR_LEN_MAX	nrc-iperf.h	/^#define IPERF_IPADDR_LEN_MAX	/;"	d
+IPERF_IPADDR_LEN_MIN	nrc-iperf.h	/^#define IPERF_IPADDR_LEN_MIN	/;"	d
+IPERF_IS_CLIENT	nrc-iperf.h	/^#define IPERF_IS_CLIENT(/;"	d
+IPERF_OPTION_MAX	nrc-iperf.c	/^#define IPERF_OPTION_MAX	/;"	d	file:
+IPERF_PROTO	nrc-iperf.h	/^enum IPERF_PROTO$/;"	g
+IPERF_PROTO_NONE	nrc-iperf.h	/^	IPERF_PROTO_NONE = -1,$/;"	e	enum:IPERF_PROTO
+IPERF_PROTO_NUM	nrc-iperf.h	/^	IPERF_PROTO_NUM$/;"	e	enum:IPERF_PROTO
+IPERF_PROTO_TCP	nrc-iperf.h	/^	IPERF_PROTO_TCP,$/;"	e	enum:IPERF_PROTO
+IPERF_PROTO_UDP	nrc-iperf.h	/^	IPERF_PROTO_UDP = 0,$/;"	e	enum:IPERF_PROTO
+IPERF_SERVER_HDR0_SIZE	nrc-iperf.h	/^#define IPERF_SERVER_HDR0_SIZE	/;"	d
+IPERF_SERVER_HDR1_SIZE	nrc-iperf.h	/^#define IPERF_SERVER_HDR1_SIZE	/;"	d
+IPGcnt	nrc-iperf.h	/^	int32_t IPGcnt;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+IPGsum	nrc-iperf.h	/^	int32_t IPGsum;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+MAINSRC	Makefile	/^MAINSRC = wihalo.c$/;"	m
+MAX_ECHO_LEN	whapp.c	/^	#define MAX_ECHO_LEN	/;"	d	file:
+MEM_RX_ALLOC	wihalo.c	/^#define MEM_RX_ALLOC /;"	d	file:
+MEM_RX_BLOCKS	wihalo.c	/^#define MEM_RX_BLOCKS /;"	d	file:
+MEM_RX_BUFSIZE	wihalo.c	/^#define MEM_RX_BUFSIZE /;"	d	file:
+MODULE	Makefile	/^MODULE = $(CONFIG_EXAMPLES_WIHALO)$/;"	m
+PCLI_TYPE	cli.h	/^} CLI_TYPE, *PCLI_TYPE;$/;"	t	typeref:struct:CLI_TYPE_ *
+PIN_LED0	wihalo.c	/^#define PIN_LED0 /;"	d	file:
+PIN_LED1	wihalo.c	/^#define PIN_LED1 /;"	d	file:
+PIN_LED2	wihalo.c	/^#define PIN_LED2 /;"	d	file:
+PIN_LED3	wihalo.c	/^#define PIN_LED3 /;"	d	file:
+PRIORITY	Makefile	/^PRIORITY = $(CONFIG_EXAMPLES_WIHALO_PRIORITY)$/;"	m
+PROGNAME	Makefile	/^PROGNAME = $(CONFIG_EXAMPLES_WIHALO_PROGNAME)$/;"	m
+Printf	cli.h	/^#define Printf(/;"	d
+RASPI_CLI_PROMPT	gomi/main.c	/^#define RASPI_CLI_PROMPT(/;"	d	file:
+RASPI_CLI_VERSION	gomi/main.c	/^#define RASPI_CLI_VERSION	/;"	d	file:
+READY_PIN	wihalo.c	/^#define READY_PIN /;"	d	file:
+SCRIPT_CMD_LEN_MAX	gomi/main.c	/^#define SCRIPT_CMD_LEN_MAX	/;"	d	file:
+SCRIPT_FILE_LEN_MAX	gomi/main.c	/^#define SCRIPT_FILE_LEN_MAX	/;"	d	file:
+SETUP_PIN_OUTPUT	wihalo.c	/^#define SETUP_PIN_OUTPUT(/;"	d	file:
+SET_FLAG_BIT	wihalo.c	/^#define SET_FLAG_BIT(/;"	d	file:
+SPI_TRANSFER	nrc-hspi.c	/^#define SPI_TRANSFER(/;"	d	file:
+STACKSIZE	Makefile	/^STACKSIZE = $(CONFIG_EXAMPLES_WIHALO_STACKSIZE)$/;"	m
+Str	cli.h	/^	const char *Str;$/;"	m	struct:CLI_TYPE_	typeref:typename:const char *
+VersionString	build-information.c	/^const char *VersionString = "WH1719";$/;"	v	typeref:typename:const char *
+WHINFO	wihalo.h	/^#define WHINFO(/;"	d
+WHINFO_ENABLE	wihalo.h	/^#define WHINFO_ENABLE /;"	d
+WHLOG	wihalo.h	/^#define WHLOG(/;"	d
+WHLOG_ENABLE	wihalo.h	/^#define WHLOG_ENABLE /;"	d
+WH_ACCESS_POINT	wihalo.h	/^    WH_ACCESS_POINT,$/;"	e	enum:__anondaa10b7f0203
+WH_APP_MODE	wihalo.h	/^#define WH_APP_MODE /;"	d
+WH_SOCK_TCP	wihalo.h	/^    WH_SOCK_TCP,$/;"	e	enum:__anondaa10b7f0103
+WH_SOCK_TYPE	wihalo.h	/^} WH_SOCK_TYPE;$/;"	t	typeref:enum:__anondaa10b7f0103
+WH_SOCK_UDP	wihalo.h	/^    WH_SOCK_UDP$/;"	e	enum:__anondaa10b7f0103
+WH_STATION	wihalo.h	/^    WH_STATION$/;"	e	enum:__anondaa10b7f0203
+WH_WIFI_MODE	wihalo.h	/^} WH_WIFI_MODE;$/;"	t	typeref:enum:__anondaa10b7f0203
+_BE16_TO_CPU	nrc-hspi.c	/^#define _BE16_TO_CPU(/;"	d	file:
+_BE32_TO_CPU	nrc-hspi.c	/^#define _BE32_TO_CPU(/;"	d	file:
+_CPU_TO_BE16	nrc-hspi.c	/^#define _CPU_TO_BE16(/;"	d	file:
+_CPU_TO_BE32	nrc-hspi.c	/^#define _CPU_TO_BE32(/;"	d	file:
+__COMMON_H__	common.h	/^#define __COMMON_H__$/;"	d
+__NRC_ATCMD_H__	nrc-atcmd.h	/^#define __NRC_ATCMD_H__$/;"	d
+__NRC_HSPI_H__	nrc-hspi.h	/^#define __NRC_HSPI_H__$/;"	d
+__NRC_IPERF_UDP_H__	nrc-iperf.h	/^#define __NRC_IPERF_UDP_H__$/;"	d
+__anon38ef01610108	nrc-iperf.h	/^{$/;"	s
+__anon38ef01610208	nrc-iperf.h	/^{$/;"	s
+__anon38ef01610308	nrc-iperf.h	/^{$/;"	s
+__anon38ef01610408	nrc-iperf.h	/^{$/;"	s
+__anon38ef0161050a	nrc-iperf.h	/^	{$/;"	u	struct:__anon38ef01610408
+__anon38ef01610608	nrc-iperf.h	/^{$/;"	s
+__anon38ef0161070a	nrc-iperf.h	/^	{$/;"	u	struct:__anon38ef01610608
+__anon38ef01610808	nrc-iperf.h	/^{$/;"	s
+__anon38ef01610908	nrc-iperf.h	/^{$/;"	s
+__anon38ef01610a08	nrc-iperf.h	/^{$/;"	s
+__anonb20d419a010a	nrc-hspi.c	/^	{$/;"	u	function:hspi_convert_byteorder_16bit	file:
+__anonb20d419a020a	nrc-hspi.c	/^	{$/;"	u	function:hspi_convert_byteorder_32bit	file:
+__anonb20d419f0108	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f020a	nrc-hspi.h	/^	{$/;"	u	struct:__anonb20d419f0108
+__anonb20d419f0308	nrc-hspi.h	/^		{$/;"	s	union:__anonb20d419f0108::__anonb20d419f020a
+__anonb20d419f040a	nrc-hspi.h	/^{$/;"	u
+__anonb20d419f0508	nrc-hspi.h	/^	{$/;"	s	union:__anonb20d419f040a
+__anonb20d419f0608	nrc-hspi.h	/^		{$/;"	s	struct:__anonb20d419f040a::__anonb20d419f0508
+__anonb20d419f0708	nrc-hspi.h	/^		{$/;"	s	struct:__anonb20d419f040a::__anonb20d419f0508
+__anonb20d419f0808	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f0908	nrc-hspi.h	/^	{$/;"	s	struct:__anonb20d419f0808
+__anonb20d419f0a08	nrc-hspi.h	/^	{$/;"	s	struct:__anonb20d419f0808
+__anonb20d419f0b08	nrc-hspi.h	/^	{$/;"	s	struct:__anonb20d419f0808
+__anonb20d419f0c08	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f0d08	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f0e0a	nrc-hspi.h	/^{$/;"	u
+__anonb20d419f0f08	nrc-hspi.h	/^	{$/;"	s	union:__anonb20d419f0e0a
+__anonb20d419f1003	nrc-hspi.h	/^{$/;"	g
+__anonb20d419f1108	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f1208	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f1308	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f1408	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f1508	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f1608	nrc-hspi.h	/^{$/;"	s
+__anonb20d419f1708	nrc-hspi.h	/^	{$/;"	s	struct:__anonb20d419f1608
+__anonb20d419f1808	nrc-hspi.h	/^		{$/;"	s	struct:__anonb20d419f1608::__anonb20d419f1708
+__anonc5c4f2960108	whapp.c	/^struct {$/;"	s	file:
+__anonda4ac66f0108	nrc-atcmd.c	/^{$/;"	s	file:
+__anonda4ac66f0208	nrc-atcmd.c	/^	{$/;"	s	struct:__anonda4ac66f0108	file:
+__anonda4ac66f0308	nrc-atcmd.c	/^	{$/;"	s	struct:__anonda4ac66f0108	file:
+__anonda4ac66f0408	nrc-atcmd.c	/^	{$/;"	s	function:nrc_atcmd_recv	file:
+__anonda4ac66f0508	nrc-atcmd.c	/^	{$/;"	s	function:nrc_atcmd_recv	file:
+__anonda4ac6740108	nrc-atcmd.h	/^{$/;"	s
+__anonda4ac6740208	nrc-atcmd.h	/^{$/;"	s
+__anonda4ac6740308	nrc-atcmd.h	/^	{$/;"	s	struct:__anonda4ac6740208
+__anondaa10b7f0103	wihalo.h	/^typedef enum  {$/;"	g
+__anondaa10b7f0203	wihalo.h	/^typedef enum  {$/;"	g
+__anonfb923af60108	gomi/main.c	/^		{$/;"	s	union:raspi_cli_run_script::loop	file:
+__anonfb923af60203	gomi/main.c	/^	{$/;"	g	function:raspi_cli_run_loop	file:
+__anonfb923af60308	gomi/main.c	/^{$/;"	s	file:
+__anonfb923af60408	gomi/main.c	/^	{$/;"	s	struct:__anonfb923af60308	file:
+__utilh__	util.h	/^#define __utilh__$/;"	d
+__wihalo_api__	wihalo.h	/^#define __wihalo_api__$/;"	d
+_hspi_log	nrc-hspi.c	/^#define _hspi_log(/;"	d	file:
+_hspi_print	nrc-hspi.c	/^#define _hspi_print(/;"	d	file:
+_hspi_read_debug	nrc-hspi.c	/^#define _hspi_read_debug(/;"	d	file:
+_hspi_write_debug	nrc-hspi.c	/^#define _hspi_write_debug(/;"	d	file:
+_iperf_main	nrc-iperf.c	/^static int _iperf_main (int argc, char *argv[])$/;"	f	typeref:typename:int	file:
+ack	nrc-hspi.h	/^	uint8_t ack;$/;"	m	struct:__anonb20d419f1208	typeref:typename:uint8_t
+active	nrc-hspi.h	/^			uint8_t active:1;	 \/\/ 0:low, 1:high$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0608	typeref:typename:uint8_t:1
+active	nrc-hspi.h	/^	int active;$/;"	m	struct:__anonb20d419f1608	typeref:typename:int
+address	nrc-hspi.h	/^		uint32_t address:8;			\/\/ addresss$/;"	m	struct:__anonb20d419f0e0a::__anonb20d419f0f08	typeref:typename:uint32_t:8
+app_data_callback_fn	wihalo.c	/^socket_event_callback app_data_callback_fn;$/;"	v	typeref:typename:socket_event_callback
+app_main	whapp.c	/^int app_main(int argc, FAR char *argv[])$/;"	f	typeref:typename:int
+at_timeout	wihalo.c	/^int at_timeout = 3;$/;"	v	typeref:typename:int
+atcmd_error	nrc-atcmd.c	/^#define atcmd_error(/;"	d	file:
+atcmd_event_cb_t	nrc-atcmd.h	/^typedef int (*atcmd_event_cb_t) (enum ATCMD_EVENT event, int argc, char *argv[]);$/;"	t	typeref:typename:int (*)(enum ATCMD_EVENT event,int argc,char * argv[])
+atcmd_info_cb_t	nrc-atcmd.h	/^typedef int (*atcmd_info_cb_t) (enum ATCMD_INFO info, int argc, char *argv[]);$/;"	t	typeref:typename:int (*)(enum ATCMD_INFO info,int argc,char * argv[])
+atcmd_log	nrc-atcmd.c	/^#define atcmd_log(/;"	d	file:
+atcmd_log_recv	nrc-atcmd.c	/^#define atcmd_log_recv(/;"	d	file:
+atcmd_log_send	nrc-atcmd.c	/^#define atcmd_log_send(/;"	d	file:
+atcmd_packet_t	nrc-atcmd.h	/^} atcmd_packet_t;$/;"	t	typeref:struct:__anonda4ac6740208
+atcmd_rxd_cb_t	nrc-atcmd.h	/^typedef void (*atcmd_rxd_cb_t) (atcmd_rxd_t *rxd, char *data);$/;"	t	typeref:typename:void (*)(atcmd_rxd_t * rxd,char * data)
+atcmd_rxd_t	nrc-atcmd.h	/^} atcmd_rxd_t;$/;"	t	typeref:struct:__anonda4ac6740108
+b_val	nrc-hspi.c	/^		uint8_t b_val[2];$/;"	m	union:hspi_convert_byteorder_16bit::__anonb20d419a010a	typeref:typename:uint8_t[2]	file:
+b_val	nrc-hspi.c	/^		uint8_t b_val[4];$/;"	m	union:hspi_convert_byteorder_32bit::__anonb20d419a020a	typeref:typename:uint8_t[4]	file:
+board_id	nrc-hspi.h	/^	uint32_t board_id; \/\/ fw write, read only$/;"	m	struct:__anonb20d419f0108	typeref:typename:uint32_t
+bps_to_string	nrc-iperf.c	/^static char *bps_to_string (uint32_t bps)$/;"	f	typeref:typename:char *	file:
+buf	nrc-atcmd.c	/^		char buf[ATCMD_DATA_LEN_MAX + 1];$/;"	m	struct:nrc_atcmd_recv::__anonda4ac66f0508	typeref:typename:char[]	file:
+buf	nrc-atcmd.c	/^		char buf[ATCMD_MSG_LEN_MAX + 1];$/;"	m	struct:nrc_atcmd_recv::__anonda4ac66f0408	typeref:typename:char[]	file:
+bufferlen	nrc-iperf.h	/^	int32_t bufferlen;$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+burst	nrc-hspi.h	/^		uint32_t burst:1; 			\/\/ 0:single, 1:burst$/;"	m	struct:__anonb20d419f0e0a::__anonb20d419f0f08	typeref:typename:uint32_t:1
+byte_to_bps	nrc-iperf.c	/^static uint32_t byte_to_bps (iperf_time_t time, uint32_t byte)$/;"	f	typeref:typename:uint32_t	file:
+byte_to_string	nrc-iperf.c	/^static char *byte_to_string (uint32_t byte)$/;"	f	typeref:typename:char *	file:
+cam_client_events	whapp.c	/^int cam_client_events(int evt_type, int sckid, int event, char *remote, uint16_t port, uint8_t */;"	f	typeref:typename:int
+cam_sck	whapp.c	/^int cam_sck, srv_sck;$/;"	v	typeref:typename:int
+cb	nrc-atcmd.c	/^	} cb;$/;"	m	struct:__anonda4ac66f0108	typeref:struct:__anonda4ac66f0108::__anonda4ac66f0308	file:
+chip_id	nrc-hspi.h	/^	uint16_t chip_id;  \/\/ hw fix, read only$/;"	m	struct:__anonb20d419f0108	typeref:typename:uint16_t
+chk_hspi_ready_update	nrc-hspi.c	/^void chk_hspi_ready_update() {$/;"	f	typeref:typename:void
+cli__h	cli.h	/^#define cli__h$/;"	d
+cli_base_str	cli.c	/^char *cli_next_token, *cli_base_str;$/;"	v	typeref:typename:char **
+cli_get_stream	cli.c	/^char* cli_get_stream (void) {$/;"	f	typeref:typename:char *
+cli_in	cli.c	/^char cli_in[CLI_BUFSZ];$/;"	v	typeref:typename:char[]
+cli_len	cli.c	/^int cli_len;$/;"	v	typeref:typename:int
+cli_main_at	wihalo.c	/^int cli_main_at() {$/;"	f	typeref:typename:int
+cli_main_atdelay	wihalo.c	/^int cli_main_atdelay(void)$/;"	f	typeref:typename:int
+cli_main_cfg	wihalo.c	/^int cli_main_cfg(void)$/;"	f	typeref:typename:int
+cli_main_connect	wihalo.c	/^int cli_main_connect(void) {$/;"	f	typeref:typename:int
+cli_main_debug	wihalo.c	/^cli_main_debug(void) {$/;"	f
+cli_main_exit	wihalo.c	/^int cli_main_exit(void) {$/;"	f	typeref:typename:int
+cli_main_flags	wihalo.c	/^int cli_main_flags(void) {$/;"	f	typeref:typename:int
+cli_main_help	wihalo.c	/^int cli_main_help(void){$/;"	f	typeref:typename:int
+cli_main_iperf	wihalo.c	/^int cli_main_iperf(void) $/;"	f	typeref:typename:int
+cli_main_iperfend	wihalo.c	/^int cli_main_iperfend(void) $/;"	f	typeref:typename:int
+cli_main_listen	wihalo.c	/^int cli_main_listen(void)$/;"	f	typeref:typename:int
+cli_main_mmr	wihalo.c	/^int cli_main_mmr(void) {$/;"	f	typeref:typename:int
+cli_main_regs	wihalo.c	/^int cli_main_regs(void) {$/;"	f	typeref:typename:int
+cli_main_save	wihalo.c	/^int cli_main_save(void) {$/;"	f	typeref:typename:int
+cli_main_show	wihalo.c	/^int cli_main_show(void) {$/;"	f	typeref:typename:int
+cli_main_spi	wihalo.c	/^int cli_main_spi(void)$/;"	f	typeref:typename:int
+cli_main_startap	wihalo.c	/^int cli_main_startap()$/;"	f	typeref:typename:int
+cli_main_startsta	wihalo.c	/^int cli_main_startsta()$/;"	f	typeref:typename:int
+cli_main_stats	wihalo.c	/^int cli_main_stats(void)$/;"	f	typeref:typename:int
+cli_main_test	wihalo.c	/^int cli_main_test(void)$/;"	f	typeref:typename:int
+cli_next_token	cli.c	/^char *cli_next_token, *cli_base_str;$/;"	v	typeref:typename:char *
+cli_set_bit	wihalo.c	/^int cli_set_bit(void) {$/;"	f	typeref:typename:int
+cli_set_country	wihalo.c	/^int cli_set_country(void)$/;"	f	typeref:typename:int
+cli_set_dhcp	wihalo.c	/^int cli_set_dhcp(void)$/;"	f	typeref:typename:int
+cli_set_flags	wihalo.c	/^int cli_set_flags(void)$/;"	f	typeref:typename:int
+cli_set_frequency	wihalo.c	/^int cli_set_frequency(void){$/;"	f	typeref:typename:int
+cli_set_ip	wihalo.c	/^int cli_set_ip(void)$/;"	f	typeref:typename:int
+cli_set_password	wihalo.c	/^int cli_set_password(void)$/;"	f	typeref:typename:int
+cli_set_security	wihalo.c	/^int cli_set_security(void)$/;"	f	typeref:typename:int
+cli_set_show	wihalo.c	/^int cli_set_show(void)$/;"	f	typeref:typename:int
+cli_set_ssid	wihalo.c	/^int cli_set_ssid(void)$/;"	f	typeref:typename:int
+cli_tok	cli.c	/^char *cli_tok;$/;"	v	typeref:typename:char *
+client	nrc-iperf.h	/^	iperf_socket_t client;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_socket_t
+client_header	nrc-iperf.h	/^		iperf_client_header_t client_header;$/;"	m	union:__anon38ef01610408::__anon38ef0161050a	typeref:typename:iperf_client_header_t
+client_header	nrc-iperf.h	/^		iperf_client_header_t client_header;$/;"	m	union:__anon38ef01610608::__anon38ef0161070a	typeref:typename:iperf_client_header_t
+client_thread_fn	whapp.c	/^static void *client_thread_fn(void *a)$/;"	f	typeref:typename:void *	file:
+client_thread_id	whapp.c	/^static pthread_t client_thread_id;$/;"	v	typeref:typename:pthread_t	file:
+cmd_cp	wihalo.c	/^char cmd_cp[256];$/;"	v	typeref:typename:char[256]
+cnt	nrc-atcmd.c	/^		int cnt;$/;"	m	struct:nrc_atcmd_recv::__anonda4ac66f0408	typeref:typename:int	file:
+cnt	nrc-atcmd.c	/^		int cnt;$/;"	m	struct:nrc_atcmd_recv::__anonda4ac66f0508	typeref:typename:int	file:
+cntTransit	nrc-iperf.h	/^	int32_t cntTransit;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+cntr	wihalo.c	/^static uint32_t cntr;$/;"	v	typeref:typename:uint32_t	file:
+cond	nrc-atcmd.c	/^		pthread_cond_t cond;$/;"	m	struct:__anonda4ac66f0108::__anonda4ac66f0208	typeref:typename:pthread_cond_t	file:
+connected	whapp.c	/^static uint8_t connected, exiting;$/;"	v	typeref:typename:uint8_t	file:
+country_code	wihalo.c	/^    char        country_code[3];$/;"	m	struct:halo_params_t_	typeref:typename:char[3]	file:
+crc	nrc-hspi.h	/^	uint8_t crc;$/;"	m	struct:__anonb20d419f1108	typeref:typename:uint8_t
+cur_cnt	gomi/main.c	/^			int cur_cnt;$/;"	m	struct:raspi_cli_run_script::loop::__anonfb923af60108	typeref:typename:int	file:
+cur_line	gomi/main.c	/^			int cur_line;$/;"	m	struct:raspi_cli_run_script::loop::__anonfb923af60108	typeref:typename:int	file:
+data	nrc-hspi.h	/^	uint8_t data; \/\/ single data$/;"	m	struct:__anonb20d419f1208	typeref:typename:uint8_t
+data	nrc-hspi.h	/^	uint8_t data[0];$/;"	m	struct:__anonb20d419f1408	typeref:typename:uint8_t[0]
+data	whapp.c	/^	uint8_t		data[MAX_ECHO_LEN];$/;"	m	struct:__anonc5c4f2960108	typeref:typename:uint8_t[]	file:
+data_rxd_callback	wihalo.c	/^void data_rxd_callback(atcmd_rxd_t *info, uint8_t *data) $/;"	f	typeref:typename:void
+datagram_cnt	nrc-iperf.h	/^	int32_t datagram_cnt;$/;"	m	struct:__anon38ef01610808	typeref:typename:int32_t
+datagram_cnt	nrc-iperf.h	/^	int32_t datagram_cnt;$/;"	m	struct:__anon38ef01610908	typeref:typename:int32_t
+datagram_seq	nrc-iperf.h	/^	int32_t datagram_seq;$/;"	m	struct:__anon38ef01610808	typeref:typename:int32_t
+datagram_size	nrc-iperf.h	/^	int datagram_size;$/;"	m	struct:__anon38ef01610a08	typeref:typename:int
+datagram_size	nrc-iperf.h	/^	int32_t datagram_size;$/;"	m	struct:__anon38ef01610908	typeref:typename:int32_t
+datagrams	nrc-iperf.h	/^	int32_t datagrams;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+device	gomi/main.c	/^		char *device;$/;"	m	struct:__anonfb923af60308::__anonfb923af60408	typeref:typename:char *	file:
+dhcp_enable	wihalo.c	/^    int         dhcp_enable;$/;"	m	struct:halo_params_t_	typeref:typename:int	file:
+done	nrc-iperf.h	/^	bool done;$/;"	m	struct:__anon38ef01610808	typeref:typename:bool
+done	nrc-iperf.h	/^	bool done;$/;"	m	struct:__anon38ef01610908	typeref:typename:bool
+echo	gomi/main.c	/^	bool echo;$/;"	m	struct:__anonfb923af60308	typeref:typename:bool	file:
+echo_client_events	whapp.c	/^int echo_client_events(int evt_type, int sckid, int event, char *remote, uint16_t port, uint8_t /;"	f	typeref:typename:int
+echo_client_thread_fn	whapp.c	/^static void *echo_client_thread_fn(void *a) $/;"	f	typeref:typename:void *	file:
+echo_data	whapp.c	/^} echo_data;$/;"	v	typeref:struct:__anonc5c4f2960108
+echo_resp	whapp.c	/^sem_t echo_sem, echo_resp;$/;"	v	typeref:typename:sem_t
+echo_sck	whapp.c	/^int echo_sck;$/;"	v	typeref:typename:int
+echo_sem	whapp.c	/^sem_t echo_sem, echo_resp;$/;"	v	typeref:typename:sem_t
+echo_server_events	whapp.c	/^int echo_server_events(int evt_type, int sckid, int event, char *remote, uint16_t port, uint8_t /;"	f	typeref:typename:int
+echo_server_thread_fn	whapp.c	/^static void *echo_server_thread_fn(void *a) $/;"	f	typeref:typename:void *	file:
+eirq	nrc-hspi.h	/^	hspi_eirq_t eirq;$/;"	m	struct:__anonb20d419f0d08	typeref:typename:hspi_eirq_t
+eirq	nrc-hspi.h	/^	} eirq;$/;"	m	struct:__anonb20d419f0808	typeref:struct:__anonb20d419f0808::__anonb20d419f0908
+enable	nrc-hspi.h	/^		} enable;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508	typeref:struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0708
+enable_debug	wihalo.c	/^uint8_t enable_debug;$/;"	v	typeref:typename:uint8_t
+error	nrc-hspi.h	/^		uint8_t error; 	  \/\/ valid bits : 7-bit$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0a08	typeref:typename:uint8_t
+error	nrc-hspi.h	/^		uint8_t error; 	  \/\/ valid bits : 7-bit$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0b08	typeref:typename:uint8_t
+error_cnt	nrc-iperf.h	/^	int32_t error_cnt;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+error_cnt	nrc-iperf.h	/^	int32_t error_cnt;$/;"	m	struct:__anon38ef01610808	typeref:typename:int32_t
+event	nrc-atcmd.c	/^		atcmd_event_cb_t event;$/;"	m	struct:__anonda4ac66f0108::__anonda4ac66f0308	typeref:typename:atcmd_event_cb_t	file:
+event_rxd_callback	wihalo.c	/^void event_rxd_callback(enum ATCMD_EVENT event, int argc, char *argv[]) $/;"	f	typeref:typename:void
+exiting	whapp.c	/^static uint8_t connected, exiting;$/;"	v	typeref:typename:uint8_t	file:
+fixed	nrc-hspi.h	/^		uint32_t fixed:1;			\/\/ 0:incremental, 1:fixed$/;"	m	struct:__anonb20d419f0e0a::__anonb20d419f0f08	typeref:typename:uint32_t:1
+flags	gomi/main.c	/^		uint32_t flags;$/;"	m	struct:__anonfb923af60308::__anonfb923af60408	typeref:typename:uint32_t	file:
+flags	nrc-iperf.h	/^	int32_t flags;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+flags	nrc-iperf.h	/^	int32_t flags;$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+flags	wihalo.c	/^uint32_t flags = FLAGS_DEFAULT;$/;"	v	typeref:typename:uint32_t
+fpos	gomi/main.c	/^			long fpos;$/;"	m	struct:raspi_cli_run_script::loop::__anonfb923af60108	typeref:typename:long	file:
+frequency	wihalo.c	/^    float       frequency;$/;"	m	struct:halo_params_t_	typeref:typename:float	file:
+g_atcmd_info	nrc-atcmd.c	/^} g_atcmd_info =$/;"	v	typeref:struct:__anonda4ac66f0108
+g_hspi_info	nrc-hspi.c	/^static hspi_info_t g_hspi_info =$/;"	v	typeref:typename:hspi_info_t	file:
+g_iperf_socket_send_idle	nrc-iperf.c	/^static bool g_iperf_socket_send_idle = true;$/;"	v	typeref:typename:bool	file:
+g_iperf_socket_send_passthrough	nrc-iperf.c	/^static bool g_iperf_socket_send_passthrough = false;$/;"	v	typeref:typename:bool	file:
+g_iperf_tcp_client_info	nrc-iperf.c	/^static iperf_tcp_client_info_t g_iperf_tcp_client_info;$/;"	v	typeref:typename:iperf_tcp_client_info_t	file:
+g_iperf_tcp_server_info	nrc-iperf.c	/^static iperf_tcp_server_info_t g_iperf_tcp_server_info;$/;"	v	typeref:typename:iperf_tcp_server_info_t	file:
+g_iperf_udp_client_info	nrc-iperf.c	/^static iperf_udp_client_info_t g_iperf_udp_client_info;$/;"	v	typeref:typename:iperf_udp_client_info_t	file:
+g_iperf_udp_server_info	nrc-iperf.c	/^static iperf_udp_server_info_t g_iperf_udp_server_info;$/;"	v	typeref:typename:iperf_udp_server_info_t	file:
+g_raspi_cli_thread	gomi/main.c	/^static pthread_t g_raspi_cli_thread;$/;"	v	typeref:typename:pthread_t	file:
+gateway	wihalo.c	/^    char        gateway[20];$/;"	m	struct:halo_params_t_	typeref:typename:char[20]	file:
+get_ok	nrc-atcmd.c	/^int get_ok () {$/;"	f	typeref:typename:int
+get_system_time	util.c	/^double get_system_time(void) $/;"	f	typeref:typename:double
+halo_params_t	wihalo.c	/^} halo_params_t;$/;"	t	typeref:struct:halo_params_t_	file:
+halo_params_t_	wihalo.c	/^typedef struct halo_params_t_ {$/;"	s	file:
+haloconfig	wihalo.c	/^halo_params_t haloconfig = {"wihaloap", 918.5,"US", "open","passwordhalo","192.168.1.1","255.255/;"	v	typeref:typename:halo_params_t
+hif	gomi/main.c	/^	} hif;$/;"	m	struct:__anonfb923af60308	typeref:struct:__anonfb923af60308::__anonfb923af60408	file:
+host	gomi/main.c	/^	bool host;$/;"	m	struct:__anonfb923af60308	typeref:typename:bool	file:
+hspi_close	nrc-hspi.c	/^static void hspi_close (void)$/;"	f	typeref:typename:void	file:
+hspi_cmd_t	nrc-hspi.h	/^} hspi_cmd_t; \/\/ 8-byte$/;"	t	typeref:struct:__anonb20d419f1108
+hspi_convert_byteorder_16bit	nrc-hspi.c	/^static uint16_t hspi_convert_byteorder_16bit (uint16_t val)$/;"	f	typeref:typename:uint16_t	file:
+hspi_convert_byteorder_32bit	nrc-hspi.c	/^static uint32_t hspi_convert_byteorder_32bit (uint32_t val)$/;"	f	typeref:typename:uint32_t	file:
+hspi_crc7	nrc-hspi.c	/^static uint8_t hspi_crc7 (char *data, int len)$/;"	f	typeref:typename:uint8_t	file:
+hspi_eirq_enable	nrc-hspi.c	/^int hspi_eirq_enable (int mode, int enable)$/;"	f	typeref:typename:int
+hspi_eirq_t	nrc-hspi.h	/^} hspi_eirq_t;$/;"	t	typeref:union:__anonb20d419f040a
+hspi_info_t	nrc-hspi.h	/^} hspi_info_t;$/;"	t	typeref:struct:__anonb20d419f1608
+hspi_msg_t	nrc-hspi.h	/^typedef uint32_t hspi_msg_t[4]; \/\/ read only$/;"	t	typeref:typename:uint32_t[4]
+hspi_opcode_print	nrc-hspi.c	/^static void hspi_opcode_print (hspi_opcode_t *opcode)$/;"	f	typeref:typename:void	file:
+hspi_opcode_t	nrc-hspi.h	/^} hspi_opcode_t; \/\/ 4-byte$/;"	t	typeref:union:__anonb20d419f0e0a
+hspi_open	nrc-hspi.c	/^static int hspi_open ()$/;"	f	typeref:typename:int	file:
+hspi_ops_t_deprecated	nrc-hspi.h	/^} hspi_ops_t_deprecated;$/;"	t	typeref:struct:__anonb20d419f1508
+hspi_que_t	nrc-hspi.h	/^} hspi_que_t;$/;"	t	typeref:struct:__anonb20d419f0c08
+hspi_read	nrc-hspi.c	/^static int hspi_read (char *buf, int len)$/;"	f	typeref:typename:int	file:
+hspi_read_slot	nrc-hspi.c	/^static int hspi_read_slot (int slot_num, int slot_size, char *buf, int *len)$/;"	f	typeref:typename:int	file:
+hspi_ready	nrc-hspi.c	/^static int hspi_ready (hspi_info_t *info)$/;"	f	typeref:typename:int	file:
+hspi_reg_read	nrc-hspi.c	/^static int hspi_reg_read (char addr, char *data, int len)$/;"	f	typeref:typename:int	file:
+hspi_reg_write	nrc-hspi.c	/^static int hspi_reg_write (char addr, char data)$/;"	f	typeref:typename:int	file:
+hspi_regs_print_all	nrc-hspi.c	/^static void hspi_regs_print_all (hspi_regs_t *regs)$/;"	f	typeref:typename:void	file:
+hspi_regs_print_eirq	nrc-hspi.c	/^static void hspi_regs_print_eirq (hspi_eirq_t *eirq)$/;"	f	typeref:typename:void	file:
+hspi_regs_print_message	nrc-hspi.c	/^static void hspi_regs_print_message (hspi_msg_t msg)$/;"	f	typeref:typename:void	file:
+hspi_regs_print_status	nrc-hspi.c	/^static void hspi_regs_print_status (hspi_status_t *status)$/;"	f	typeref:typename:void	file:
+hspi_regs_print_sys	nrc-hspi.c	/^static void hspi_regs_print_sys (hspi_sys_t *sys)$/;"	f	typeref:typename:void	file:
+hspi_regs_read_all	nrc-hspi.c	/^static int hspi_regs_read_all (hspi_regs_t *regs)$/;"	f	typeref:typename:int	file:
+hspi_regs_read_eirq	nrc-hspi.c	/^static int hspi_regs_read_eirq (hspi_eirq_t *eirq)$/;"	f	typeref:typename:int	file:
+hspi_regs_read_message	nrc-hspi.c	/^static int hspi_regs_read_message (hspi_msg_t msg)$/;"	f	typeref:typename:int	file:
+hspi_regs_read_status	nrc-hspi.c	/^int hspi_regs_read_status (hspi_status_t *status)$/;"	f	typeref:typename:int
+hspi_regs_read_sys	nrc-hspi.c	/^static int hspi_regs_read_sys (hspi_sys_t *sys)$/;"	f	typeref:typename:int	file:
+hspi_regs_t	nrc-hspi.h	/^} hspi_regs_t;$/;"	t	typeref:struct:__anonb20d419f0d08
+hspi_resp_t	nrc-hspi.h	/^} hspi_resp_t; \/\/ 8-byte$/;"	t	typeref:struct:__anonb20d419f1208
+hspi_slot_t	nrc-hspi.h	/^} hspi_slot_t;$/;"	t	typeref:struct:__anonb20d419f1408
+hspi_status_init	nrc-hspi.c	/^static void hspi_status_init (int que)$/;"	f	typeref:typename:void	file:
+hspi_status_t	nrc-hspi.h	/^} hspi_status_t; \/\/ read only$/;"	t	typeref:struct:__anonb20d419f0808
+hspi_status_update	nrc-hspi.c	/^static int hspi_status_update (void)$/;"	f	typeref:typename:int	file:
+hspi_sys_t	nrc-hspi.h	/^} hspi_sys_t;$/;"	t	typeref:struct:__anonb20d419f0108
+hspi_transfer	nrc-hspi.c	/^static int hspi_transfer (hspi_opcode_t *opcode, char *buf, int len)$/;"	f	typeref:typename:int	file:
+hspi_transfer_setup	nrc-hspi.c	/^static void hspi_transfer_setup (hspi_xfer_t *xfer, void *tx_buf, void *rx_buf, int len)$/;"	f	typeref:typename:void	file:
+hspi_write	nrc-hspi.c	/^static int hspi_write (char *buf, int len)$/;"	f	typeref:typename:int	file:
+hspi_write_slot	nrc-hspi.c	/^static int hspi_write_slot (int slot_num, int slot_size, char *buf, int *len)$/;"	f	typeref:typename:int	file:
+hspi_xfer_t	nrc-hspi.h	/^} hspi_xfer_t;$/;"	t	typeref:struct:__anonb20d419f1308
+icnt	wihalo.c	/^int icnt;$/;"	v	typeref:typename:int
+id	nrc-atcmd.h	/^	int id;$/;"	m	struct:__anonda4ac6740108	typeref:typename:int
+id	nrc-iperf.h	/^	int16_t id;$/;"	m	struct:__anon38ef01610108	typeref:typename:int16_t
+id	nrc-iperf.h	/^	int32_t id;$/;"	m	struct:__anon38ef01610408	typeref:typename:int32_t
+idle_cnt	wihalo.c	/^int idle_cnt;$/;"	v	typeref:typename:int
+info	nrc-atcmd.c	/^		atcmd_info_cb_t info;$/;"	m	struct:__anonda4ac66f0108::__anonda4ac66f0308	typeref:typename:atcmd_info_cb_t	file:
+init_leds	wihalo.c	/^void init_leds(void)$/;"	f	typeref:typename:void
+init_wihalo_threads	wihalo.c	/^void init_wihalo_threads(void) {$/;"	f	typeref:typename:void
+initialize_configuration	wihalo.c	/^int initialize_configuration(void)$/;"	f	typeref:typename:int
+io_enable	nrc-hspi.h	/^			uint8_t io_enable:1; \/\/ 0:disable, 1:enable$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0608	typeref:typename:uint8_t:1
+ipaddress	wihalo.c	/^    char        ipaddress[20];$/;"	m	struct:halo_params_t_	typeref:typename:char[20]	file:
+iperf_abort	wihalo.c	/^uint8_t show_atcmd_output, iperf_abort;$/;"	v	typeref:typename:uint8_t
+iperf_client_header_print	nrc-iperf.c	/^static void iperf_client_header_print (iperf_client_header_t *header, bool dump)$/;"	f	typeref:typename:void	file:
+iperf_client_header_t	nrc-iperf.h	/^} iperf_client_header_t;$/;"	t	typeref:struct:__anon38ef01610308
+iperf_client_info_t	nrc-iperf.h	/^} iperf_client_info_t;$/;"	t	typeref:struct:__anon38ef01610908
+iperf_debug	nrc-iperf.c	/^#define iperf_debug(/;"	d	file:
+iperf_error	nrc-iperf.c	/^#define iperf_error(/;"	d	file:
+iperf_get_time	nrc-iperf.c	/^static int iperf_get_time (iperf_time_t *time)$/;"	f	typeref:typename:int	file:
+iperf_log	nrc-iperf.c	/^#define iperf_log(/;"	d	file:
+iperf_main	nrc-iperf.c	/^int iperf_main (char *cmd)$/;"	f	typeref:typename:int
+iperf_opt_t	nrc-iperf.h	/^} iperf_opt_t;$/;"	t	typeref:struct:__anon38ef01610a08
+iperf_option_help	nrc-iperf.c	/^static void iperf_option_help (char *cmd)$/;"	f	typeref:typename:void	file:
+iperf_option_init	nrc-iperf.c	/^static void iperf_option_init (iperf_opt_t *option)$/;"	f	typeref:typename:void	file:
+iperf_option_parse	nrc-iperf.c	/^static int iperf_option_parse (int argc, char *argv[], iperf_opt_t *option)$/;"	f	typeref:typename:int	file:
+iperf_option_print	nrc-iperf.c	/^static void iperf_option_print (iperf_opt_t *option)$/;"	f	typeref:typename:void	file:
+iperf_sck_id	nrc-iperf.c	/^int iperf_sck_id;$/;"	v	typeref:typename:int
+iperf_server_header_print	nrc-iperf.c	/^static void iperf_server_header_print (iperf_server_header_t *header, bool dump)$/;"	f	typeref:typename:void	file:
+iperf_server_header_t	nrc-iperf.h	/^} iperf_server_header_t;$/;"	t	typeref:struct:__anon38ef01610208
+iperf_server_info_t	nrc-iperf.h	/^} iperf_server_info_t;$/;"	t	typeref:struct:__anon38ef01610808
+iperf_socket_close	nrc-iperf.c	/^static int iperf_socket_close (iperf_socket_t *socket)$/;"	f	typeref:typename:int	file:
+iperf_socket_init	nrc-iperf.c	/^static void iperf_socket_init (iperf_socket_t *socket)$/;"	f	typeref:typename:void	file:
+iperf_socket_open	nrc-iperf.c	/^static int iperf_socket_open (iperf_socket_t *socket)$/;"	f	typeref:typename:int	file:
+iperf_socket_open_tcp	nrc-iperf.c	/^static int iperf_socket_open_tcp (iperf_socket_t *socket)$/;"	f	typeref:typename:int	file:
+iperf_socket_open_udp	nrc-iperf.c	/^static int iperf_socket_open_udp (iperf_socket_t *socket)$/;"	f	typeref:typename:int	file:
+iperf_socket_print	nrc-iperf.c	/^static void iperf_socket_print (iperf_socket_t *socket)$/;"	f	typeref:typename:void	file:
+iperf_socket_send	nrc-iperf.c	/^static int iperf_socket_send (iperf_socket_t *socket, char *buf, int len)$/;"	f	typeref:typename:int	file:
+iperf_socket_send_passthrough	nrc-iperf.c	/^static int iperf_socket_send_passthrough (iperf_socket_t *socket, char *buf, int len, bool negat/;"	f	typeref:typename:int	file:
+iperf_socket_t	nrc-iperf.h	/^} iperf_socket_t;$/;"	t	typeref:struct:__anon38ef01610108
+iperf_started	wihalo.c	/^int iperf_started;$/;"	v	typeref:typename:int
+iperf_tcp_client_event_callback	nrc-iperf.c	/^static void iperf_tcp_client_event_callback (enum ATCMD_EVENT event, int argc, char *argv[])$/;"	f	typeref:typename:void	file:
+iperf_tcp_client_info_t	nrc-iperf.h	/^typedef iperf_client_info_t iperf_tcp_client_info_t;$/;"	t	typeref:typename:iperf_client_info_t
+iperf_tcp_client_init_datagram	nrc-iperf.c	/^static void iperf_tcp_client_init_datagram (iperf_tcp_client_info_t *info, iperf_tcp_datagram_t /;"	f	typeref:typename:void	file:
+iperf_tcp_client_init_info	nrc-iperf.c	/^static void iperf_tcp_client_init_info (iperf_tcp_client_info_t *info, iperf_opt_t *option)$/;"	f	typeref:typename:void	file:
+iperf_tcp_client_init_payload	nrc-iperf.c	/^static void iperf_tcp_client_init_payload (iperf_tcp_datagram_t *datagram, int32_t datagram_size/;"	f	typeref:typename:void	file:
+iperf_tcp_client_recv_callback	nrc-iperf.c	/^static void iperf_tcp_client_recv_callback (atcmd_rxd_t *rxd, char *data)$/;"	f	typeref:typename:void	file:
+iperf_tcp_client_report	nrc-iperf.c	/^static void iperf_tcp_client_report (iperf_time_t start_time, iperf_time_t end_time, int datagra/;"	f	typeref:typename:void	file:
+iperf_tcp_client_run	nrc-iperf.c	/^static int iperf_tcp_client_run (iperf_socket_t *socket, iperf_opt_t *option) \/\/ sec$/;"	f	typeref:typename:int	file:
+iperf_tcp_datagram_t	nrc-iperf.h	/^} iperf_tcp_datagram_t;$/;"	t	typeref:struct:__anon38ef01610608
+iperf_tcp_server_event_callback	nrc-iperf.c	/^static void iperf_tcp_server_event_callback (enum ATCMD_EVENT event, int argc, char *argv[])$/;"	f	typeref:typename:void	file:
+iperf_tcp_server_info_t	nrc-iperf.h	/^typedef iperf_server_info_t iperf_tcp_server_info_t;$/;"	t	typeref:typename:iperf_server_info_t
+iperf_tcp_server_init_info	nrc-iperf.c	/^static void iperf_tcp_server_init_info (iperf_tcp_server_info_t *info, iperf_opt_t *option)$/;"	f	typeref:typename:void	file:
+iperf_tcp_server_recv	nrc-iperf.c	/^static void iperf_tcp_server_recv (iperf_socket_t *socket, char *buf, int len)$/;"	f	typeref:typename:void	file:
+iperf_tcp_server_recv_callback	nrc-iperf.c	/^static void iperf_tcp_server_recv_callback (atcmd_rxd_t *rxd, char *data)$/;"	f	typeref:typename:void	file:
+iperf_tcp_server_report	nrc-iperf.c	/^static void iperf_tcp_server_report (iperf_time_t start_time, iperf_time_t stop_time, uint32_t r/;"	f	typeref:typename:void	file:
+iperf_tcp_server_run	nrc-iperf.c	/^static int iperf_tcp_server_run (iperf_opt_t *option) \/\/ interval: sec$/;"	f	typeref:typename:int	file:
+iperf_thread_fn	wihalo.c	/^void* iperf_thread_fn(void *args) $/;"	f	typeref:typename:void *
+iperf_threadid	wihalo.c	/^static pthread_t iperf_threadid;$/;"	v	typeref:typename:pthread_t	file:
+iperf_time_t	nrc-iperf.h	/^typedef double	iperf_time_t; \/\/ usec$/;"	t	typeref:typename:double
+iperf_udp_client_event_callback	nrc-iperf.c	/^static void iperf_udp_client_event_callback (enum ATCMD_EVENT event, int argc, char *argv[])$/;"	f	typeref:typename:void	file:
+iperf_udp_client_info_t	nrc-iperf.h	/^typedef iperf_client_info_t iperf_udp_client_info_t;$/;"	t	typeref:typename:iperf_client_info_t
+iperf_udp_client_init_datagram	nrc-iperf.c	/^static void iperf_udp_client_init_datagram (iperf_udp_client_info_t *info,$/;"	f	typeref:typename:void	file:
+iperf_udp_client_init_info	nrc-iperf.c	/^static void iperf_udp_client_init_info (iperf_udp_client_info_t *info, iperf_opt_t *option)$/;"	f	typeref:typename:void	file:
+iperf_udp_client_init_payload	nrc-iperf.c	/^static void iperf_udp_client_init_payload (iperf_udp_datagram_t *datagram, int32_t datagram_size/;"	f	typeref:typename:void	file:
+iperf_udp_client_recv	nrc-iperf.c	/^static void iperf_udp_client_recv (iperf_socket_t *socket, char *buf, int len)$/;"	f	typeref:typename:void	file:
+iperf_udp_client_recv_callback	nrc-iperf.c	/^static void iperf_udp_client_recv_callback (atcmd_rxd_t *rxd, char *data)$/;"	f	typeref:typename:void	file:
+iperf_udp_client_report	nrc-iperf.c	/^static void iperf_udp_client_report (iperf_time_t start_time, iperf_time_t end_time, int datagra/;"	f	typeref:typename:void	file:
+iperf_udp_client_report_from_server	nrc-iperf.c	/^static void iperf_udp_client_report_from_server (iperf_server_header_t *header)$/;"	f	typeref:typename:void	file:
+iperf_udp_client_run	nrc-iperf.c	/^static int iperf_udp_client_run (iperf_socket_t *socket, iperf_opt_t *option) \/\/ sec$/;"	f	typeref:typename:int	file:
+iperf_udp_datagram_print	nrc-iperf.c	/^static void iperf_udp_datagram_print (iperf_udp_datagram_t *datagram, int size, bool server, boo/;"	f	typeref:typename:void	file:
+iperf_udp_datagram_t	nrc-iperf.h	/^} iperf_udp_datagram_t;$/;"	t	typeref:struct:__anon38ef01610408
+iperf_udp_server_info_t	nrc-iperf.h	/^typedef iperf_server_info_t iperf_udp_server_info_t;$/;"	t	typeref:typename:iperf_server_info_t
+iperf_udp_server_init_info	nrc-iperf.c	/^static void iperf_udp_server_init_info (iperf_udp_server_info_t *info, iperf_opt_t *option)$/;"	f	typeref:typename:void	file:
+iperf_udp_server_init_payload	nrc-iperf.c	/^static void iperf_udp_server_init_payload (iperf_udp_datagram_t *datagram)$/;"	f	typeref:typename:void	file:
+iperf_udp_server_measure_jitter	nrc-iperf.c	/^static void iperf_udp_server_measure_jitter (int32_t id,$/;"	f	typeref:typename:void	file:
+iperf_udp_server_recv	nrc-iperf.c	/^static void iperf_udp_server_recv (iperf_socket_t *socket, char *buf, int len)$/;"	f	typeref:typename:void	file:
+iperf_udp_server_recv_callback	nrc-iperf.c	/^static void iperf_udp_server_recv_callback (atcmd_rxd_t *rxd, char *data)$/;"	f	typeref:typename:void	file:
+iperf_udp_server_report	nrc-iperf.c	/^static void iperf_udp_server_report (iperf_time_t start_time, iperf_time_t stop_time,$/;"	f	typeref:typename:void	file:
+iperf_udp_server_report_to_client	nrc-iperf.c	/^static void iperf_udp_server_report_to_client (iperf_udp_server_info_t *info)$/;"	f	typeref:typename:void	file:
+iperf_udp_server_run	nrc-iperf.c	/^static int iperf_udp_server_run (iperf_opt_t *option) \/\/ interval: sec$/;"	f	typeref:typename:int	file:
+ips	wihalo.c	/^static char ips[3][20];$/;"	v	typeref:typename:char[3][20]	file:
+jitter	nrc-iperf.h	/^	iperf_time_t jitter;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_time_t
+jitter1	nrc-iperf.h	/^	int32_t jitter1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+jitter2	nrc-iperf.h	/^	int32_t jitter2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+l_val	nrc-hspi.c	/^		uint32_t l_val;$/;"	m	union:hspi_convert_byteorder_32bit::__anonb20d419a020a	typeref:typename:uint32_t	file:
+last_datagram	nrc-iperf.h	/^	iperf_udp_datagram_t last_datagram;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_udp_datagram_t
+last_sck_id	wihalo.c	/^int last_sck_id;$/;"	v	typeref:typename:int
+latch	nrc-hspi.h	/^	uint8_t latch; \/\/ Read others after read this value, and then interrupt is cleared.$/;"	m	struct:__anonb20d419f0808	typeref:typename:uint8_t
+len	nrc-atcmd.h	/^		uint16_t len; \/* payload length *\/$/;"	m	struct:__anonda4ac6740208::__anonda4ac6740308	typeref:typename:uint16_t
+len	nrc-atcmd.h	/^	int len;$/;"	m	struct:__anonda4ac6740108	typeref:typename:int
+len	nrc-hspi.h	/^	int len;$/;"	m	struct:__anonb20d419f1308	typeref:typename:int
+len	nrc-hspi.h	/^	uint16_t len:10;$/;"	m	struct:__anonb20d419f1408	typeref:typename:uint16_t:10
+len	whapp.c	/^	uint16_t	len;$/;"	m	struct:__anonc5c4f2960108	typeref:typename:uint16_t	file:
+length	nrc-hspi.h	/^		uint32_t length:13;			\/\/ burst length$/;"	m	struct:__anonb20d419f0e0a::__anonb20d419f0f08	typeref:typename:uint32_t:13
+local_port	nrc-iperf.h	/^	uint16_t local_port;$/;"	m	struct:__anon38ef01610108	typeref:typename:uint16_t
+lock_return	nrc-atcmd.c	/^void lock_return() {$/;"	f	typeref:typename:void
+log	nrc-atcmd.c	/^	bool log;$/;"	m	struct:__anonda4ac66f0108	typeref:typename:bool	file:
+log_debug	common.h	/^#define log_debug(/;"	d
+log_error	common.h	/^#define log_error(/;"	d
+log_info	common.h	/^#define log_info(/;"	d
+log_printf	common.h	/^#define log_printf(/;"	d
+log_trace	common.h	/^#define log_trace(/;"	d
+logsem	wihalo.c	/^pthread_mutex_t logsem = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
+loop	gomi/main.c	/^	union loop$/;"	u	function:raspi_cli_run_script	file:
+m2Transit1	nrc-iperf.h	/^	int32_t m2Transit1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+m2Transit2	nrc-iperf.h	/^	int32_t m2Transit2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+mAmount	nrc-iperf.h	/^	int32_t mAmount; 		\/\/ -: -t option (sec), +: -n option (byte)$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+mPort	nrc-iperf.h	/^	int32_t mPort;$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+mRate	nrc-iperf.h	/^	int32_t mRate; 			\/\/ -b option (bits\/sec)$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+mRealTime	nrc-iperf.h	/^	int32_t mRealTime; 		\/\/ Don't care$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+mUDPRateUnits	nrc-iperf.h	/^	int32_t mUDPRateUnits; 	\/\/ 0:BW, 1:PPS (Don't use)$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+mWindowSize	nrc-iperf.h	/^	int32_t mWindowSize;$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+main	gomi/main.c	/^int main (int argc, char *argv[])$/;"	f	typeref:typename:int
+main	wihalo.c	/^int main(int argc, FAR char *argv[])$/;"	f	typeref:typename:int
+main_cli_list	wihalo.c	/^CLI_TYPE main_cli_list[] = {$/;"	v	typeref:typename:CLI_TYPE[]
+main_exit	wihalo.c	/^void main_exit(void) {$/;"	f	typeref:typename:void
+main_wihalo_main	wihalo.c	/^int main_wihalo_main(char *argv) {$/;"	f	typeref:typename:int
+maxTransit1	nrc-iperf.h	/^	int32_t maxTransit1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+maxTransit2	nrc-iperf.h	/^	int32_t maxTransit2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+max_cnt	gomi/main.c	/^			int max_cnt;$/;"	m	struct:raspi_cli_run_script::loop::__anonfb923af60108	typeref:typename:int	file:
+max_line	gomi/main.c	/^			int max_line;$/;"	m	struct:raspi_cli_run_script::loop::__anonfb923af60108	typeref:typename:int	file:
+meanTransit1	nrc-iperf.h	/^	int32_t meanTransit1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+meanTransit2	nrc-iperf.h	/^	int32_t meanTransit2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+minTransit1	nrc-iperf.h	/^	int32_t minTransit1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+minTransit2	nrc-iperf.h	/^	int32_t minTransit2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+mode	nrc-hspi.h	/^		} mode;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508	typeref:struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0608
+modem_id	nrc-hspi.h	/^	uint32_t modem_id; \/\/ hw fix, read only$/;"	m	struct:__anonb20d419f0108	typeref:typename:uint32_t
+monitor_thread	wihalo.c	/^static void *monitor_thread (void *arg) $/;"	f	typeref:typename:void *	file:
+monitor_threadid	wihalo.c	/^static pthread_t monitor_threadid;$/;"	v	typeref:typename:pthread_t	file:
+msg	nrc-hspi.h	/^	hspi_msg_t msg;$/;"	m	struct:__anonb20d419f0d08	typeref:typename:hspi_msg_t
+mutex	nrc-atcmd.c	/^		pthread_mutex_t mutex;$/;"	m	struct:__anonda4ac66f0108::__anonda4ac66f0208	typeref:typename:pthread_mutex_t	file:
+negative	nrc-iperf.h	/^	bool negative; \/\/ -N$/;"	m	struct:__anon38ef01610a08	typeref:typename:bool
+netmask	wihalo.c	/^    char        netmask[20];$/;"	m	struct:halo_params_t_	typeref:typename:char[20]	file:
+nrc_atcmd_get_return	nrc-atcmd.c	/^static int nrc_atcmd_get_return (void)$/;"	f	typeref:typename:int	file:
+nrc_atcmd_init_return	nrc-atcmd.c	/^static void nrc_atcmd_init_return (void)$/;"	f	typeref:typename:void	file:
+nrc_atcmd_init_rxd	nrc-atcmd.c	/^static void nrc_atcmd_init_rxd (atcmd_rxd_t *rxd)$/;"	f	typeref:typename:void	file:
+nrc_atcmd_log_is_on	nrc-atcmd.c	/^bool nrc_atcmd_log_is_on (void)$/;"	f	typeref:typename:bool
+nrc_atcmd_log_off	nrc-atcmd.c	/^void nrc_atcmd_log_off (void)$/;"	f	typeref:typename:void
+nrc_atcmd_log_on	nrc-atcmd.c	/^void nrc_atcmd_log_on (void)$/;"	f	typeref:typename:void
+nrc_atcmd_param_to_str	nrc-atcmd.c	/^char *nrc_atcmd_param_to_str (const char *param, char *str, int len)$/;"	f	typeref:typename:char *
+nrc_atcmd_recv	nrc-atcmd.c	/^void nrc_atcmd_recv (char *buf, int len)$/;"	f	typeref:typename:void
+nrc_atcmd_recv_event	nrc-atcmd.c	/^static int nrc_atcmd_recv_event (char *msg, int len)$/;"	f	typeref:typename:int	file:
+nrc_atcmd_recv_info	nrc-atcmd.c	/^static int nrc_atcmd_recv_info (char *msg, int len)$/;"	f	typeref:typename:int	file:
+nrc_atcmd_recv_rxd	nrc-atcmd.c	/^static int nrc_atcmd_recv_rxd (atcmd_rxd_t *rxd, char *msg)$/;"	f	typeref:typename:int	file:
+nrc_atcmd_register_callback	nrc-atcmd.c	/^int nrc_atcmd_register_callback (int type, void *func)$/;"	f	typeref:typename:int
+nrc_atcmd_send	nrc-atcmd.c	/^static int nrc_atcmd_send (char *buf, int len)$/;"	f	typeref:typename:int	file:
+nrc_atcmd_send_cmd	nrc-atcmd.c	/^int nrc_atcmd_send_cmd (const char *fmt, ...)$/;"	f	typeref:typename:int
+nrc_atcmd_send_data	nrc-atcmd.c	/^int nrc_atcmd_send_data (char *data, int len)$/;"	f	typeref:typename:int
+nrc_atcmd_set_return	nrc-atcmd.c	/^static void nrc_atcmd_set_return (int ret)$/;"	f	typeref:typename:void	file:
+nrc_atcmd_unregister_callback	nrc-atcmd.c	/^int nrc_atcmd_unregister_callback (int type)$/;"	f	typeref:typename:int
+nrc_atcmd_wait_return	nrc-atcmd.c	/^static void nrc_atcmd_wait_return (char *cmd)$/;"	f	typeref:typename:void	file:
+nrc_attached	wihalo.c	/^uint8_t nrc_connected, nrc_attached;$/;"	v	typeref:typename:uint8_t
+nrc_connected	wihalo.c	/^uint8_t nrc_connected, nrc_attached;$/;"	v	typeref:typename:uint8_t
+nrc_hif_read	wihalo.c	/^int nrc_hif_read (char *buf, int len)$/;"	f	typeref:typename:int
+nrc_hif_write	wihalo.c	/^int nrc_hif_write (char *buf, int len)$/;"	f	typeref:typename:int
+nrc_hspi_close	nrc-hspi.c	/^void nrc_hspi_close (void)$/;"	f	typeref:typename:void
+nrc_hspi_open	nrc-hspi.c	/^int nrc_hspi_open ()$/;"	f	typeref:typename:int
+nrc_hspi_read	nrc-hspi.c	/^int nrc_hspi_read (char *buf, int len)$/;"	f	typeref:typename:int
+nrc_hspi_write	nrc-hspi.c	/^int nrc_hspi_write (char *buf, int len)$/;"	f	typeref:typename:int
+num	nrc-hspi.h	/^			uint16_t num;$/;"	m	struct:__anonb20d419f1608::__anonb20d419f1708::__anonb20d419f1808	typeref:typename:uint16_t
+numThreads	nrc-iperf.h	/^	int32_t numThreads;$/;"	m	struct:__anon38ef01610308	typeref:typename:int32_t
+opcode	nrc-hspi.h	/^	hspi_opcode_t opcode;$/;"	m	struct:__anonb20d419f1108	typeref:typename:hspi_opcode_t
+outoforder_cnt	nrc-iperf.h	/^	int32_t outoforder_cnt;$/;"	m	struct:__anon38ef01610808	typeref:typename:int32_t
+outorder_cnt	nrc-iperf.h	/^	int32_t outorder_cnt;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+param	gomi/main.c	/^		int param[2];$/;"	m	union:raspi_cli_run_script::loop	typeref:typename:int[2]	file:
+passthrough	nrc-iperf.h	/^	bool passthrough; \/\/ -P$/;"	m	struct:__anon38ef01610a08	typeref:typename:bool
+password	wihalo.c	/^    char        password[64];$/;"	m	struct:halo_params_t_	typeref:typename:char[64]	file:
+payload	nrc-atcmd.h	/^	char payload[0];$/;"	m	struct:__anonda4ac6740208	typeref:typename:char[0]
+port	whapp.c	/^	uint16_t	port;$/;"	m	struct:__anonc5c4f2960108	typeref:typename:uint16_t	file:
+print_hex_dump	nrc-iperf.c	/^#define print_hex_dump(/;"	d	file:
+print_time	util.h	/^#define print_time(/;"	d
+printer	wihalo.c	/^void printer(char *msg, char *b, int len) {$/;"	f	typeref:typename:void
+protocol	nrc-iperf.h	/^	int16_t protocol;$/;"	m	struct:__anon38ef01610108	typeref:typename:int16_t
+queue	nrc-hspi.h	/^	} queue;$/;"	m	struct:__anonb20d419f1608	typeref:struct:__anonb20d419f1608::__anonb20d419f1708
+quit	wihalo.c	/^static uint8_t quit;$/;"	v	typeref:typename:uint8_t	file:
+raspi_cli_close	gomi/main.c	/^static void raspi_cli_close (void)$/;"	f	typeref:typename:void	file:
+raspi_cli_help	gomi/main.c	/^static void raspi_cli_help (char *cmd)$/;"	f	typeref:typename:void	file:
+raspi_cli_open	gomi/main.c	/^static int raspi_cli_open (int type, char *device, uint32_t speed, uint32_t flags)$/;"	f	typeref:typename:int	file:
+raspi_cli_opt_t	gomi/main.c	/^} raspi_cli_opt_t;$/;"	t	typeref:struct:__anonfb923af60308	file:
+raspi_cli_option	gomi/main.c	/^static int raspi_cli_option (int argc, char *argv[], raspi_cli_opt_t *opt)$/;"	f	typeref:typename:int	file:
+raspi_cli_recv_thread	gomi/main.c	/^static void *raspi_cli_recv_thread (void *arg)$/;"	f	typeref:typename:void *	file:
+raspi_cli_run_loop	gomi/main.c	/^static void raspi_cli_run_loop (void)$/;"	f	typeref:typename:void	file:
+raspi_cli_run_script	gomi/main.c	/^static int raspi_cli_run_script (char *script)$/;"	f	typeref:typename:int	file:
+raspi_cli_version	gomi/main.c	/^static void raspi_cli_version (void)$/;"	f	typeref:typename:void	file:
+rcv_cnt	wihalo.c	/^int rcv_cnt;$/;"	v	typeref:typename:int
+rcv_enable	wihalo.c	/^uint8_t rcv_enable;$/;"	v	typeref:typename:uint8_t
+rcv_sem	wihalo.c	/^sem_t rcv_sem;$/;"	v	typeref:typename:sem_t
+rcv_threadid	wihalo.c	/^static pthread_t rcv_threadid;$/;"	v	typeref:typename:pthread_t	file:
+read_configuration	wihalo.c	/^void read_configuration(void)$/;"	f	typeref:typename:void
+read_status	nrc-atcmd.c	/^int read_status;$/;"	v	typeref:typename:int
+readstdin	wihalo.c	/^char* readstdin(char *buf, int max) {$/;"	f	typeref:typename:char *
+ready	nrc-hspi.h	/^			uint8_t ready:1;$/;"	m	struct:__anonb20d419f0108::__anonb20d419f020a::__anonb20d419f0308	typeref:typename:uint8_t:1
+ready	nrc-hspi.h	/^			uint8_t ready:1;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0708	typeref:typename:uint8_t:1
+ready	nrc-hspi.h	/^		uint8_t ready:1;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0908	typeref:typename:uint8_t:1
+receive_disable	wihalo.c	/^void receive_disable() {$/;"	f	typeref:typename:void
+receive_enable	wihalo.c	/^void receive_enable() {$/;"	f	typeref:typename:void
+recv_byte	nrc-iperf.h	/^	uint32_t recv_byte;$/;"	m	struct:__anon38ef01610808	typeref:typename:uint32_t
+remote	whapp.c	/^	char		remote[32];$/;"	m	struct:__anonc5c4f2960108	typeref:typename:char[32]	file:
+remote_addr	nrc-atcmd.h	/^	char remote_addr[15 + 1]; \/\/ xxx.xxx.xxx.xxx$/;"	m	struct:__anonda4ac6740108	typeref:typename:char[]
+remote_addr	nrc-iperf.h	/^	char remote_addr[IPERF_IPADDR_LEN_MAX + 1];$/;"	m	struct:__anon38ef01610108	typeref:typename:char[]
+remote_port	nrc-atcmd.h	/^	int remote_port;$/;"	m	struct:__anonda4ac6740108	typeref:typename:int
+remote_port	nrc-iperf.h	/^	uint16_t remote_port;$/;"	m	struct:__anon38ef01610108	typeref:typename:uint16_t
+report_client	whapp.c	/^void report_client() {$/;"	f	typeref:typename:void
+report_interval	nrc-iperf.h	/^	int report_interval; \/\/ sec, -i$/;"	m	struct:__anon38ef01610a08	typeref:typename:int
+report_interval	nrc-iperf.h	/^	int32_t report_interval;$/;"	m	struct:__anon38ef01610808	typeref:typename:int32_t
+report_interval	nrc-iperf.h	/^	int32_t report_interval;$/;"	m	struct:__anon38ef01610908	typeref:typename:int32_t
+reserved	nrc-hspi.h	/^			uint8_t reserved:4;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0708	typeref:typename:uint8_t:4
+reserved	nrc-hspi.h	/^			uint8_t reserved:5;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0608	typeref:typename:uint8_t:5
+reserved	nrc-hspi.h	/^			uint8_t reserved:6;$/;"	m	struct:__anonb20d419f0108::__anonb20d419f020a::__anonb20d419f0308	typeref:typename:uint8_t:6
+reserved	nrc-hspi.h	/^		uint8_t reserved:4;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0908	typeref:typename:uint8_t:4
+reserved	nrc-hspi.h	/^	uint8_t reserved;$/;"	m	struct:__anonb20d419f0c08	typeref:typename:uint8_t
+reserved	nrc-hspi.h	/^	uint8_t reserved[3];$/;"	m	struct:__anonb20d419f1108	typeref:typename:uint8_t[3]
+reserved	nrc-hspi.h	/^	uint8_t reserved[6];$/;"	m	struct:__anonb20d419f1208	typeref:typename:uint8_t[6]
+reset	nrc-hspi.h	/^		uint8_t reset; \/\/ Write 0xC8 for reset, write only$/;"	m	union:__anonb20d419f0108::__anonb20d419f020a	typeref:typename:uint8_t
+resource_lock	wihalo.c	/^#define resource_lock(/;"	d	file:
+ret	nrc-atcmd.c	/^	} ret;$/;"	m	struct:__anonda4ac66f0108	typeref:struct:__anonda4ac66f0108::__anonda4ac66f0208	file:
+rx_buf	nrc-hspi.h	/^	char *rx_buf;$/;"	m	struct:__anonb20d419f1308	typeref:typename:char *
+rx_total	whapp.c	/^uint32_t rx_total;$/;"	v	typeref:typename:uint32_t
+rxbuf	wihalo.c	/^static char rxbuf[MEM_RX_BUFSIZE];$/;"	v	typeref:typename:char[]	file:
+rxd	nrc-atcmd.c	/^		atcmd_rxd_cb_t rxd;$/;"	m	struct:__anonda4ac66f0108::__anonda4ac66f0308	typeref:typename:atcmd_rxd_cb_t	file:
+rxd	nrc-atcmd.c	/^		atcmd_rxd_t rxd;$/;"	m	struct:nrc_atcmd_recv::__anonda4ac66f0508	typeref:typename:atcmd_rxd_t	file:
+rxq	nrc-hspi.h	/^			uint8_t rxq:1;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0708	typeref:typename:uint8_t:1
+rxq	nrc-hspi.h	/^		uint8_t rxq:1;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0908	typeref:typename:uint8_t:1
+rxq	nrc-hspi.h	/^	hspi_que_t rxq; \/\/ uplink$/;"	m	struct:__anonb20d419f0d08	typeref:typename:hspi_que_t
+rxq	nrc-hspi.h	/^	} rxq; \/\/ host -> target$/;"	m	struct:__anonb20d419f0808	typeref:struct:__anonb20d419f0808::__anonb20d419f0b08
+s_val	nrc-hspi.c	/^		uint16_t s_val;$/;"	m	union:hspi_convert_byteorder_16bit::__anonb20d419a010a	typeref:typename:uint16_t	file:
+save_configuration	wihalo.c	/^int save_configuration(void) {$/;"	f	typeref:typename:int
+script	gomi/main.c	/^	char *script;$/;"	m	struct:__anonfb923af60308	typeref:typename:char *	file:
+script_debug_call	gomi/main.c	/^#define script_debug_call(/;"	d	file:
+script_debug_loop	gomi/main.c	/^#define script_debug_loop(/;"	d	file:
+security	wihalo.c	/^    char        security[16];$/;"	m	struct:halo_params_t_	typeref:typename:char[16]	file:
+security_enable	wihalo.c	/^    int         security_enable;$/;"	m	struct:halo_params_t_	typeref:typename:int	file:
+send_byte	nrc-iperf.h	/^	int32_t send_byte;$/;"	m	struct:__anon38ef01610808	typeref:typename:int32_t
+send_time	nrc-iperf.h	/^	int send_time; \/\/ sec, -t$/;"	m	struct:__anon38ef01610a08	typeref:typename:int
+send_time	nrc-iperf.h	/^	int32_t send_time;$/;"	m	struct:__anon38ef01610908	typeref:typename:int32_t
+send_time	nrc-iperf.h	/^	iperf_time_t send_time;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_time_t
+seq	nrc-atcmd.h	/^		uint16_t seq;$/;"	m	struct:__anonda4ac6740208::__anonda4ac6740308	typeref:typename:uint16_t
+seq	nrc-hspi.h	/^	uint16_t seq:6;$/;"	m	struct:__anonb20d419f1408	typeref:typename:uint16_t:6
+server	nrc-iperf.h	/^	bool server; \/\/ -s$/;"	m	struct:__anon38ef01610a08	typeref:typename:bool
+server_header	nrc-iperf.h	/^		iperf_server_header_t server_header;$/;"	m	union:__anon38ef01610408::__anon38ef0161050a	typeref:typename:iperf_server_header_t
+server_header	nrc-iperf.h	/^		iperf_server_header_t server_header;$/;"	m	union:__anon38ef01610608::__anon38ef0161070a	typeref:typename:iperf_server_header_t
+server_ip	nrc-iperf.h	/^	char server_ip[IPERF_IPADDR_LEN_MAX + 1]; \/\/ -c$/;"	m	struct:__anon38ef01610a08	typeref:typename:char[]
+server_ip	whapp.c	/^char server_ip[40];$/;"	v	typeref:typename:char[40]
+server_ip_events	whapp.c	/^int server_ip_events(int evt_type, int sckid, int event, char *remote, uint16_t port, uint8_t *d/;"	f	typeref:typename:int
+server_port	nrc-iperf.h	/^	int server_port; \/\/ -p$/;"	m	struct:__anon38ef01610a08	typeref:typename:int
+server_port	nrc-iperf.h	/^	uint16_t server_port;$/;"	m	struct:__anon38ef01610808	typeref:typename:uint16_t
+server_port	nrc-iperf.h	/^	uint16_t server_port;$/;"	m	struct:__anon38ef01610908	typeref:typename:uint16_t
+server_thread_fn	whapp.c	/^static void *server_thread_fn(void *a) $/;"	f	typeref:typename:void *	file:
+server_thread_id	whapp.c	/^pthread_t server_thread_id;$/;"	v	typeref:typename:pthread_t
+service_thread	wihalo.c	/^void *service_thread(void *arg)$/;"	f	typeref:typename:void *
+service_threadid	wihalo.c	/^static pthread_t service_threadid;$/;"	v	typeref:typename:pthread_t	file:
+set_cli_list	wihalo.c	/^CLI_TYPE set_cli_list[] = {$/;"	v	typeref:typename:CLI_TYPE[]
+set_ip_addresses	wihalo.c	/^int set_ip_addresses(char *msg)$/;"	f	typeref:typename:int
+setup_access_point	wihalo.c	/^int setup_access_point() {$/;"	f	typeref:typename:int
+setup_connection	wihalo.c	/^static int setup_connection(char *socktype, char *remote, int port) {$/;"	f	typeref:typename:int	file:
+setup_listen	wihalo.c	/^int setup_listen(char *type, int port)$/;"	f	typeref:typename:int
+setup_station	wihalo.c	/^int setup_station() {$/;"	f	typeref:typename:int
+show_atcmd_output	wihalo.c	/^uint8_t show_atcmd_output, iperf_abort;$/;"	v	typeref:typename:uint8_t
+size	nrc-hspi.h	/^			uint16_t size;$/;"	m	struct:__anonb20d419f1608::__anonb20d419f1708::__anonb20d419f1808	typeref:typename:uint16_t
+sleep	nrc-hspi.h	/^			uint8_t sleep:1;$/;"	m	struct:__anonb20d419f0108::__anonb20d419f020a::__anonb20d419f0308	typeref:typename:uint8_t:1
+sleep	nrc-hspi.h	/^			uint8_t sleep:1;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0708	typeref:typename:uint8_t:1
+sleep	nrc-hspi.h	/^		uint8_t sleep:1;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0908	typeref:typename:uint8_t:1
+slot	nrc-hspi.h	/^		} slot[HSPI_QUE_NUM];$/;"	m	struct:__anonb20d419f1608::__anonb20d419f1708	typeref:struct:__anonb20d419f1608::__anonb20d419f1708::__anonb20d419f1808[]
+slot_cnt	nrc-hspi.h	/^		uint8_t slot_cnt; \/\/ valid bits : 7-bit$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0a08	typeref:typename:uint8_t
+slot_cnt	nrc-hspi.h	/^		uint8_t slot_cnt; \/\/ valid bits : 7-bit$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0b08	typeref:typename:uint8_t
+slot_size	nrc-hspi.h	/^		uint16_t slot_size;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0a08	typeref:typename:uint16_t
+slot_size	nrc-hspi.h	/^		uint16_t slot_size;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0b08	typeref:typename:uint16_t
+socket_event_callback	wihalo.h	/^typedef int (*socket_event_callback) (int data_evt, int sckid, int event, char *remote, uint16_t/;"	t	typeref:typename:int (*)(int data_evt,int sckid,int event,char * remote,uint16_t port,uint8_t * data,int len,int err_id)
+speed	gomi/main.c	/^		uint32_t speed;$/;"	m	struct:__anonfb923af60308::__anonfb923af60408	typeref:typename:uint32_t	file:
+spi_clock_rate	wihalo.c	/^uint32_t spi_clock_rate = 16000000;$/;"	v	typeref:typename:uint32_t
+spi_close	wihalo.c	/^static int spi_close ()$/;"	f	typeref:typename:int	file:
+spi_fd	wihalo.c	/^int spi_fd = -1;$/;"	v	typeref:typename:int
+spi_handler	wihalo.c	/^static int spi_handler(int irq, FAR void *context, FAR void *arg)$/;"	f	typeref:typename:int	file:
+spi_lock	wihalo.c	/^static void spi_lock (void)$/;"	f	typeref:typename:void	file:
+spi_mutex	wihalo.c	/^static pthread_mutex_t spi_mutex;$/;"	v	typeref:typename:pthread_mutex_t	file:
+spi_open	wihalo.c	/^static int spi_open ()$/;"	f	typeref:typename:int	file:
+spi_recv_thread	wihalo.c	/^static void *spi_recv_thread (void *arg)$/;"	f	typeref:typename:void *	file:
+spi_transfer	nrc-hspi.h	/^	int (*spi_transfer) (char *tx_buf, char *rx_buf, int len); $/;"	m	struct:__anonb20d419f1508	typeref:typename:int (*)(char * tx_buf,char * rx_buf,int len)
+spi_unlock	wihalo.c	/^static void spi_unlock (void)$/;"	f	typeref:typename:void	file:
+spidev_transfer	nrc-hspi.c	/^static int spidev_transfer(int fd, FAR struct spi_sequence_s *seq)$/;"	f	typeref:typename:int	file:
+srv_sck	whapp.c	/^int cam_sck, srv_sck;$/;"	v	typeref:typename:int
+srv_thread_id	whapp.c	/^static pthread_t srv_thread_id;$/;"	v	typeref:typename:pthread_t	file:
+ssid	wihalo.c	/^    char        ssid[32];$/;"	m	struct:halo_params_t_	typeref:typename:char[32]	file:
+start	nrc-atcmd.h	/^	char start[ATCMD_PACKET_START_SIZE];$/;"	m	struct:__anonda4ac6740208	typeref:typename:char[]
+start	nrc-hspi.h	/^		uint32_t start:8; 			\/\/ 0x50$/;"	m	struct:__anonb20d419f0e0a::__anonb20d419f0f08	typeref:typename:uint32_t:8
+start	nrc-hspi.h	/^	uint8_t start[2];$/;"	m	struct:__anonb20d419f1408	typeref:typename:uint8_t[2]
+start	nrc-iperf.h	/^	bool start;$/;"	m	struct:__anon38ef01610808	typeref:typename:bool
+start_camera_client	whapp.c	/^void start_camera_client() {$/;"	f	typeref:typename:void
+start_camera_server	whapp.c	/^void start_camera_server() {$/;"	f	typeref:typename:void
+start_echo_client	whapp.c	/^void start_echo_client(void)$/;"	f	typeref:typename:void
+start_echo_server	whapp.c	/^void start_echo_server(void)$/;"	f	typeref:typename:void
+start_time	nrc-iperf.h	/^	iperf_time_t start_time;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_time_t
+start_tv	whapp.c	/^static float  start_tv;$/;"	v	typeref:typename:float	file:
+status	nrc-hspi.h	/^		hspi_status_t status;$/;"	m	struct:__anonb20d419f1608::__anonb20d419f1708	typeref:typename:hspi_status_t
+status	nrc-hspi.h	/^		} status; \/\/ read only$/;"	m	union:__anonb20d419f0108::__anonb20d419f020a	typeref:struct:__anonb20d419f0108::__anonb20d419f020a::__anonb20d419f0308
+status	nrc-hspi.h	/^	hspi_status_t status;$/;"	m	struct:__anonb20d419f0d08	typeref:typename:hspi_status_t
+stop_app_thread	whapp.c	/^static uint8_t stop_app_thread;$/;"	v	typeref:typename:uint8_t	file:
+stop_sec	nrc-iperf.h	/^	int32_t stop_sec;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+stop_time	nrc-iperf.h	/^	iperf_time_t stop_time;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_time_t
+stop_usec	nrc-iperf.h	/^	int32_t stop_usec;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+stream_data	whapp.c	/^static int stream_data(uint8_t *data, int len)$/;"	f	typeref:typename:int	file:
+strupr	util.c	/^char* strupr(char *str) $/;"	f	typeref:typename:char *
+sumTransit1	nrc-iperf.h	/^	int32_t sumTransit1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+sumTransit2	nrc-iperf.h	/^	int32_t sumTransit2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+sw_id	nrc-hspi.h	/^	uint32_t sw_id;	   \/\/ fw write, read only$/;"	m	struct:__anonb20d419f0108	typeref:typename:uint32_t
+sys	nrc-hspi.h	/^	hspi_sys_t sys;$/;"	m	struct:__anonb20d419f0d08	typeref:typename:hspi_sys_t
+sys_time	whapp.c	/^float sys_time() {$/;"	f	typeref:typename:float
+test_char	wihalo.c	/^char test_char = 'A';$/;"	v	typeref:typename:char
+times	nrc-iperf.c	/^float times[1024];$/;"	v	typeref:typename:float[1024]
+timesn	nrc-iperf.c	/^int timesn;$/;"	v	typeref:typename:int
+total_len1	nrc-iperf.h	/^	int32_t total_len1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+total_len2	nrc-iperf.h	/^	int32_t total_len2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+total_slot_size	nrc-hspi.h	/^		uint16_t total_slot_size;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0a08	typeref:typename:uint16_t
+total_slot_size	nrc-hspi.h	/^		uint16_t total_slot_size;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0b08	typeref:typename:uint16_t
+transit	nrc-iperf.h	/^	iperf_time_t transit;$/;"	m	struct:__anon38ef01610808	typeref:typename:iperf_time_t
+trigger	nrc-hspi.h	/^			uint8_t trigger:1; 	 \/\/ 0:level, 1:edge$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0608	typeref:typename:uint8_t:1
+tv_sec	nrc-iperf.h	/^	uint32_t tv_sec;$/;"	m	struct:__anon38ef01610408	typeref:typename:uint32_t
+tv_usec	nrc-iperf.h	/^	uint32_t tv_usec;$/;"	m	struct:__anon38ef01610408	typeref:typename:uint32_t
+tx_buf	nrc-hspi.h	/^	char *tx_buf;$/;"	m	struct:__anonb20d419f1308	typeref:typename:char *
+txq	nrc-hspi.h	/^			uint8_t txq:1;$/;"	m	struct:__anonb20d419f040a::__anonb20d419f0508::__anonb20d419f0708	typeref:typename:uint8_t:1
+txq	nrc-hspi.h	/^		uint8_t txq:1;$/;"	m	struct:__anonb20d419f0808::__anonb20d419f0908	typeref:typename:uint8_t:1
+txq	nrc-hspi.h	/^	hspi_que_t txq; \/\/ downlink$/;"	m	struct:__anonb20d419f0d08	typeref:typename:hspi_que_t
+txq	nrc-hspi.h	/^	} txq; \/\/ target -> host$/;"	m	struct:__anonb20d419f0808	typeref:struct:__anonb20d419f0808::__anonb20d419f0a08
+type	gomi/main.c	/^		enum RASPI_HIF_TYPE type;$/;"	m	struct:__anonfb923af60308::__anonfb923af60408	typeref:enum:RASPI_HIF_TYPE	file:
+type	nrc-atcmd.c	/^		int type;$/;"	m	struct:nrc_atcmd_recv::__anonda4ac66f0408	typeref:typename:int	file:
+udp	nrc-iperf.h	/^	bool udp; \/\/ -u$/;"	m	struct:__anon38ef01610a08	typeref:typename:bool
+unlock_return	nrc-atcmd.c	/^void unlock_return() {$/;"	f	typeref:typename:void
+use_as_service	wihalo.c	/^uint8_t use_as_service;$/;"	v	typeref:typename:uint8_t
+val	nrc-atcmd.c	/^		int val; \/\/ -1: error, 0: ok, 1: don't care$/;"	m	struct:__anonda4ac66f0108::__anonda4ac66f0208	typeref:typename:int	file:
+val	nrc-hspi.h	/^	uint32_t val;$/;"	m	union:__anonb20d419f0e0a	typeref:typename:uint32_t
+val	nrc-hspi.h	/^	uint8_t val[2];$/;"	m	union:__anonb20d419f040a	typeref:typename:uint8_t[2]
+vdTransit1	nrc-iperf.h	/^	int32_t vdTransit1;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+vdTransit2	nrc-iperf.h	/^	int32_t vdTransit2;$/;"	m	struct:__anon38ef01610208	typeref:typename:int32_t
+verbose	nrc-atcmd.h	/^	bool verbose;$/;"	m	struct:__anonda4ac6740108	typeref:typename:bool
+wait_for_connection	whapp.c	/^static int wait_for_connection() $/;"	f	typeref:typename:int	file:
+wait_response	wihalo.c	/^int wait_response;$/;"	v	typeref:typename:int
+wake_up	nrc-hspi.h	/^	uint8_t wake_up; \/\/ Write 0x79, write only$/;"	m	struct:__anonb20d419f0108	typeref:typename:uint8_t
+wh_atdelay	wihalo.c	/^int wh_atdelay = 0;$/;"	v	typeref:typename:int
+wh_close_socket	wihalo.c	/^int wh_close_socket(int sckid) $/;"	f	typeref:typename:int
+wh_end_passmode	wihalo.c	/^int wh_end_passmode()$/;"	f	typeref:typename:int
+wh_get_state	wihalo.c	/^int wh_get_state()$/;"	f	typeref:typename:int
+wh_initialize	wihalo.c	/^int wh_initialize() {$/;"	f	typeref:typename:int
+wh_open_socket	wihalo.c	/^int wh_open_socket(WH_SOCK_TYPE type, uint16_t port, char *optional_remote_or_null)$/;"	f	typeref:typename:int
+wh_post_command	wihalo.c	/^int wh_post_command(char *cmd) $/;"	f	typeref:typename:int
+wh_register_callback	wihalo.c	/^void wh_register_callback(socket_event_callback  data_rxd)$/;"	f	typeref:typename:void
+wh_reset	wihalo.c	/^void wh_reset() {$/;"	f	typeref:typename:void
+wh_send_tcp_data	wihalo.c	/^int wh_send_tcp_data(int sckid, uint8_t *data, int datalen)$/;"	f	typeref:typename:int
+wh_send_tcp_passmode_data	wihalo.c	/^int wh_send_tcp_passmode_data(uint8_t *data, int datalen)$/;"	f	typeref:typename:int
+wh_send_udp_data	wihalo.c	/^int wh_send_udp_data(int sckid, char *remote, uint16_t port, uint8_t *data, int datalen)$/;"	f	typeref:typename:int
+wh_set_country	wihalo.c	/^int wh_set_country(char *country) {$/;"	f	typeref:typename:int
+wh_set_dhcp	wihalo.c	/^int wh_set_dhcp(int dhcp) {$/;"	f	typeref:typename:int
+wh_set_frequency	wihalo.c	/^int wh_set_frequency(float freq) {$/;"	f	typeref:typename:int
+wh_set_ip_params	wihalo.c	/^int wh_set_ip_params(char *ip, char *mask, char *gw) {$/;"	f	typeref:typename:int
+wh_set_loglevel	wihalo.c	/^void wh_set_loglevel(int level) $/;"	f	typeref:typename:void
+wh_set_mode	wihalo.c	/^int wh_set_mode(int sta_ap)$/;"	f	typeref:typename:int
+wh_set_passmode	wihalo.c	/^int wh_set_passmode(int ed)$/;"	f	typeref:typename:int
+wh_set_password	wihalo.c	/^int wh_set_password(char *pw)$/;"	f	typeref:typename:int
+wh_set_security	wihalo.c	/^int wh_set_security(char *security)$/;"	f	typeref:typename:int
+wh_set_ssid	wihalo.c	/^int wh_set_ssid(char *ssid) {$/;"	f	typeref:typename:int
+wh_socket_listen	wihalo.c	/^int wh_socket_listen(WH_SOCK_TYPE type, uint16_t port)$/;"	f	typeref:typename:int
+wh_start	wihalo.c	/^int wh_start(WH_WIFI_MODE mode) {$/;"	f	typeref:typename:int
+wh_start_passmode	wihalo.c	/^int wh_start_passmode(int id)$/;"	f	typeref:typename:int
+wh_stop	wihalo.c	/^void wh_stop() {$/;"	f	typeref:typename:void
+wh_unregister_callback	wihalo.c	/^void wh_unregister_callback(void)$/;"	f	typeref:typename:void
+window	nrc-hspi.h	/^	uint8_t window; \/\/ rxq: write only, txq: read only$/;"	m	struct:__anonb20d419f0c08	typeref:typename:uint8_t
+write	nrc-hspi.h	/^		uint32_t write:1;			\/\/ 0:read, 1:write$/;"	m	struct:__anonb20d419f0e0a::__anonb20d419f0f08	typeref:typename:uint32_t:1
+writeout	wihalo.c	/^void writeout(char c) {$/;"	f	typeref:typename:void
