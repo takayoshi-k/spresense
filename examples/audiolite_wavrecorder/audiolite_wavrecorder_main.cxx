@@ -137,10 +137,10 @@ int main(int argc, FAR char *argv[])
    *      +------+
    */
 
-  audiolite_filestream *fstream = new audiolite_filestream;
+  /* audiolite_filestream *fstream = new audiolite_filestream; */
   audiolite_mempoolapbuf *mempool = new audiolite_mempoolapbuf;
   audiolite_inputcomp *aindev = new audiolite_inputcomp;
-  audiolite_wavenc *wavenc = new audiolite_wavenc;
+  /* audiolite_wavenc *wavenc = new audiolite_wavenc; */
   my_interceptor *intercept = new my_interceptor;
 
   /* Setup system parameter as
@@ -165,11 +165,11 @@ int main(int argc, FAR char *argv[])
 
   /* Set file stream into WAV Encoder */
 
-  wavenc->set_stream(fstream);
+  // wavenc->set_stream(fstream);
 
   /* Set recording file name prefix */
 
-  wavenc->set_fileprefix(argv[1]);
+  // wavenc->set_fileprefix(argv[1]);
 
   /* Audio Input device setting */
 
@@ -182,7 +182,7 @@ int main(int argc, FAR char *argv[])
    */
 
   aindev->bind(intercept);
-  intercept->bind(wavenc);
+  /* intercept->bind(wavenc); */
 
   /* Let's Record */
 
@@ -198,6 +198,11 @@ int main(int argc, FAR char *argv[])
    * Let's wait 10 sec.
    */
 
+  while (1)
+    {
+      sleep(1);
+    }
+    
   for (int i = 0; i < 10; i++)
     {
       printf("."); fflush(stdout);
@@ -221,10 +226,10 @@ app_error:
   printf("Delete instances\n");
 
   delete aindev;
-  delete wavenc;
+  // delete wavenc;
   delete mempool;
   delete intercept;
-  delete fstream;
+  // delete fstream;
 
   printf("Delete system event handler\n");
 
