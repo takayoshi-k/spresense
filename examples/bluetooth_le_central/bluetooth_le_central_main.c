@@ -613,6 +613,8 @@ static void on_descriptor_read(uint16_t conn_handle,
 
   printf("\n");
 
+  g_read_datalen = len;
+  memcpy(g_read_data, data, g_read_datalen);
   g_descrd_result = (len) ? BT_SUCCESS : BT_FAIL;
 }
 
