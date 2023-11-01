@@ -1,7 +1,7 @@
 ############################################################################
-# audio_recognizer/worker_preprocess/Makefile
+# modules/sensing/gnss/Makefile
 #
-#   Copyright 2018, 2023 Sony Semiconductor Solutions Corporation
+#   Copyright 2018 Sony Semiconductor Solutions Corporation
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -33,67 +33,74 @@
 #
 ############################################################################
 
+# Do not change
+
 include $(APPDIR)/Make.defs
-include $(SDKDIR)/Make.defs
+-include $(SDKDIR)/Make.defs
+DELIM ?= $(strip /)
+CXXEXT ?= .cpp
 
-ifeq ($(WINTOOL),y)
-LIB_DIR = "${shell cygpath -w lib}"
-else
-LIB_DIR = "lib"
-endif
+CSRCS   =
+CXXSRCS =
 
-LDLIBPATH += -L $(LIB_DIR)
+BIN = libgnss$(LIBEXT)
 
-LDLIBS += $(ASMPWORKER_LIB)
+AOBJS = $(ASRCS:.S=$(OBJEXT))
+COBJS = $(CSRCS:.c=$(OBJEXT))
+CXXOBJS = $(CXXSRCS:$(CXXEXT)=$(OBJEXT))
 
-WORKER_ELF = PREPROC
+SRCS = $(ASRCS) $(CSRCS) $(CXXSRCS)
+LIB_OBJS = $(AOBJS) $(COBJS) $(CXXOBJS)
 
-VPATH = $(SDKDIR)/modules/audio/components/customproc/dsp_framework
-VPATH += userproc/src
+# Here is a example of adding include paths.
+# Note that include path addtion will be affected to build time.
+# Don't add unnecessary include paths for module.
+#
+#SKELETONSRCDIR = $(SDKDIR)$(DELIM)modules$(DELIM)skeleton
+#ifeq ($(WINTOOL),y)
+#  CFLAGS += -I "${shell cygpath -w $(SKELETONSRCDIR)}"
+#else
+#  CFLAGS += -I$(SKELETONSRCDIR)
+#endif
 
-CXXSRCS = customproc_dsp_ctrl.cpp main.cpp
-CXXSRCS += rcfilter.cpp userproc.cpp
+all: $(BIN)
+.PHONY: context depend clean distclean
 
-CXXELFFLAGS += -Os
-CXXELFFLAGS += ${INCDIR_PREFIX}userproc$(DELIM)include
-CXXELFFLAGS += ${INCDIR_PREFIX}$(APPDIR)
-CXXELFFLAGS += ${INCDIR_PREFIX}$(SDKDIR)$(DELIM)modules$(DELIM)asmp$(DELIM)worker
+$(AOBJS): %$(OBJEXT): %.S
+	$(call ASSEMBLE, $<, $@)
 
-CXXOBJS = $(CXXSRCS:.cpp=$(OBJEXT))
+$(COBJS): %$(OBJEXT): %.c
+	$(call COMPILE, $<, $@)
 
-# Build
+$(CXXOBJS): %$(OBJEXT): %$(CXXEXT)
+	$(call COMPILE, $<, $@)
 
-.PHONY: lib depend clean
-all: $(WORKER_ELF)
+$(BIN): $(LIB_OBJS)
+	$(call ARCHIVE_ADD, $@, $(LIB_OBJS))
 
-# Build ASMP worker library
-
-lib:
-	$(Q) $(MAKE) -C lib TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV)
-
-# Complile
-
-$(CXXOBJS): %$(OBJEXT):%.cpp
-	@echo "CXX: $<"
-	$(Q) $(CXX) -c $(CXXELFFLAGS) $< -o $@
-
-# Build workers
-
-$(WORKER_ELF): lib $(CXXOBJS)
-	@echo "LD: $@"
-	$(Q) $(LD) $(LDRAWELFFLAGS) $(LDLIBPATH) -o $@ $(CXXOBJS) $(LDLIBS)
-	$(Q) $(STRIP) -d $(WORKER_ELF)
-
-.depend:
-	$(Q) $(MAKE) -C lib TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV) depend
-	@touch $@
+.depend: Makefile $(SRCS)
+	$(Q) $(MKDEP) $(DEPPATH) "$(CC)" -- $(CFLAGS) -- $(ASRCS) $(CSRCS) >Make.dep
+	$(Q) $(MKDEP) $(DEPPATH) "$(CC)" -- $(CXXFLAGS) -- $(CXXSRCS) >>Make.dep
+	$(Q) touch $@
 
 depend: .depend
 
-lib_clean:
-	$(Q) $(MAKE) -C lib TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV) clean
+# context target proceeds before depend. User can be used this rule
+# to prerequisite process (e.g. generate header file).
 
-clean: lib_clean
-	$(call DELFILE, $(WORKER_ELF))
+.context:
+	$(Q) touch $@
+
+context:
+
+clean:
+	$(call DELFILE, $(BIN))
 	$(call CLEAN)
+
+distclean: clean
+	$(call DELFILE, .context)
+	$(call DELFILE, Make.dep)
+	$(call DELFILE, .depend)
+
+-include Make.dep
 
