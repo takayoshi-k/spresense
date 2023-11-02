@@ -44,6 +44,7 @@
 #include <bluetooth/ble_gatt.h>
 #include <bluetooth/ble_util.h>
 #include <bluetooth/hal/bt_if.h>
+#include <assert.h>
 
 /****************************************************************************
  * Pre-processor Definitions
