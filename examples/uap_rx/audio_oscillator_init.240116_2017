@@ -1,0 +1,1270 @@
+/****************************************************************************
+ * audio_oscillator/audio_oscillator_init.cxx
+ *
+ *   Copyright 2020 Sony Semiconductor Solutions Corporation
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ * 3. Neither the name of Sony Semiconductor Solutions Corporation nor
+ *    the names of its contributors may be used to endorse or promote
+ *    products derived from this software without specific prior written
+ *    permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ ****************************************************************************/
+
+/****************************************************************************
+ * Included Files
+ ****************************************************************************/
+
+#include <sdk/config.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <asmp/mpshm.h>
+
+#include "memutils/simple_fifo/CMN_SimpleFifo.h"
+
+#include "memutils/memory_manager/MemHandle.h"
+#include "memutils/message/Message.h"
+#include "include/msgq_id.h"
+#include "include/mem_layout.h"
+#include "include/memory_layout.h"
+#include "include/msgq_pool.h"
+#include "include/pool_layout.h"
+#include "include/fixed_fence.h"
+
+#include "audio/audio_frontend_api.h"
+#include "audio/audio_capture_api.h"
+#include "audio/audio_message_types.h"
+#include "audio/utilities/frame_samples.h"
+
+#include "audio/audio_synthesizer_api.h"
+#include "audio/audio_outputmix_api.h"
+#include "audio/audio_renderer_api.h"
+#ifdef CONFIG_EXAMPLES_AUDIO_OSCILLATOR_USEPOSTPROC
+#include "userproc_command.h"
+#endif
+#include "audio_synthesizer_melody.h"
+
+using namespace MemMgrLite;
+
+/****************************************************************************
+ * Pre-processor Definitions
+ ****************************************************************************/
+/* Recording default time(sec). */
+
+//#define PCM_CAPTURE_TIME     (10)
+
+/* Sampling rate
+ * 44.1kHz : AS_SAMPLINGRATE_44100
+ * 48kHz   : AS_SAMPLINGRATE_48000
+ * 192kHz  : AS_SAMPLINGRATE_192000
+ */
+
+#define SAMPLINGRATE          AS_SAMPLINGRATE_192000
+
+/* Reference sine wave frequency[Hz]*/
+#define REF_SIN_FREQ 100
+
+/* 24/01/16
+#define REF_SAMPLING_RATE 100
+*/
+
+/* Channel number
+ * MONO (1ch)   : AS_CHANNEL_MONO
+ * STEREO (2ch) : AS_CHANNEL_STEREO
+ * 4ch          : AS_CHANNEL_4CH
+ */
+
+
+// T.Okada 23/10/28
+// Mic input channel number
+#define CHANNEL_NUMBER        AS_CHANNEL_4CH
+
+/* Bit length
+ * 16bit : AS_BITLENGTH_16
+ * 24bit : AS_BITLENGTH_24
+ */
+
+#define BIT_LENGTH            AS_BITLENGTH_16
+
+/* Size of one block to read from the FIFO
+ * Set the maximum size of configurable parameters.
+ */
+
+#define SIMPLE_FIFO_READ_SIZE (768 * 4 * 4)  /* 768sample, 4ch, 24bit */
+
+/* Number of FIFO stages */
+
+#define SIMPLE_FIFO_FRAME_NUM (30)
+
+/* PCM FIFO buffer size */
+
+#define SIMPLE_FIFO_BUF_SIZE  (SIMPLE_FIFO_READ_SIZE * SIMPLE_FIFO_FRAME_NUM)
+
+/* Section number of memory layout to use */
+
+#define AUDIO_SECTION   SECTION_NO0
+
+#define OSC_CH_NUM (2)
+
+/* Amplitude threshold of 1PPS signal riging edge detection */
+
+#define AMP_TH_1PPS_RISE_DET  (20000)
+
+/* Amplitude difference threshold of 1PPS signal riging edge detection */
+
+#define DAMP_TH_1PPS_RISE_DET (10000)
+
+/* Mic input gain */
+
+#define MIC_GAIN_CH0 (0)
+#define MIC_GAIN_CH1 (0)
+#define MIC_GAIN_CH2 (210) 
+#define MIC_GAIN_CH3 (0)
+
+
+#define DPLL_INIT               0
+#define DPLL_COARSE_FREQ        1
+#define DPLL_WAIT_COARSE_PHASE  2
+#define DPLL_COARSE_PHASE       3
+#define DPLL_TRACKING           4
+#define DPLL_TRACKING2          5
+#define DPLL_TRACKING5          6
+
+/* Digital PLL Frequency loop gain */
+
+#define DPLL_FGAIN (512)
+
+/* Digital PLL Phase loop gain */
+
+#define DPLL_PGAIN (128)
+
+/* Sample number of 0cm */
+
+#define ZERO_CM_SMPL (287)
+
+/* Distance with one 192 kHz sampling interval [0.01cm]*/
+
+#define SOUND_LENGTH_192K (18)  //0.18cm
+
+
+extern bool app_update_freq_phase_synthesizer(uint8_t  channel_number,
+                                              int64_t frequency[],
+                                              int64_t phase[]);
+
+/****************************************************************************
+ * Private Type Declarations
+ ****************************************************************************/
+
+/* For FIFO. */
+
+struct fifo_info_s
+{
+  CMN_SimpleFifoHandle  handle;
+  uint32_t              fifo_area[SIMPLE_FIFO_BUF_SIZE/sizeof(uint32_t)];
+  uint8_t               write_buf[SIMPLE_FIFO_READ_SIZE];
+};
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/* For FIFO. */
+
+static fifo_info_s s_fifo;
+
+/* For share memory. */
+
+static mpshm_t s_shm;
+
+/* For target codec parameters. */
+
+static uint32_t  target_samplingrate   = SAMPLINGRATE;
+static uint32_t  target_channel_number = CHANNEL_NUMBER;
+static uint32_t  target_bit_lengt      = BIT_LENGTH;
+
+static int16_t prv_1pps_amp = 0;
+static int16_t prv_ref_amp = 1;
+
+static uint32_t smpl=0;
+
+static bool onepps_1stdet_flg = false;
+static bool onepps_det_flg = false; // to avoid continuas detection
+static bool ref_det_flg = true;
+
+static int32_t cmp_out_phase;
+static int32_t pre_cmp_out_phase = 0;
+static uint32_t pre_delta_1pps_smpl = 0;
+static uint32_t cmp_out_delta_1pps_smpl;
+static uint32_t cmp_out_delta_ref_smpl;
+
+static int64_t freq_sum_64 = 0;
+
+static uint32_t flm_cnt = 0;
+
+static int16_t fir_reg[195] = {0};
+static uint16_t fir_adrs = 0;
+static int32_t fir_out;
+static int32_t max_fir_out = 0;
+static uint32_t max_smpl_num = 0;
+static bool dly_det_flg = false;
+
+static uint32_t st_num = 192000;
+
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+void app_phase_comparator(uint8_t *buf, uint32_t size, bool rxmonflg)
+{
+  uint32_t i;
+//  int32_t j0;
+//  int32_t j;
+
+// audata[i]   : 1PPS signal amplitude
+// audata[i+1] : Reference sin wave amplitude
+// audata[i+2] : Rx0 data amplitude
+// audata[i+3] : Rx1 data amplitude
+
+  int16_t *audata;
+  int16_t ref_amp = 0;
+  uint32_t onepps_smpl_num = 0;
+  uint32_t ref_smpl_num = 0;
+
+// RX signal delay detection
+  int16_t rx_amp;
+
+  cmp_out_phase = 0;
+  cmp_out_delta_1pps_smpl = 0;
+  cmp_out_delta_ref_smpl = 0;
+
+  audata = (int16_t *) buf;
+
+// T.Okada 23/10/28
+  for(i=0; i*2*CHANNEL_NUMBER<size; i++){
+    // 1pps signal rise detection
+/*
+    if(20000 < audata[i*CHANNEL_NUMBER] && audata[i*CHANNEL_NUMBER]-prv_1pps_amp > 10000 && !onepps_det_flg)
+*/
+    if( AMP_TH_1PPS_RISE_DET < audata[i*CHANNEL_NUMBER] && audata[i*CHANNEL_NUMBER]-prv_1pps_amp > DAMP_TH_1PPS_RISE_DET && !onepps_det_flg)
+    {
+      onepps_det_flg = true;
+      ref_det_flg = false;
+      ref_amp = audata[i*CHANNEL_NUMBER+1];
+
+// T.okada 23/10/28
+      dly_det_flg = true;
+      if(rxmonflg == true){
+        printf("distanse = %ld[x100cm], %ld, %ld\n", (max_smpl_num - ZERO_CM_SMPL)* SOUND_LENGTH_192K, max_smpl_num, max_fir_out);       
+      }
+      max_smpl_num = 0;
+      max_fir_out = 0;
+
+/*
+//    wave monitor
+      if(smpl < 191000){
+        if(i<50){
+          j0=0;
+        }else{
+          j0=i-50;
+        }
+        for(j=j0; j<j0+100; j++)
+        {
+          printf("%ld, %d, %d\n", j, audata[j*2], audata[j*2+1]);
+        }
+      }
+*/
+      if(onepps_1stdet_flg){
+        onepps_smpl_num = smpl;
+      }else{
+        onepps_1stdet_flg = true;
+        onepps_smpl_num = 0;
+      }
+      smpl = 0;
+    }else{
+      onepps_det_flg = false;
+    }
+
+    // Reference sin wave Zero crossing detection
+// T.OKada 23/10/28
+//    if(prv_ref_amp < 0 && 0 <= audata[i*2+1] && !ref_det_flg){
+    if(prv_ref_amp < 0 && 0 <= audata[i*CHANNEL_NUMBER+1] && !ref_det_flg){
+      ref_smpl_num = smpl;
+      ref_det_flg = true;
+    }
+
+// T.Okada 23/10/23
+    // RX data delay detection
+    rx_amp = abs(audata[i*CHANNEL_NUMBER+2]);
+    fir_out = fir_out - fir_reg[fir_adrs] + rx_amp;
+    fir_reg[fir_adrs] = rx_amp;
+
+    if(max_fir_out < fir_out){
+      max_fir_out = fir_out;
+      max_smpl_num = smpl;
+    }
+
+    if(fir_adrs >= 194){
+      fir_adrs = 0;      
+    }else{
+      fir_adrs++;
+    }
+
+//    wave monitor
+//    if(38 < smpl && smpl < 200){
+//    if( smpl == 200 ){
+/*
+    if(st_num <= smpl && smpl < st_num+50){
+      printf("%ld, %d, %d, %d, %ld\n", smpl, audata[i*CHANNEL_NUMBER], audata[i*CHANNEL_NUMBER+1], audata[i*CHANNEL_NUMBER+2], fir_out);
+    }else{
+      st_num = 192000;
+    }
+*/
+    smpl++;
+
+    prv_1pps_amp = audata[i*CHANNEL_NUMBER];
+    prv_ref_amp = audata[i*CHANNEL_NUMBER+1];
+  }
+  cmp_out_phase = (int32_t)ref_amp;
+  cmp_out_delta_1pps_smpl = onepps_smpl_num;
+  cmp_out_delta_ref_smpl = ref_smpl_num;
+  flm_cnt++;
+ 
+  return;
+}
+
+
+bool app_receive_object_reply(uint32_t id = 0)
+{
+  AudioObjReply reply_info;
+  AS_ReceiveObjectReply(MSGQ_AUD_MGR, &reply_info);
+
+  if (reply_info.type != AS_OBJ_REPLY_TYPE_REQ)
+    {
+      printf("app_receive_object_reply() error! type 0x%x\n",
+             reply_info.type);
+      return false;
+    }
+
+  if (id && reply_info.id != id)
+    {
+      printf("app_receive_object_reply() error! id 0x%lx(request id 0x%lx)\n",
+             reply_info.id, id);
+      return false;
+    }
+
+  if (reply_info.result != OK)
+    {
+      printf("app_receive_object_reply() error! result 0x%lx\n",
+             reply_info.result);
+      return false;
+    }
+
+  return true;
+}
+
+static bool app_init_simple_fifo(void)
+{
+  if (CMN_SimpleFifoInitialize(&s_fifo.handle,
+                               s_fifo.fifo_area,
+                               SIMPLE_FIFO_BUF_SIZE, NULL) != 0)
+    {
+      printf("Error: Fail to initialize simple FIFO.");
+      return false;
+    }
+  CMN_SimpleFifoClear(&s_fifo.handle);
+
+  return true;
+}
+
+static void app_pop_simple_fifo(bool is_end_process = false, bool rxmonflg = true)
+{
+  size_t occupied_simple_fifo_size =
+    CMN_SimpleFifoGetOccupiedSize(&s_fifo.handle);
+  uint32_t output_size = 0;
+
+  while (occupied_simple_fifo_size > 0)
+    {
+      output_size = (occupied_simple_fifo_size > SIMPLE_FIFO_READ_SIZE) ?
+        SIMPLE_FIFO_READ_SIZE : occupied_simple_fifo_size;
+      if (CMN_SimpleFifoPoll(&s_fifo.handle,
+                            (void*)s_fifo.write_buf,
+                            output_size) == 0)
+        {
+          printf("ERROR: Fail to get data from simple FIFO.\n");
+          break;
+        }
+
+      /* phase comparator */
+
+      app_phase_comparator((uint8_t*)s_fifo.write_buf, output_size, rxmonflg);
+
+      if (is_end_process)
+        {
+          /* At end processing, all remaining data is spit */
+
+          occupied_simple_fifo_size = CMN_SimpleFifoGetOccupiedSize(&s_fifo.handle);
+        }
+      else
+        {
+          occupied_simple_fifo_size -= output_size;
+        }
+    }
+}
+
+static bool app_init_mic_gain(void)
+{
+  cxd56_audio_mic_gain_t  mic_gain;
+
+  mic_gain.gain[0] = MIC_GAIN_CH0;
+  mic_gain.gain[1] = MIC_GAIN_CH1;
+  mic_gain.gain[2] = MIC_GAIN_CH2;
+  mic_gain.gain[3] = MIC_GAIN_CH3;
+  mic_gain.gain[4] = 0;
+  mic_gain.gain[5] = 0;
+  mic_gain.gain[6] = 0;
+  mic_gain.gain[7] = 0;
+
+  return (cxd56_audio_set_micgain(&mic_gain) == CXD56_AUDIO_ECODE_OK);
+}
+
+static bool app_set_frontend(void)
+{
+  /* Enable input. */
+
+  if (cxd56_audio_en_input() != CXD56_AUDIO_ECODE_OK)
+    {
+      return false;
+    }
+
+  /* Set frontend parameter */
+
+  AsActivateMicFrontend act_param;
+
+  act_param.param.input_device = AsMicFrontendDeviceMic;
+  act_param.cb                 = NULL;
+
+  AS_ActivateMicFrontend(&act_param);
+
+  if (!app_receive_object_reply(MSG_AUD_MFE_CMD_ACT))
+    {
+      return false;
+    }
+
+  return true;
+}
+
+static bool app_init_frontend(void)
+{
+  /* Set frontend init parameter */
+
+  AsInitMicFrontendParam  init_param;
+
+  init_param.channel_number           = target_channel_number;
+  init_param.bit_length               = target_bit_lengt;
+  init_param.samples_per_frame        = getCapSampleNumPerFrame(AS_CODECTYPE_LPCM,
+                                                                target_samplingrate);
+  init_param.preproc_type             = AsMicFrontendPreProcThrough;
+  init_param.data_path                = AsDataPathSimpleFIFO;
+  init_param.dest.simple_fifo_handler = &s_fifo.handle;
+
+  AS_InitMicFrontend(&init_param);
+
+  return app_receive_object_reply(MSG_AUD_MFE_CMD_INIT);
+}
+
+bool app_start_capture(void)
+{
+  CMN_SimpleFifoClear(&s_fifo.handle);
+
+  AsStartMicFrontendParam cmd;
+
+  AS_StartMicFrontend(&cmd);
+
+  return app_receive_object_reply(MSG_AUD_MFE_CMD_START);
+}
+
+bool app_stop_micfrontend(void)
+{
+  AsStopMicFrontendParam  cmd;
+
+  cmd.stop_mode = 0;
+
+  AS_StopMicFrontend(&cmd);
+
+  if (!app_receive_object_reply())
+    {
+      return false;
+    }
+  return true;
+}
+
+bool app_stop_capture(bool rxmonflg)
+{
+/*
+  AsStopMicFrontendParam  cmd;
+
+  cmd.stop_mode = 0;
+
+  printf("Enter:AS_StopMicFrontend()\n");
+  fflush(stdout);
+  sleep(1);
+
+  AS_StopMicFrontend(&cmd);
+
+  if (!app_receive_object_reply())
+    {
+      return false;
+    }
+*/
+  /* Spout processing of remaining data. */
+
+// T.Okada 23/08/20
+/*
+  printf("Enter:app_pop_simple_fifo()\n");
+  fflush(stdout);
+  sleep(1);
+*/
+
+  app_pop_simple_fifo(true, rxmonflg);
+
+  return true;
+}
+
+
+/* 24/01/16
+void app_recorde_process(uint32_t rec_time, bool txmonflg, bool rxmonflg)
+{
+*/
+  /* Timer Start */
+/*
+  time_t start_time;
+  time_t cur_time;
+//  time_t prv_time;
+*/
+void app_recorde_process(bool txmonflg, bool rxmonflg)
+{
+  int64_t phase_64[2] = {0, 0};
+  int64_t freq_64[2] = {0, 0};
+  int32_t delta_smpl = 0;
+  uint32_t dpll_state = DPLL_INIT;
+  int32_t fgain;
+  int32_t pgain;
+
+  p_node = node;
+
+/* 24/01/16
+  time(&start_time);
+*/
+//  prv_time = start_time;
+
+  fgain = DPLL_FGAIN;
+  pgain = DPLL_PGAIN;
+  
+  printf("FGAIN=%ld, PGAIN=%ld\n", fgain, pgain);
+  do
+    {
+      app_pop_simple_fifo(false, rxmonflg);
+
+      switch(dpll_state)
+        {
+          case DPLL_INIT:
+            if(cmp_out_delta_1pps_smpl){
+              printf("INIT=0, flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+              printf("phase=%ld, ", cmp_out_phase);
+              printf("freq[0]=%lld, freq[1]=%lld, freq_sum=%lld\n", freq_64[0], freq_64[1], freq_sum_64);
+              fflush(stdout);
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+              dpll_state = DPLL_COARSE_FREQ;
+            }
+            break;
+          case DPLL_COARSE_FREQ:
+            if(cmp_out_delta_1pps_smpl){
+              delta_smpl = SAMPLINGRATE - cmp_out_delta_1pps_smpl;
+/*
+              for(int i=0 ; i<2 ;i++){
+                freq_64[i] = 0x800000000000 / (SAMPLINGRATE) * (p_node->fs[i]) * delta_smpl / SAMPLINGRATE /2;
+              }
+*/
+
+/* 24/01/16
+              freq_64[0] = 0x800000000000 / (SAMPLINGRATE) * REF_SAMPLING_RATE * delta_smpl / SAMPLINGRATE /2;
+*/
+              freq_64[0] = 0x800000000000 / (SAMPLINGRATE) * REF_SIN_FREQ * delta_smpl / SAMPLINGRATE /2;
+              freq_64[1] = freq_64[0];
+              phase_64[0] = 0;
+              phase_64[1] = 0;
+              app_update_freq_phase_synthesizer(OSC_CH_NUM,
+                                                freq_64,
+                                                phase_64);
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+              printf("Freq=0, flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+              printf("phase=%ld, ", cmp_out_phase);
+              printf("freq[0]=%lld, freq[1]=%lld, freq_sum=%lld\n", freq_64[0], freq_64[1], freq_sum_64);
+              fflush(stdout);
+              dpll_state = DPLL_WAIT_COARSE_PHASE;
+            }
+            break;
+          case DPLL_WAIT_COARSE_PHASE:
+            if(cmp_out_delta_1pps_smpl){
+              printf("Wait=0, flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+              printf("phase=%ld, ", cmp_out_phase);
+              printf("freq[0]=%lld, freq[1]=%lld, freq_sum=%lld\n", freq_64[0], freq_64[1], freq_sum_64);
+              fflush(stdout);
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+              dpll_state = DPLL_COARSE_PHASE;
+            }
+            break;
+          case DPLL_COARSE_PHASE:
+            if(cmp_out_delta_ref_smpl){
+              if(pre_delta_1pps_smpl == cmp_out_delta_1pps_smpl){
+/* 24/01/16
+                phase_64[0] = 0x800000000000 / (SAMPLINGRATE) * REF_SAMPLING_RATE * cmp_out_delta_ref_smpl;
+*/
+                phase_64[0] = 0x800000000000 / (SAMPLINGRATE) * REF_SIN_FREQ * cmp_out_delta_ref_smpl;
+                phase_64[1] = phase_64[0];
+                app_update_freq_phase_synthesizer(OSC_CH_NUM,
+                                                  freq_64,
+                                                  phase_64);
+                printf("Phase=0, flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+                printf("phase=%ld, ", cmp_out_phase);
+                printf("freq[0]=%lld, freq[1]=%lld, freq_sum=%lld, ", freq_64[0], freq_64[1], freq_sum_64);
+                printf("phase[0]=%lld, phase[1]=%lld\n", phase_64[0], phase_64[1]);
+                fflush(stdout);
+                dpll_state = DPLL_TRACKING2;
+              }
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+            }
+            break;
+          case DPLL_TRACKING:
+            if(cmp_out_phase ){
+              if(labs(pre_delta_1pps_smpl - cmp_out_delta_1pps_smpl) < 2){
+//                freq_64[0] = 350 *( -(cmp_out_phase - pre_cmp_out_phase )* DPLL_FGAIN -cmp_out_phase * DPLL_PGAIN);
+                freq_64[0] = -(cmp_out_phase - pre_cmp_out_phase )* DPLL_FGAIN -cmp_out_phase * DPLL_PGAIN;
+                freq_64[1] = freq_64[0];
+//                freq_64[1] = -(cmp_out_phase - pre_cmp_out_phase) * DPLL_FGAIN -cmp_out_phase * DPLL_PGAIN;
+                phase_64[0] = 0;
+                phase_64[1] = 0;
+//                usleep(10);
+                app_update_freq_phase_synthesizer(OSC_CH_NUM,
+                                                  freq_64,
+                                                  phase_64);
+                freq_sum_64 += freq_64[1]; 
+                if(txmonflg == true){
+                  printf("Track=1, ");
+                }
+              }else{
+                freq_64[0] = 0;
+                freq_64[1] = 0;
+                phase_64[0] = 0;
+                phase_64[1] = 0;
+                if(txmonflg == true){
+                  printf("Track=3, ");
+                }
+              } 
+              if(txmonflg == true){
+                printf("flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+                printf("phase=%ld, ", cmp_out_phase);
+                printf("freq[0]=%lld, freq[1]=%lld, freq_sum=%lld\n", freq_64[0], freq_64[1], freq_sum_64);
+                fflush(stdout);
+              }
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              pre_cmp_out_phase = cmp_out_phase;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+            }
+            break;
+          case DPLL_TRACKING2:
+            if(cmp_out_phase){
+              pre_cmp_out_phase = cmp_out_phase;
+              dpll_state = DPLL_TRACKING;
+              if(txmonflg == true){
+                printf("Track=2, flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+                printf("phase=%ld, ", cmp_out_phase);
+                printf("freq[0]=0, freq[1]=0, freq_sum=%lld\n", freq_sum_64);
+                fflush(stdout);
+              }
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              pre_cmp_out_phase = cmp_out_phase;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+            }
+            break;
+          case DPLL_TRACKING5:
+            if(cmp_out_phase){
+              pre_cmp_out_phase = cmp_out_phase;
+              dpll_state = DPLL_TRACKING;
+              if(txmonflg == true){
+                printf("Track=5, flame=%ld, delta_ref_smpl=%ld, delta_1pps_smpl=%ld, ", flm_cnt, cmp_out_delta_ref_smpl, cmp_out_delta_1pps_smpl);
+                printf("phase=%ld, ", cmp_out_phase);
+                printf("freq[0]=0, freq[1]=0, freq_sum=%lld\n", freq_sum_64);
+                fflush(stdout);
+              }
+              pre_delta_1pps_smpl = cmp_out_delta_1pps_smpl;
+              pre_cmp_out_phase = cmp_out_phase;
+              cmp_out_phase = 0;
+              cmp_out_delta_1pps_smpl = 0;
+              cmp_out_delta_ref_smpl = 0;
+            }
+            break;
+          default:
+            break;
+        }
+
+/* 24/01/16
+// T.Okada 23/08/20
+      time(&cur_time);
+//    } while(cur_time - start_time < rec_time);
+*/
+    } while(true);
+}
+
+static bool receive_object_reply(void)
+{
+  AudioObjReply reply_info;
+
+  AS_ReceiveObjectReply(MSGQ_AUD_APP, &reply_info);
+
+  return true;
+}
+
+/* ------------------------------------------------------------------------ */
+static bool create_audio_sub_system(bool is_enable = true)
+{
+  bool result = true;
+
+  /* Create Frontend. */
+
+  AsCreateMicFrontendParams_t frontend_create_param;
+  frontend_create_param.msgq_id.micfrontend = MSGQ_AUD_FRONTEND;
+  frontend_create_param.msgq_id.mng         = MSGQ_AUD_MGR;
+  frontend_create_param.msgq_id.dsp         = MSGQ_AUD_PREDSP;
+  frontend_create_param.pool_id.input       = S0_INPUT_BUF_POOL;
+  frontend_create_param.pool_id.output      = S0_NULL_POOL;
+  frontend_create_param.pool_id.dsp         = S0_PRE_APU_CMD_POOL;
+
+  result = AS_CreateMicFrontend(&frontend_create_param, NULL);
+  if (!result)
+    {
+      printf("Error: As_CreateMicFrontend() failure. system memory insufficient!\n");
+      return false;
+    }
+
+  /* Create Capture feature. */
+
+  AsCreateCaptureParam_t capture_create_param;
+  capture_create_param.msgq_id.dev0_req  = MSGQ_AUD_CAP;
+  capture_create_param.msgq_id.dev0_sync = MSGQ_AUD_CAP_SYNC;
+  capture_create_param.msgq_id.dev1_req  = 0xFF;
+  capture_create_param.msgq_id.dev1_sync = 0xFF;
+
+  result = AS_CreateCapture(&capture_create_param);
+  if (!result)
+    {
+      printf("Error: As_CreateCapture() failure. system memory insufficient!\n");
+      return false;
+    }
+
+
+  /* Create mixer feature. */
+
+  AsCreateOutputMixParams_t mix_param =
+  {
+    .msgq_id =
+    {
+      .mixer                   = MSGQ_AUD_OUTPUT_MIX,
+      .mng                     = MSGQ_AUD_APP,
+      .render_path0_filter_dsp = MSGQ_AUD_PFDSP0,
+      .render_path1_filter_dsp = MSGQ_AUD_PFDSP1,
+    },
+    .pool_id =
+    {
+      .render_path0_filter_pcm = S0_PF0_PCM_BUF_POOL,
+      .render_path1_filter_pcm = S0_PF1_PCM_BUF_POOL,
+      .render_path0_filter_dsp = S0_PF0_APU_CMD_POOL,
+      .render_path1_filter_dsp = S0_PF1_APU_CMD_POOL,
+    },
+  };
+
+  result = AS_CreateOutputMixer(&mix_param, NULL);
+
+  if (!result)
+    {
+      printf("Error: AS_CreateOutputMixer() failed. system memory insufficient!\n");
+      return false;
+    }
+
+  /* Create renderer feature. */
+
+  AsCreateRendererParam_t rend_param =
+  {
+    .msgq_id =
+    {
+      .dev0_req  = MSGQ_AUD_RND_PLY0,
+      .dev0_sync = MSGQ_AUD_RND_PLY0_SYNC,
+      .dev1_req  = MSGQ_AUD_RND_PLY1,
+      .dev1_sync = MSGQ_AUD_RND_PLY1_SYNC,
+    },
+  };
+
+  result = AS_CreateRenderer(&rend_param);
+
+  if (!result)
+    {
+      printf("Error: AS_CreateRenderer() failure. system memory insufficient!\n");
+      return false;
+    }
+
+  return result;
+}
+
+/* ------------------------------------------------------------------------ */
+static void deact_audio_sub_system(void)
+{
+  /* The following delete process is not executed when it is not initialized */
+
+  AS_DeleteMicFrontend();
+  AS_DeleteCapture();
+
+  AS_DeleteOutputMix();         /* Delete OutputMixer. */
+
+  AS_DeleteRenderer();          /* Delete Renderer. */
+
+  AS_DeleteMediaSynthesizer();  /* Delete Oscillator. */
+}
+
+/* ------------------------------------------------------------------------ */
+static bool activate_baseband(void)
+{
+  CXD56_AUDIO_ECODE error_code;
+
+//  printf("Enter: activate_baseband()\n");
+
+  /* Power on audio device */
+
+  error_code = cxd56_audio_poweron();
+
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_poweron() error! [%d]\n", error_code);
+      return false;
+    }
+
+  /* Activate OutputMixer */
+
+  AsActivateOutputMixer mixer_act =
+  {
+    .output_device = HPOutputDevice,
+    .mixer_type    = MainOnly,
+#ifdef CONFIG_EXAMPLES_AUDIO_OSCILLATOR_USEPOSTPROC
+    .post_enable   = PostFilterEnable,
+#else
+    .post_enable   = PostFilterDisable,
+#endif
+    .cb            = NULL,
+  };
+
+  AS_ActivateOutputMixer(OutputMixer0, &mixer_act);
+
+  if (!receive_object_reply())
+    {
+      return false;
+    }
+
+  AS_ActivateOutputMixer(OutputMixer1, &mixer_act);
+
+  return receive_object_reply();
+}
+
+/* ------------------------------------------------------------------------ */
+static bool deactivate_baseband(void)
+{
+  /* Deactivate MicFrontend*/
+
+  AsDeactivateMicFrontendParam  deact_param;
+
+  AS_DeactivateMicFrontend(&deact_param);
+
+  if (!receive_object_reply())
+    {
+      printf("AS_DeactivateMIcFrontend(0) error!\n");
+    }
+
+  /* Disable input */
+
+  if (cxd56_audio_dis_input() != CXD56_AUDIO_ECODE_OK)
+    {
+      return false;
+    }
+
+  /* Deactivate OutputMixer */
+
+  AsDeactivateOutputMixer mixer_deact;
+
+  AS_DeactivateOutputMixer(OutputMixer0, &mixer_deact);
+
+  if (!receive_object_reply())
+    {
+      printf("AS_DeactivateOutputMixer(0) error!\n");
+    }
+
+  AS_DeactivateOutputMixer(OutputMixer1, &mixer_deact);
+
+  if (!receive_object_reply())
+    {
+      printf("AS_DeactivateOutputMixer(1) error!\n");
+    }
+
+  CXD56_AUDIO_ECODE error_code;
+
+  /* Power off audio device */
+
+  error_code = cxd56_audio_poweroff();
+
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_poweroff() error! [%d]\n", error_code);
+      return false;
+    }
+
+  return true;
+}
+
+/* ------------------------------------------------------------------------ */
+static bool set_clkmode(void)
+{
+  CXD56_AUDIO_ECODE error_code;
+
+  error_code = cxd56_audio_set_clkmode(CXD56_AUDIO_CLKMODE_HIRES);
+
+
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_set_clkmode() error! [%d]\n", error_code);
+      return false;
+    }
+
+  error_code = cxd56_audio_poweroff();
+    if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_poweroff() error! [%d]\n", error_code);
+      return false;
+    }
+
+  
+  error_code = cxd56_audio_poweron();
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_poweron() error! [%d]\n", error_code);
+      return false;
+    }
+
+  return true;
+}
+
+/* ------------------------------------------------------------------------ */
+static bool init_libraries(void)
+{
+  int ret;
+  uint32_t addr = AUD_SRAM_ADDR;
+
+  /* Initialize shared memory.*/
+
+  ret = mpshm_init(&s_shm, 1, AUD_SRAM_SIZE);
+  if (ret < 0)
+    {
+      printf("Error: mpshm_init() failure. %d\n", ret);
+      return false;
+    }
+
+  ret = mpshm_remap(&s_shm, (void *)addr);
+  if (ret < 0)
+    {
+      printf("Error: mpshm_remap() failure. %d\n", ret);
+      return false;
+    }
+
+  /* Initalize MessageLib. */
+
+  err_t err = MsgLib::initFirst(NUM_MSGQ_POOLS, MSGQ_TOP_DRM);
+  if (err != ERR_OK)
+    {
+      printf("Error: MsgLib::initFirst() failure. 0x%x\n", err);
+      return false;
+    }
+
+  err = MsgLib::initPerCpu();
+  if (err != ERR_OK)
+    {
+      printf("Error: MsgLib::initPerCpu() failure. 0x%x\n", err);
+      return false;
+    }
+
+  void* mml_data_area = translatePoolAddrToVa(MEMMGR_DATA_AREA_ADDR);
+  err = Manager::initFirst(mml_data_area, MEMMGR_DATA_AREA_SIZE);
+  if (err != ERR_OK)
+    {
+      printf("Error: Manager::initFirst() failure. 0x%x\n", err);
+      return false;
+    }
+
+  err = Manager::initPerCpu(mml_data_area, static_pools, pool_num, layout_no);
+  if (err != ERR_OK)
+    {
+      printf("Error: Manager::initPerCpu() failure. 0x%x\n", err);
+      return false;
+    }
+
+  /* Create static memory pool of VoiceCall. */
+
+  const uint8_t sec_no = AUDIO_SECTION;
+  const NumLayout layout_no = MEM_LAYOUT_OSCILLATOR;
+  void* work_va = translatePoolAddrToVa(S0_MEMMGR_WORK_AREA_ADDR);
+  const PoolSectionAttr *ptr  = &MemoryPoolLayouts[AUDIO_SECTION][layout_no][0];
+  err = Manager::createStaticPools(sec_no,
+                                   layout_no,
+                                   work_va,
+                                   S0_MEMMGR_WORK_AREA_SIZE,
+                                   ptr);
+  if (err != ERR_OK)
+    {
+      printf("Error: Manager::createStaticPools() failure. %d\n", err);
+      return false;
+    }
+
+  return true;
+}
+
+/* ------------------------------------------------------------------------ */
+static bool finalize_libraries(void)
+{
+  /* Finalize MessageLib. */
+
+  MsgLib::finalize();
+
+  /* Destroy static pools. */
+
+  MemMgrLite::Manager::destroyStaticPools(AUDIO_SECTION);
+
+  /* Finalize memory manager. */
+
+  MemMgrLite::Manager::finalize();
+
+  /* Destroy shared memory. */
+
+  int ret = mpshm_detach(&s_shm);
+
+  if (ret < 0)
+    {
+      printf("Error: mpshm_detach() failure. %d\n", ret);
+      return false;
+    }
+
+  ret = mpshm_destroy(&s_shm);
+
+  if (ret < 0)
+    {
+      printf("Error: mpshm_destroy() failure. %d\n", ret);
+      return false;
+    }
+
+  return true;
+}
+
+/****************************************************************************
+ * public Functions
+ ****************************************************************************/
+
+bool app_initialize(void)
+{
+  bool  ret = false;
+
+  /* First, initialize the shared memory and memory utility used by AudioSubSystem. */
+
+  if (!init_libraries())
+    {
+      printf("Error: init_libraries() failure.\n");
+    }
+
+  /* Next, Create the features used by AudioSubSystem. */
+
+  else if (!create_audio_sub_system())
+    {
+      printf("Error: act_audiosubsystem() failure.\n");
+    }
+
+  /* Change AudioSubsystem to Ready state so that I/O parameters can be changed. */
+
+  else if (!activate_baseband())
+    {
+      printf("Error: activate_baseband() failure.\n");
+    }
+
+    /* Initialize simple fifo. */
+
+  else if (!app_init_simple_fifo())
+    {
+      printf("Error: app_init_simple_fifo() failure.\n");
+    }
+
+  /* Set the initial gain of the microphone to be used. */
+
+  else if (!app_init_mic_gain())
+    {
+      printf("Error: app_init_mic_gain() failure.\n");
+    }
+
+  /* Set audio clock mode. */
+
+  else if (!set_clkmode())
+    {
+      printf("Error: set_clkmode() failure.\n");
+    }
+
+  /* Set frontend operation mode. */
+
+  else if (!app_set_frontend())
+    {
+      printf("Error: app_set_frontend() failure.\n");
+    }
+
+  /* Initialize frontend. */
+
+  if (!app_init_frontend())
+    {
+      printf("Error: app_init_frontend() failure.\n");
+    }
+  else
+    {
+      /* Complete! */
+
+      ret = true;
+    }
+
+//  printf("Exit: app_initialize()\n");
+
+  return ret;
+}
+
+/* ------------------------------------------------------------------------ */
+void app_finalize(void)
+{
+  /* Deactivate baseband */
+
+  if (!deactivate_baseband())
+    {
+      printf("Error: deactivate_baseband() failure.\n");
+    }
+
+  /* Deactivate the features used by AudioSubSystem. */
+
+  deact_audio_sub_system();
+
+  /* finalize the shared memory and memory utility used by AudioSubSystem. */
+
+  if (!finalize_libraries())
+    {
+      printf("Error: finalize_libraries() failure.\n");
+    }
+}
+
+/* ------------------------------------------------------------------------ */
+bool app_set_volume(int master_db)
+{
+  /* Set volume to audio driver */
+
+  CXD56_AUDIO_ECODE error_code;
+
+  error_code = cxd56_audio_set_vol(CXD56_AUDIO_VOLID_MIXER_OUT, master_db);
+
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_set_vol() error! [%d]\n", error_code);
+      return false;
+    }
+
+  error_code = cxd56_audio_set_vol(CXD56_AUDIO_VOLID_MIXER_IN1, 0);
+
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_set_vol() error! [%d]\n", error_code);
+      return false;
+    }
+
+  error_code = cxd56_audio_set_vol(CXD56_AUDIO_VOLID_MIXER_IN2, 0);
+
+  if (error_code != CXD56_AUDIO_ECODE_OK)
+    {
+      printf("cxd56_audio_set_vol() error! [%d]\n", error_code);
+      return false;
+    }
+
+  return true;
+}
+
+/* ------------------------------------------------------------------------ */
+bool app_init_postproc(uint8_t  channel_num,
+                       uint8_t  bit_width,
+                       uint32_t sampling_rate)
+{
+#ifdef CONFIG_EXAMPLES_AUDIO_OSCILLATOR_USEPOSTPROC
+
+  AsInitPostProc  init;
+  InitParam       initpostcmd;
+
+  initpostcmd.input_channel_num = channel_num;
+
+  init.addr = reinterpret_cast<uint8_t *>(&initpostcmd);
+  init.size = sizeof(initpostcmd);
+
+  AS_InitPostprocOutputMixer(OutputMixer0, &init);
+
+  if (!receive_object_reply())
+    {
+      return false;
+    }
+
+  AS_InitPostprocOutputMixer(OutputMixer1, &init);
+
+  return receive_object_reply();
+
+#else
+  return true;
+#endif
+}

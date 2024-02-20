@@ -33,6 +33,28 @@
  *
  ****************************************************************************/
 
+// T.Okada 23/09/12
+//
+// Modified sdk/modules/audio/include/apus/apu_cmd.h
+//   typedef int64_t SetOscCmdFreqFine;
+//   typedef int64_t SetOscCmdPhase;
+//
+//   struct SetOscCmdFreqPhase
+//   {
+//     SetOscCmdFreqFine delta_freq;
+//     SetOscCmdPhase phase;
+//   };
+//
+// Modified sdk/modules/include/audio/audio_synthesizer_api.h
+//   typedef struct
+//   {
+//     int64_t              delta_freq;
+//     int64_t              phase;
+//   } AsSetSynthesizer;
+// 
+//   bool AS_UpdateFreqPhaseMediaSynthesizer(FAR AsSetSynthesizer *set_param);
+//
+
 /****************************************************************************
  * Included Files
  ****************************************************************************/
@@ -42,34 +64,32 @@
 #include <arch/board/board.h>
 #include "oscillator.h"
 #include "audio/audio_synthesizer_api.h"
-#include "audio_synthesizer_melody.h"
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
+/* Audio output volume setting */
 /* Default Volume. -20dB */
+#define VOLUME                80
 
-//#define VOLUME                -160
-#define VOLUME                -42
-
-/* Maximum number of channels */
-
-//#define CHANNEL_NUMBER        8
+/* Number of audio output channels */
 #define CHANNEL_NUMBER        2
 
 /* Oscillator parameter */
-
 #define OSC_CH_NUM            CHANNEL_NUMBER
 #define OSC_BIT_LEN           AS_BITLENGTH_16
-//#define OSC_SAMPLING_RATE     AS_SAMPLINGRATE_48000
-//#define OSC_SAMPLE_SIZE       240
 #define OSC_SAMPLING_RATE     AS_SAMPLINGRATE_192000
-#define OSC_SAMPLE_SIZE       384
-#define OSC_EFFECT_ATTACK     10
-#define OSC_EFFECT_DECAY      50
-#define OSC_EFFECT_SUSTAIN    100
-#define OSC_EFFECT_RELEASE    200
+#define OSC_SAMPLE_SIZE       768
+
+/* Ultrasonic wave frequency [Hz] */
+
+#define ULTRASONIC_FREQ (40000) // 40kHz
+
+/* Digital PLL reference sin wave frequency [Hz]*/
+
+#define REF_SIN_FREQ (200) // 200Hz
+
 
 /****************************************************************************
  * Private Function Prototypes
@@ -95,15 +115,29 @@ extern bool app_stop_synthesizer(void);
 extern bool app_deactive_synthesizer(void);
 extern bool app_set_frequency_synthesizer(uint8_t  channel_number,
                                           uint32_t frequency[]);
-extern bool app_set_envelope_synthesizer(uint8_t  channel_no,
-                                         uint16_t attack,
-                                         uint16_t decay,
-                                         uint16_t sustain,
-                                         uint16_t release);
 extern bool app_init_synthesizer(uint8_t  channel_num,
                                  uint8_t  bit_width,
                                  uint32_t sampling_rate,
                                  uint16_t sample_size);
+
+/* Mic inputs */
+
+extern bool app_start_capture(void);
+extern bool app_stop_capture(bool rxmonflg);
+extern bool app_stop_micfrontend(void);
+extern void app_recorde_process(bool txmonflg, bool rxmonflg);
+
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/* Monitor output setting flags */
+
+static bool txmonflg = true;
+static bool rxmonflg = true;
+
+static uint32_t fs[CHANNEL_NUMBER] = {ULTRASONIC_FREQ, REF_SIN_FREQ};
 
 /****************************************************************************
  * Private Functions
@@ -111,7 +145,6 @@ extern bool app_init_synthesizer(uint8_t  channel_num,
 
 static void app_main_process(void)
 {
-  p_node = node;
 
  /* Set output mute. */
 
@@ -128,43 +161,23 @@ static void app_main_process(void)
       return;
     }
 
-  /* Try the effect on channel 0 */
+  if (!app_set_frequency_synthesizer(CHANNEL_NUMBER, fs))
+    {
+      printf("Error: app_set_frequency_synthesizer() failure.\n");
+      return;
+    }
 
-  app_set_envelope_synthesizer(0,
-                               OSC_EFFECT_ATTACK,
-                               OSC_EFFECT_DECAY,
-                               OSC_EFFECT_SUSTAIN,
-                               OSC_EFFECT_RELEASE);
+  /* Start Capture operation */
+  if (!app_start_capture())
+    {
+      printf("Error: app_start_capture() failure.\n");
+      return;
+    }
 
   printf("Running...\n");
 
-  for (; p_node->fs[0] != M_END; p_node++)
-    {
-      /* Set frequency. */
+  app_recorde_process(txmonflg, rxmonflg);
 
-      if (!app_set_frequency_synthesizer(CHANNEL_NUMBER,
-                                         p_node->fs))
-        {
-          printf("Error: app_set_frequency_synthesizer() failure.\n");
-          break;
-        }
-
-      usleep(300 * 1000);
-    }
-
- /* Set output mute. */
-
-  if (board_external_amp_mute_control(true) != OK)
-    {
-      printf("Error: board_external_amp_mute_control(true) failuer.\n");
-    }
-
-  /* Stop synthesizer operation. */
-
-  if (!app_stop_synthesizer())
-    {
-      printf("Error: app_stop_operation() failure.\n");
-    }
 }
 
 /****************************************************************************
@@ -173,7 +186,32 @@ static void app_main_process(void)
 
 extern "C" int main(int argc, FAR char *argv[])
 {
-  printf("Start AudioOscillator example\n");
+  printf("Start UAP example\n");
+  printf("ver.24/02/19 23:15\n");
+
+  if( argc > 1){
+    if(strcmp(argv[1], "TX") == 0){
+      txmonflg = true;
+      rxmonflg = false;
+    }else if(strcmp(argv[1], "RX") == 0){
+      txmonflg = false;
+      rxmonflg = true;
+    }else if(strcmp(argv[1], "MONOFF") == 0){
+      txmonflg = false;
+      rxmonflg = false;
+    }else{
+      txmonflg = true;
+      rxmonflg = true;
+    }
+    if(argc > 2){
+      fs[0] = atol(argv[2]);
+      printf("output frequency=%ld\n", fs[0]);
+    }
+  }else{
+    txmonflg = true;
+    rxmonflg = true;
+  }
+
 
   /* Waiting for SD card mounting. */
 
@@ -190,7 +228,7 @@ extern "C" int main(int argc, FAR char *argv[])
 
   else if (!app_create_synthesizer())
     {
-      printf("Error: app_initialize() failure.\n");
+      printf("Error: app_create_tynthesizer() failure.\n");
     }
 
   else if (!app_init_postproc(OSC_CH_NUM,
@@ -226,19 +264,6 @@ extern "C" int main(int argc, FAR char *argv[])
 
       app_main_process();
     }
-
-  /* Unload synthesizer operation. */
-
-  if (!app_deactive_synthesizer())
-    {
-      printf("Error: app_deactive_synthesizer failuer.\n");
-    }
-
-  /* Finalize */
-
-  app_finalize();
-
-  printf("Exit AudioOscillator example\n");
 
   return 0;
 }

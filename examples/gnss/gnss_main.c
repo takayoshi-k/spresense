@@ -46,6 +46,9 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <arch/chip/gnss.h>
+#include <arch/board/board.h>
+#include <arch/chip/pin.h>
+#include <string.h>
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -54,6 +57,9 @@
 #define GNSS_POLL_FD_NUM          1
 #define GNSS_POLL_TIMEOUT_FOREVER -1
 #define MY_GNSS_SIG               18
+
+#define LED0 PIN_I2S1_BCK
+#define LED1 PIN_I2S1_LRCK
 
 /****************************************************************************
  * Private Types
@@ -141,7 +147,7 @@ static void double_to_dmf(double x, struct cxd56_gnss_dms_s * dmf)
  *
  ****************************************************************************/
 
-static int read_and_print(int fd)
+static int read_and_print(int fd, bool monflg)
 {
   int ret;
   struct cxd56_gnss_dms_s dmf;
@@ -167,29 +173,52 @@ static int read_and_print(int fd)
 
   /* Print POS data. */
 
+  if(monflg == true){
+    printf("numsv=%d, numsv_tracking=%d, pos_fixmode=%d, ", posdat.receiver.numsv, posdat.receiver.numsv_tracking, posdat.receiver.pos_fixmode);
+  }
+  if(posdat.receiver.pos_fixmode == CXD56_GNSS_PVT_POSFIX_2D){
+    board_gpio_write(LED0, 1);
+    board_gpio_write(LED1, 0);
+    board_gpio_write(PIN_EMMC_DATA3, 1);
+    board_gpio_write(PIN_EMMC_DATA2, 0);
+  }else if(posdat.receiver.pos_fixmode == CXD56_GNSS_PVT_POSFIX_3D){
+    board_gpio_write(LED0, 1);
+    board_gpio_write(LED1, 1);
+    board_gpio_write(PIN_EMMC_DATA3, 1);
+    board_gpio_write(PIN_EMMC_DATA2, 1);
+  }else{
+    board_gpio_write(LED0, 0);
+    board_gpio_write(LED1, 0);
+    board_gpio_write(PIN_EMMC_DATA3, 0);
+    board_gpio_write(PIN_EMMC_DATA2, 0);
+  }
+
   /* Print time. */
 
-  printf(">Hour:%d, minute:%d, sec:%d, usec:%ld\n",
+  if(monflg == true){
+   printf(">Hour:%d, minute:%d, sec:%d, usec:%ld\n",
          posdat.receiver.time.hour, posdat.receiver.time.minute,
          posdat.receiver.time.sec, posdat.receiver.time.usec);
+  }
   if (posdat.receiver.pos_fixmode != CXD56_GNSS_PVT_POSFIX_INVALID)
     {
       /* 2D fix or 3D fix.
        * Convert latitude and longitude into dmf format and print it. */
 
       posfixflag = 1;
-
+/*
       double_to_dmf(posdat.receiver.latitude, &dmf);
       printf(">LAT %d.%d.%04ld\n", dmf.degree, dmf.minute, dmf.frac);
 
       double_to_dmf(posdat.receiver.longitude, &dmf);
       printf(">LNG %d.%d.%04ld\n", dmf.degree, dmf.minute, dmf.frac);
+*/
     }
   else
     {
       /* No measurement. */
 
-      printf(">No Positioning Data\n");
+//      printf(">No Positioning Data\n");
     }
 
 _err:
@@ -272,9 +301,30 @@ int main(int argc, FAR char *argv[])
   sigset_t mask;
   struct cxd56_gnss_signal_setting_s setting;
 
+  bool monflg = true;
+
   /* Program start. */
 
   printf("Hello, GNSS(USE_SIGNAL) SAMPLE!!\n");
+
+  if( argc > 1){
+    printf("%s\n", argv[1]);
+    if(strcmp(argv[1], "MONOFF")==0){
+      monflg = false;
+    }else{
+      monflg = true;
+    }
+  }
+
+  /* T.Okada 23/09/05  GPIO setting for GNSS satus indicator */
+  board_gpio_config(LED0, 0, false, false, PIN_FLOAT); 
+  board_gpio_config(LED1, 0, false, false, PIN_FLOAT); 
+  board_gpio_config(PIN_EMMC_DATA2, 0, false, false, PIN_FLOAT); 
+  board_gpio_config(PIN_EMMC_DATA3, 0, false, false, PIN_FLOAT); 
+  board_gpio_write(LED0, 0);
+  board_gpio_write(LED1, 0);
+  board_gpio_write(PIN_EMMC_DATA2, 0);
+  board_gpio_write(PIN_EMMC_DATA3, 0);
 
   /* Get file descriptor to control GNSS. */
 
@@ -323,7 +373,7 @@ int main(int argc, FAR char *argv[])
   /* Initial positioning measurement becomes cold start if specified hot
    * start, so working period should be long term to receive ephemeris. */
 
-  posperiod  = 200;
+  posperiod  = 3600;
   posfixflag = 0;
 
   /* Start GNSS. */
@@ -337,6 +387,15 @@ int main(int argc, FAR char *argv[])
   else
     {
       printf("start GNSS OK\n");
+    }
+
+  /* Set 1pps signal output enable*/
+
+  ret = ioctl(fd, CXD56_GNSS_IOCTL_SET_1PPS_OUTPUT, 1);
+  if (ret < 0)
+    {
+      printf("1ps outpur error\n");
+      goto _err;
     }
 
   do
@@ -353,7 +412,7 @@ int main(int argc, FAR char *argv[])
 
       /* Read and print POS data. */
 
-      ret = read_and_print(fd);
+      ret = read_and_print(fd, monflg);
       if (ret < 0)
         {
           break;
@@ -363,10 +422,11 @@ int main(int argc, FAR char *argv[])
         {
           /* Count down started after POS fixed. */
 
-          posperiod--;
+//          posperiod--;
         }
     }
-  while (posperiod > 0);
+  while(true);
+//  while (posperiod > 0);
 
   /* Stop GNSS. */
 

@@ -941,6 +941,32 @@ bool AS_SetMediaSynthesizer(FAR AsSetSynthesizer *set_param)
   return true;
 }
 
+
+bool AS_UpdateFreqPhaseMediaSynthesizer(FAR AsSetSynthesizer *set_param)
+{
+  /* Update frequency & phase*/
+
+  SynthesizerObject *obj = SynthesizerObject::get_instance();
+  if (obj == NULL)
+    {
+      return false;
+    }
+
+  SynthesizerCommand cmd;
+
+  cmd.set_param.channel_no  = set_param->channel_no;
+  cmd.set_param.type        = Apu::OscTypeUpdateFreqPhase;
+  cmd.set_param.freq_phase.delta_freq  = set_param->delta_freq;
+  cmd.set_param.freq_phase.phase       = set_param->phase;
+
+  err_t er = obj->send(MSG_AUD_SYN_CMD_SET, cmd);
+
+  F_ASSERT(er == ERR_OK);
+
+  return true;
+}
+
+
 /* ------------------------------------------------------------------------ */
 bool AS_ReleaseMediaSynthesizer(bool is_end)
 {

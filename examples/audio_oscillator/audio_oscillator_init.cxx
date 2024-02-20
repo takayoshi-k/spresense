@@ -237,7 +237,9 @@ static bool set_clkmode(void)
 {
   CXD56_AUDIO_ECODE error_code;
 
-  error_code = cxd56_audio_set_clkmode(CXD56_AUDIO_CLKMODE_NORMAL);
+//  error_code = cxd56_audio_set_clkmode(CXD56_AUDIO_CLKMODE_NORMAL);
+  error_code = cxd56_audio_set_clkmode(CXD56_AUDIO_CLKMODE_HIRES);
+
 
   if (error_code != CXD56_AUDIO_ECODE_OK)
     {

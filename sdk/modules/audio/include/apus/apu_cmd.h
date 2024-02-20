@@ -208,6 +208,7 @@ enum SetOscCmdType
   OscTypeFrequency = 1, /* 0000 0001 */
   OscTypeEnvelope  = 2, /* 0000 0010 */
   OscTypeWave      = 4, /* 0000 0100 */
+  OscTypeUpdateFreqPhase = 8, /* 0000 1000 */
 };
 
 struct SetOscCmdEnv
@@ -218,7 +219,18 @@ struct SetOscCmdEnv
   uint16_t      release;         /**< Release of data */
 };
 
-typedef int32_t SetOscCmdFreq;
+//typedef int32_t SetOscCmdFreq;
+typedef uint32_t SetOscCmdFreq;
+
+// T.Okada 23/08/21
+typedef int64_t SetOscCmdFreqFine;
+typedef int64_t SetOscCmdPhase;
+
+struct SetOscCmdFreqPhase
+{
+  SetOscCmdFreqFine *delta_freq;
+  SetOscCmdPhase *phase;
+};
 
 struct ApuInitOscCmd
 {
@@ -262,10 +274,13 @@ struct ApuSetOscCmd
 public:
   uint8_t       channel_no;      /**< Channel number of data */
   uint8_t       type;            /**< Type of parameter to set */
-  SetOscCmdFreq frequency;       /**< frequency of genarated wave */
+//  SetOscCmdFreq frequency;       /**< frequency of genarated wave */
+  SetOscCmdFreq *frequency;       /**< frequency of genarated wave */
+  SetOscCmdFreqPhase freq_phase; /**< update frequency & phase */
   SetOscCmdEnv  env;             /**< envelope of data */
   DebugDumpInfo debug_dump_info; /**< Debug dump information */
 };
+
 
 /****************************************************************************/
 /**
@@ -716,6 +731,8 @@ public:
                                /**<  (including at least buffer address */
                                /**<  or pointer and buffer size) */
 };
+
+
 
 /****************************************************************************/
 /**

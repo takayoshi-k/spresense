@@ -40,6 +40,8 @@
  * Included Files
  ****************************************************************************/
 
+#include <stdio.h>
+
 #include "memutils/os_utils/chateau_osal.h"
 #include "memutils/message/Message.h"
 #include "memutils/s_stl/queue.h"
@@ -79,6 +81,7 @@ typedef union
   AsActivateSynthesizer  act_param;
   AsInitSynthesizerParam init_param;
   SetOscParam            set_param;
+//  UpdateOscParam         update_param; // T.Okada 23/08/20
 
 } SynthesizerCommand;
 

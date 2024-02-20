@@ -1,0 +1,31 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config EXAMPLES_UAP_RX
+	tristate "Underwater Acoustic Positioning System RX example"
+	default n
+	depends on CXD56_AUDIO
+	---help---
+		Enable the Underwater Acoustic Positioning System RX example
+
+if EXAMPLES_UAP_RX
+
+config EXAMPLES_UAP_RX_PROGNAME
+	string "Program name"
+	default "uap_rx"
+
+config EXAMPLES_UAP_RX_PRIORITY
+	int "Audio capture & oscillator task priority"
+	default 100
+
+config EXAMPLES_UAP_RX_STACKSIZE
+	int "Audio capture & oscillator stack size"
+	default 2048
+
+config EXAMPLES_AUDIO_OSCILLATOR_USEPOSTPROC
+    bool "Use Posstprocess"
+    default n
+
+endif

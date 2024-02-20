@@ -81,6 +81,8 @@
 
 #define LENGTH_STOP_SYNTHESIZER     2
 
+// T.Okada 23/10/20
+#define MAX_CHANNEL_NUMBER 2
 
 /** @} */
 
@@ -259,7 +261,8 @@ typedef struct
 
   /*! \brief [in] Sound frequency */
 
-  uint32_t              frequency;
+//  uint32_t              frequency;
+  uint32_t              frequency[MAX_CHANNEL_NUMBER];
 
   /*! \brief [in] attack */
 
@@ -274,6 +277,10 @@ typedef struct
   /*! \brief [in] release */
 
   uint16_t              release;
+
+// T.Okada 23/08/21
+  int64_t              delta_freq[MAX_CHANNEL_NUMBER];
+  int64_t              phase[MAX_CHANNEL_NUMBER];
 
 } AsSetSynthesizer;
 
@@ -405,6 +412,16 @@ bool AS_StopMediaSynthesizer(void);
  */
 
 bool AS_SetFrequencyMediaSynthesizer(FAR AsSetSynthesizer *set_param);
+
+/**
+ * T.Okada 23/08/20
+ * @brief Update Frequency & Phase of audio synthesizer 
+ *
+ * @retval     true  : success
+ * @retval     false : failure
+ */
+
+bool AS_UpdateFreqPhaseMediaSynthesizer(FAR AsSetSynthesizer *set_param);
 
 /**
  * @brief Set audio synthesizer at envelope

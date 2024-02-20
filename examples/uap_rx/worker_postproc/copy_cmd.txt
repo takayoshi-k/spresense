@@ -1,0 +1,3 @@
+copy /y \\wsl.localhost\Ubuntu-20.04\home\takahiro\spresense.v3.1.0\examples\audio_cap_osc\worker_postproc\POSTPROC D:\BIN
+copy /y \\wsl.localhost\Ubuntu-20.04\home\takahiro\spresense.v3.1.0\examples\audio_cap_osc\worker_oscillator\OSCPROC D:\BIN
+
