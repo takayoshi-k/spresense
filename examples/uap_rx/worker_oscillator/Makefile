@@ -36,21 +36,15 @@
 include $(APPDIR)/Make.defs
 include $(SDKDIR)/Make.defs
 
-ifeq ($(WINTOOL),y)
-LIB_DIR = "${shell cygpath -w lib}"
-else
 LIB_DIR = "lib"
-endif
 
 VPATH = userproc/src
 
 LDLIBPATH += -L $(LIB_DIR)
-
 LDLIBS += $(ASMPWORKER_LIB)
 
 # Setup to build and linking CMSIS DSP library
 
-CMSIS_DSP = libarm_cortexM4lf_math$(LIBEXT)
 CMSIS_DSP_DIR = $(EXTERNAL_DIR)$(DELIM)cmsis$(DELIM)dsp
 LDLIBPATH += -L $(CMSIS_DSP_DIR)
 LDLIBS += -larm_cortexM4lf_math
@@ -78,7 +72,6 @@ all: $(WORKER_ELF)
 lib:
 	$(Q) $(MAKE) -C lib TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV)
 	$(Q) $(MAKE) -C $(CMSIS_DSP_DIR) TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV)
-	$(Q) $(MAKE) -C $(CMSIS_DSP_DIR) TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV) archive
 
 # Complile
 
