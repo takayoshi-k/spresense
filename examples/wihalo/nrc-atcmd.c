@@ -238,6 +238,7 @@ int nrc_atcmd_send_cmd (const char *fmt, ...)
 
 	len += snprintf(cmd + len, ATCMD_MSG_LEN_MAX - len, "\r\n");
 
+  printf("+++ ATCMD: %s +++++\n", cmd);
 	nrc_atcmd_init_return();
 	if(flags & FLAGS_SHOW_ATTX)
 		WHLOG("at: %s",cmd);
@@ -301,6 +302,7 @@ static int nrc_atcmd_recv_info (char *msg, int len)
 	return 0;
 }
 
+int handshake_value;
 static int nrc_atcmd_recv_event (char *msg, int len)
 {
 	const char *name[ATCMD_EVENT_NUM] =
@@ -360,6 +362,11 @@ static int nrc_atcmd_recv_event (char *msg, int len)
 	}
 	WHLOG("Event - %s processed\n", argv[0]);
 	
+  if (!strncmp(argv[0], "CONNECT_SUCCESS", 15))
+    {
+      handshake_value = 1;
+    }
+
 	for (event = ATCMD_EVENT_START ; event < ATCMD_EVENT_END ; event++)
 	{
 		if (strcmp(argv[0], "TCP_ERROR") == 0)
@@ -370,12 +377,12 @@ static int nrc_atcmd_recv_event (char *msg, int len)
 			if (g_atcmd_info.cb.event) {
 				g_atcmd_info.cb.event(event, argc - 1, argv + 1);
 			}
+      // handshake_value++;
 			return 0;
 		}
 	}
 
-
-	
+  // handshake_value++;
 	return 0;
 }
 

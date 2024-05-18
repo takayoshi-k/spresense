@@ -9,6 +9,7 @@
 
 #include <nuttx/video/video.h>
 #include "jpeglib.h"
+#include "camera_apis.h"
 
 #include "wihalo.h"
 #include "camera_bkgd.h"
@@ -32,14 +33,26 @@ uint32_t rx_total;
 int cam_sck, srv_sck;
 static uint8_t stop_app_thread;
 
+#if 1
+#define SEND_JPEG
+#endif
+
+#ifdef SEND_JPEG
+#define IMGSIZE_W (640)
+#define IMGSIZE_H (480)
+#define PIX_BYTES (2)
+#define IMG_BYTES  (IMGSIZE_W * IMGSIZE_H * PIX_BYTES / 4)
+#else
 #define IMGSIZE_W (320)
 #define IMGSIZE_H (240)
 #define PIX_BYTES (2)
 #define IMG_BYTES  (IMGSIZE_W * IMGSIZE_H * PIX_BYTES)
+#endif
 
 struct camera_data_s
 {
-  uint8_t img[IMG_BYTES];
+  // uint8_t img[IMG_BYTES];
+  uint8_t img[4];
   char start_str[8]; /* C A M D A T A \0 */
   union {
     int jpgsz;
@@ -50,10 +63,6 @@ struct camera_data_s
   uint8_t line[IMGSIZE_W * PIX_BYTES];
 };
 static struct camera_data_s __attribute__ ((aligned(64))) g_camdata;
-
-#if 0
-#define SEND_JPEG
-#endif
 
 #ifdef SEND_JPEG
 #define START_STR "JPGDATA"
@@ -150,6 +159,7 @@ static int stream_camdata(int fd)
   int jpg_len;
   char *data = START_STR;
   struct v4l2_buffer buf;
+  char *jpgdata;
 
 	printf("Starting CAMERA streaming\n");
 	if(wh_start_passmode(cam_sck) < 0) {
@@ -157,6 +167,7 @@ static int stream_camdata(int fd)
 		return 0;
 	}
 
+#if 0
   while (1)
     {
       memset(&buf, 0, sizeof(struct v4l2_buffer));
@@ -171,6 +182,7 @@ static int stream_camdata(int fd)
       g_camdata.rem_size = buf.bytesused;
 #else
       g_camdata.rem_size = IMG_BYTES;
+      wh_send_tcp_data(cam_sck, &g_camdata.rem_size, sizeof(int));
 #endif
 
       while (g_camdata.rem_size)
@@ -182,6 +194,34 @@ static int stream_camdata(int fd)
 
       ioctl(fd, VIDIOC_QBUF, (unsigned long)&buf);
     }
+#else
+  while (1)
+    {
+      get_camimage(fd, &buf);
+
+      /* Send IMG Type */
+		  wh_send_tcp_data(cam_sck, data, 8);
+
+      g_camdata.rem_size = buf.bytesused;
+      g_camdata.sz.jpgsz = buf.bytesused;
+      jpgdata = (char *)buf.m.userptr;
+
+      /* Send size */
+      wh_send_tcp_data(cam_sck, &g_camdata.rem_size, sizeof(int));
+
+      while (g_camdata.rem_size)
+        {
+          sz = g_camdata.rem_size >= DBUF_LEN ? DBUF_LEN :
+                                                g_camdata.rem_size;
+		      wh_send_tcp_data(cam_sck,
+                           &jpgdata[g_camdata.sz.jpgsz - g_camdata.rem_size],
+                           sz);
+          g_camdata.rem_size -= sz;
+        }
+
+      release_camimage(fd, &buf);
+    }
+#endif
 
 	wh_end_passmode();
   return 1;
@@ -193,13 +233,20 @@ int app_main(int argc, FAR char *argv[])
 	int started = 0;
 
 	exiting = 0;
+printf("Check param first...\n");
+cli_set_show();
 	wh_initialize();
+printf("Check param after wh_initialize()...\n");
+cli_set_show();
 	wh_set_loglevel(1);
 	wh_close_socket(-1);
 
 	srv_sck = cam_sck = echo_sck = -1;
 
 	//printf("STACK: %d\n", CONFIG_EXAMPLES_WHTEST_STACKSIZE);
+
+printf("Check param before main loop...\n");
+cli_set_show();
 
 	while (1) {
 		int ch = getchar();
@@ -633,7 +680,7 @@ static void *server_thread_fn(void *a)
 
 	if(run) { printf("Already running\n"); return NULL;}
 	stop_app_thread = 0;
-  g_camfd = camera_initialize();
+  g_camfd = initialize_voide_device();
 
 	do {
 #if 0

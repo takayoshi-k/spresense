@@ -21,7 +21,6 @@
 #include "wihalo.h"
 
 
-
 // Macros
 #define SET_FLAG_BIT(bno,b)             flags = (flags & (~(1<<bno)) ) | ( (!(!b)) <<bno)
 
@@ -192,6 +191,8 @@ void init_leds(void)
 {
   SETUP_PIN_OUTPUT( PIN_LED0 );
   SETUP_PIN_OUTPUT( PIN_LED1 );
+  SETUP_PIN_OUTPUT( PIN_LED2 );
+  SETUP_PIN_OUTPUT( PIN_LED3 );
 }
 
 int icnt;
@@ -608,6 +609,17 @@ void printer(char *msg, char *b, int len) {
 	pthread_mutex_unlock(&logsem);
 }
 
+#define SETTING_SSID  "south_2024AHPC"
+#define SETTING_FREQ (925.5f)
+#define SETTING_CONT "JP"
+#define SETTING_SEQU "open"
+#define SETTING_PASS "none"
+#define SETTING_IPAD "192.168.200.10"
+#define SETTING_MASK "255.255.255.0"
+#define SETTING_GATE "192.168.200.1"
+#define SETTING_DHCP (0)
+#define SETTING_SEEN (0)
+
 
 typedef struct halo_params_t_ {
     char        ssid[32];
@@ -622,7 +634,19 @@ typedef struct halo_params_t_ {
     int         security_enable;
 } halo_params_t;
 
-halo_params_t haloconfig = {"wihaloap", 918.5,"US", "open","passwordhalo","192.168.1.1","255.255.255.0", "192.168.1.1",1,0};
+// halo_params_t haloconfig = {"south_2024AHPC", 925.5,"JP", "open","passwordhalo","192.168.200.20","255.255.255.0", "192.168.200.1",0,0};
+halo_params_t haloconfig = {
+  SETTING_SSID,
+  SETTING_FREQ,
+  SETTING_CONT,
+  SETTING_SEQU,
+  SETTING_PASS,
+  SETTING_IPAD,
+  SETTING_MASK,
+  SETTING_GATE,
+  SETTING_DHCP,
+  SETTING_SEEN
+};
 
 
 int cli_set_ssid(void)
@@ -850,44 +874,89 @@ int setup_access_point() {
     return e;
 }
 
+extern int handshake_value;
+
 int setup_station() {
 
     char atsetup[512];
     int res;
     int e = -1;
     int at_tm = at_timeout;
+    int disconnect = 1;
+
+    printf("Set country code.\n");
+    res = nrc_atcmd_send_cmd("AT+WCOUNTRY=\"%s\"", haloconfig.country_code);
+    if(res) { printf("Fail WCOUNTRY\n"); }
+
+#if 1
+    printf("Disconnect at first.\n");
+    res = nrc_atcmd_send_cmd("AT+WDISCONN");
+    if(res != 0) { printf("Fail WDISCONN\n"); }
+#endif
 
     printf("Connecting..\n");
     wh_set_loglevel(1);
     do {
         at_timeout = 20;
+        printf("Try %d\n", at_timeout);
         //res = nrc_atcmd_send_cmd("ATZ");
         //if(res) break;
-        res = nrc_atcmd_send_cmd("AT+WCOUNTRY=\"%s\"", haloconfig.country_code);
-        if(res) break;
-        res = nrc_atcmd_send_cmd("AT+WDISCONN");
-        if(res != 0) break;
-        if(haloconfig.dhcp_enable) {
-            res = nrc_atcmd_send_cmd("AT+WDHCP=1");
-            if(res != 0) break;
+        if (disconnect == 0) {
+            res = nrc_atcmd_send_cmd("AT+WDISCONN");
+            if(res != 0) { printf("Fail WDISCONN\n"); break; };
         }
 
+#if 1
+        sprintf(atsetup, "AT+WDHCP=%d",haloconfig.dhcp_enable ? 1 : 0);
+        printf("%s\n", atsetup);
+        res = nrc_atcmd_send_cmd(atsetup);
+        if(res != 0) { printf("Fail %d\n", atsetup); break; };
+#else
+        if(haloconfig.dhcp_enable) {
+            res = nrc_atcmd_send_cmd("AT+WDHCP=1");
+            if(res != 0) { printf("Fail WDHCP=1\n"); break; };
+        }
+#endif
+
         res = nrc_atcmd_send_cmd("AT+WSCAN");
-        if(res != 0) break;
+        if(res != 0) { printf("Fail WSCAN\n"); break; };
         
+        handshake_value = 0;
         sprintf(atsetup, "AT+WCONN=\"%s\",\"%s\",\"%s\"",haloconfig.ssid,haloconfig.security,haloconfig.password);
         res = nrc_atcmd_send_cmd(atsetup);
-        if(res != 0) break;
+        // if(res != 0) { printf("Fail WCONN\n"); break; };
+        while (handshake_value == 0) {
+          static int x = 1;
+          board_gpio_write(PIN_LED3, x); x = x ^ 1;
+          // printf("handshake=%d\n", handshake_value);
+          usleep(300*1000);
+        }
+        board_gpio_write(PIN_LED2, 1);
+        board_gpio_write(PIN_LED3, 1);
+        printf("Handshake is done\n");
+
         res = nrc_atcmd_send_cmd("AT+WCONN?");
-        if(res != 0) break;
+        if(res != 0) { printf("Fail WCONN?\n"); break; };
+
         if(haloconfig.dhcp_enable) {
+            printf("Trying get IP address by DHCP\n");
             res = nrc_atcmd_send_cmd("AT+WDHCP");
-            if(res != 0) break;
+            if(res != 0) { printf("Fail WDHCP\n"); break; };
+        }
+        else
+        {
+            printf("Trying set IP address statically\n");
+            sprintf(atsetup, "AT+WIPADDR=\"%s\",\"%s\",\"%s\"",
+                    haloconfig.ipaddress,
+                    haloconfig.netmask,
+                    haloconfig.gateway);
+            res = nrc_atcmd_send_cmd(atsetup);
+            if(res != 0) printf("Error %s\n", atsetup);
         }
         e = 0;
         printf("Connected to the access point\n");
         return 0;
-    } while(0);
+    } while(at_timeout--);
     at_timeout = at_tm;
     printf("Error connecting to the access point\n");
     return e;
@@ -1163,16 +1232,29 @@ void read_configuration(void)
         // Set other defaults
         spi_clock_rate = 20000000;
         flags = FLAGS_DEFAULT;
-        haloconfig.frequency = 924.5;
-        haloconfig.dhcp_enable = 1;
+#if 1
+        haloconfig.frequency = SETTING_FREQ;
+        haloconfig.dhcp_enable = SETTING_DHCP;
+        strcpy(haloconfig.country_code, SETTING_CONT);
+        strcpy(haloconfig.gateway, SETTING_GATE);
+        strcpy(haloconfig.ipaddress, SETTING_IPAD);
+        strcpy(haloconfig.netmask, SETTING_MASK);
+        strcpy(haloconfig.security, SETTING_SEQU);
+        strcpy(haloconfig.password, SETTING_PASS);
+        strcpy(haloconfig.ssid, SETTING_SSID);
+        haloconfig.security_enable = SETTING_SEEN;
+#else
+        haloconfig.frequency = 925.5;
+        haloconfig.dhcp_enable = 0;
         strcpy(haloconfig.country_code,"JP");
-        strcpy(haloconfig.gateway,"192.168.1.1");
-        strcpy(haloconfig.ipaddress,"192.168.1.1");
+        strcpy(haloconfig.gateway,"192.168.200.1");
+        strcpy(haloconfig.ipaddress,"192.168.200.10");
         strcpy(haloconfig.netmask,"255.255.255.0");
         strcpy(haloconfig.security,"open");
         strcpy(haloconfig.password,"password");
         strcpy(haloconfig.ssid,"wihalo-vizmo");
         haloconfig.security_enable = 0;
+#endif
         wh_atdelay = 0;
 
         if( save_configuration() == 0) {
