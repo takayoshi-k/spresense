@@ -195,6 +195,15 @@ void init_leds(void)
   SETUP_PIN_OUTPUT( PIN_LED3 );
 }
 
+#define IS_SET_LED(p, n) ((p) & 1 << (n) ? 1 : 0)
+
+void set_leds(int ptn)
+{
+  board_gpio_write(PIN_LED0, IS_SET_LED(ptn, 0));
+  board_gpio_write(PIN_LED1, IS_SET_LED(ptn, 2));
+  board_gpio_write(PIN_LED3, IS_SET_LED(ptn, 3));
+}
+
 int icnt;
 
 static int spi_handler(int irq, FAR void *context, FAR void *arg)
@@ -209,11 +218,17 @@ static int spi_handler(int irq, FAR void *context, FAR void *arg)
     return OK;
 }
 
+extern void set_resolution(const char *res);
 
 /* int wihalo_main(int argc, FAR char *argv[]) */
 int main(int argc, FAR char *argv[])
 {
     int app_main(int argc, FAR char *argv[]);
+
+    if (argc == 2)
+      {
+        set_resolution(argv[1]);
+      }
 
 #if !WH_APP_MODE    
     return (main_wihalo_main(NULL));
@@ -239,8 +254,6 @@ void init_wihalo_threads(void) {
     monitor_threadid = 0;
     service_threadid = 0;
     iperf_threadid = 0;
-
-    
 }
 
 int main_wihalo_main(char *argv) {
@@ -925,6 +938,8 @@ int setup_station() {
         sprintf(atsetup, "AT+WCONN=\"%s\",\"%s\",\"%s\"",haloconfig.ssid,haloconfig.security,haloconfig.password);
         res = nrc_atcmd_send_cmd(atsetup);
         // if(res != 0) { printf("Fail WCONN\n"); break; };
+        board_gpio_write(PIN_LED0, 0);
+        board_gpio_write(PIN_LED2, 0);
         while (handshake_value == 0) {
           static int x = 1;
           board_gpio_write(PIN_LED3, x); x = x ^ 1;

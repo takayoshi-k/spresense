@@ -43,6 +43,7 @@
 #include <arpa/inet.h>
 
 #include "multiwebcam_server.h"
+#include "demo_html.h"
  
 #define MAX_SENDING_LEN (1500)
 
@@ -55,7 +56,8 @@ static int send_binary(int s, const char *data, int len)
   while (sent_len < len)
     {
       sending_len = len - sent_len;
-      sending_len = ( sending_len > MAX_SENDING_LEN ) ? MAX_SENDING_LEN : sending_len;
+      sending_len = ( sending_len > MAX_SENDING_LEN ) ? MAX_SENDING_LEN :
+                                                        sending_len;
       ret = write(s, data, sending_len);
 
       if (ret == 0)
@@ -137,54 +139,6 @@ int multiwebcam_waitconnection(int s_sock, struct sockaddr_in *client)
   return c_sock;
 }
 
-#define CRLF "\r\n"
-
-#define HTTP_404 "HTTP/1.1 404 OK" CRLF CRLF
-
-#define HTTP_PAGE_HEADER "HTTP/1.1 200 OK" CRLF \
-  "Content-Type: text/html" CRLF \
-  "Connection: keep-alive" CRLF \
-  "Content-Length: "
-
-#define FONT_SZ  "font-size: 400%; "
-#define FONT_MARGIN  "margin: 3px; padding: 5px; "
-#define FONT_WEIGHT "font-weight: bold; "
-#define FONT_COLOR(col) "color: " col ";"
-#define FONT_EDGE(edge_col) \
-      "text-shadow: "     CHAR_PIXW " " CHAR_PIXW " 0 " edge_col ", " \
-                      "-" CHAR_PIXW " " CHAR_PIXW " 0 " edge_col ", " \
-                      "-" CHAR_PIXW " -" CHAR_PIXW " 0 " edge_col ", " \
-                          CHAR_PIXW " -" CHAR_PIXW " 0 " edge_col "; "
-
-#define EDGE_COLOR  "#000"
-#define BASE_COLOR  "#fff"
-#define CMP_EDGE_COLOR  "#fff"
-#define CMP_BASE_COLOR  "#000"
-#define CHAR_PIXW "3px"
-
-#define HTML_STYLE \
-    "<style type=\"text/css\"> "  \
-      "p.demotitle { " FONT_SZ FONT_WEIGHT FONT_MARGIN \
-                       FONT_COLOR(EDGE_COLOR) FONT_EDGE(BASE_COLOR) \
-      "}" \
-      "body { background-image: url(\"/video\"); "  \
-             "background-repeat: no-repeat;" \
-             "background-size: cover; } "  \
-    "</style> "
-
-#define HTML_CONTENT  \
-  "<!DOCTYPE html> "  \
-    "<html lang=\"ja\"> " \
-      "<head> " \
-        "<meta charset=\"UTF-8\"> " \
-        "<title>SPRESENSE Camera 画像</title> " \
-        HTML_STYLE \
-      "</head> "  \
-      "<body> " \
-        "<p class=\"demotitle\">SPRESENSEカメラ画像（隣のブースから） </p>"  \
-      "</body> "  \
-    "</html> " CRLF CRLF
-
 /* If you set USE_HTTP_MJPEG config,
  * Use image send protocol as Motion JPEG over HTTP.
  */
@@ -204,15 +158,22 @@ int send_404(int c_sock)
   return send_string(c_sock, HTTP_404);
 }
 
+#define ERROR_RETURN(r) if ((r) < 0) return -1
+
 int send_normal_page(int c_sock)
 {
+  int ret;
   char data_size[16];
   sprintf(data_size, "%d", (int)strlen(HTML_CONTENT));
 
-  send_string(c_sock, HTTP_PAGE_HEADER);
-  send_string(c_sock, data_size);
-  send_string(c_sock, CRLF CRLF);
-  send_string(c_sock, HTML_CONTENT);
+  ret = send_string(c_sock, HTTP_PAGE_HEADER);
+  ERROR_RETURN(ret);
+  ret = send_string(c_sock, data_size);
+  ERROR_RETURN(ret);
+  ret = send_string(c_sock, CRLF CRLF);
+  ERROR_RETURN(ret);
+  ret = send_string(c_sock, HTML_CONTENT);
+  ERROR_RETURN(ret);
 
   return 0;
 }

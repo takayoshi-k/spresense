@@ -55,6 +55,12 @@
  * Private Types
  ****************************************************************************/
 
+struct v_img_resolution_s
+{
+  uint16_t hsize; 
+  uint16_t vsize; 
+};
+
 struct v_buffer
 {
   uint32_t *start;
@@ -79,6 +85,14 @@ static void free_buffer(FAR struct v_buffer *buffers, uint8_t bufnum);
  ****************************************************************************/
 
 static struct v_buffer *g_buffers_video = NULL;
+
+static int g_res_id = 0;
+static struct v_img_resolution_s g_resolutions[] =
+{
+  {VIDEO_HSIZE_QVGA,    VIDEO_VSIZE_QVGA},
+  {VIDEO_HSIZE_VGA,     VIDEO_VSIZE_VGA},
+  {VIDEO_HSIZE_QUADVGA, VIDEO_VSIZE_QUADVGA}
+};
 
 /****************************************************************************
  * Private Functions
@@ -313,7 +327,7 @@ int initialize_voide_device(void)
   ret = camera_prepare(v_fd, V4L2_BUF_TYPE_VIDEO_CAPTURE,
                        // V4L2_BUF_MODE_RING, V4L2_PIX_FMT_RGB565,
                        V4L2_BUF_MODE_RING, V4L2_PIX_FMT_JPEG,
-                       HSIZE, VSIZE,
+                       g_resolutions[g_res_id].hsize, g_resolutions[g_res_id].vsize,
                        &g_buffers_video, VIDEO_BUFNUM, IMAGE_JPG_SIZE);
   if (ret != OK)
     {
@@ -343,3 +357,26 @@ void finalize_voide_device(int v_fd)
   video_uninitialize();
 }
 
+void set_resolution(const char *res)
+{
+  if (!strncmp(res, "qvga", 5))
+    {
+      printf("Select QVGA(320x240)\n");
+      g_res_id = 0;
+    }
+  else if (!strncmp(res, "vga", 4))
+    {
+      printf("Select VGA(640x480)\n");
+      g_res_id = 1;
+    }
+  else if (!strncmp(res, "quadvga", 8))
+    {
+      printf("Select QUADVGA(1280x960)\n");
+      g_res_id = 2;
+    }
+  else
+    {
+      printf("Unknown resolution Use QVGA(320x240)\n");
+      g_res_id = 0;
+    }
+}

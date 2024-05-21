@@ -9,12 +9,18 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <signal.h>
 
 #include "multiwebcam_server.h"
 
 #define PORT 128
 #define MARKER_STR "JPGDATA"
 #define MARKER_YUV "CAMDATA"
+
+#define STATE_MARKER        (0)
+#define STATE_MARKERSEARCH  (1)
+#define STATE_SIZE          (2)
+#define STATE_BODY          (3)
 
 // #define APP_DEBUG
 #ifdef APP_DEBUG
@@ -82,7 +88,6 @@ static void set_received(struct jpeg_dat_s *jpg)
   pthread_mutex_lock(&g_inst.lock);
   if (jpg != &g_inst.dummy)
     {
-      printf("   -> This is real\n");
       set_tail_recorded(jpg);
     }
   pthread_mutex_unlock(&g_inst.lock);
@@ -108,8 +113,11 @@ static struct jpeg_dat_s *get_recorded_jpeg(void)
 static void set_free(struct jpeg_dat_s *jpg)
 {
   pthread_mutex_lock(&g_inst.lock);
-  jpg->flink = g_inst.free;
-  g_inst.free = jpg;
+  if (jpg != &g_inst.dummy)
+    {
+      jpg->flink = g_inst.free;
+      g_inst.free = jpg;
+    }
   pthread_mutex_unlock(&g_inst.lock);
   pthread_cond_signal(&g_inst.cond);
 }
@@ -118,10 +126,13 @@ static char dummy_data[JPGBUFF_SIZE];
 static int check_request(int wsock)
 {
   int n;
+
   n = recv(wsock, dummy_data, JPGBUFF_SIZE, 0);
-  printf("======== Check request : %d======\n", n);
-  printf("%s", dummy_data);
-  printf("======== END OF Check request ======\n\n");
+
+  if (n < 0)
+    {
+      return -1;
+    }
 
   printf("REQ==== %c%c%c%c%c%c%c%c%c%c%c%c\n",
           dummy_data[0], dummy_data[1], dummy_data[2], dummy_data[3],
@@ -161,19 +172,26 @@ static void load_dummyjpg(struct jpeg_dat_s *jpg, const char *fname)
       is_loaded = true;
     }
 }
-
-
-static void set_dummydata(struct jpeg_dat_s *dat)
-{
-  int i;
-  dat->size = 10;
-  for (i = 0; i < dat->size; i++)
-    {
-      dat->jpgdata[i] = '0' + i;
-    }
-}
 #endif
 
+static void sigpipe_handler(int sig, siginfo_t *info, void *ctx)
+{
+  printf("SIGPIPE received. Do nothing\n");
+}
+
+static void init_sigpipehandler(void)
+{
+  struct sigaction sa_sigpipe;
+
+  memset(&sa_sigpipe, 0, sizeof(sa_sigpipe));
+  sa_sigpipe.sa_sigaction = sigpipe_handler;
+  sa_sigpipe.sa_flags = SA_SIGINFO;
+
+  if (sigaction(SIGPIPE, &sa_sigpipe, NULL) < 0)
+    {
+      printf("Could not init SIGPIPE handler\n");
+    }
+}
 
 static void *jpeg_sender(void *param)
 {
@@ -182,6 +200,8 @@ static void *jpeg_sender(void *param)
   int rsock;
   struct sockaddr_in client;
   struct jpeg_dat_s *jpg;
+
+  init_sigpipehandler();
 
   printf("Sender thread\n");
   rsock = multiwebcam_initserver(8080);
@@ -194,41 +214,50 @@ static void *jpeg_sender(void *param)
 
       switch (ret)
         {
-          case 0:
+          case -1:  /* Receiving error */
+            printf("Connection is gone.\n");
+            close(wsock);
+            break;
+
+          case 0: /* Other HTTP request */
             printf("Send 404\n");
             send_404(wsock);
             close(wsock);
             break;
 
-          case 1:
+          case 1: /* Top Page request */
             printf("Send normal page\n");
             send_normal_page(wsock);
             close(wsock);
             break;
 
-          case 2:
-            multiwabcam_sendheader(wsock);
-            while (1)
+          case 2: /* MJPEG Streaming request */
+            ret = multiwabcam_sendheader(wsock);
+            if (ret >= 0)
               {
-                printf("Getting data\n");
-#ifdef APP_DEBUG
-                jpg = &g_inst.dummy;
-                // set_dummydata(jpg);
-                load_dummyjpg(jpg, DUMMYJPG_FNAME);
-#else
-                jpg = get_recorded_jpeg();
-#endif
-                printf("Got it data: size = %d\n", jpg->size);
-                ret = multiwebcam_sendframe(wsock, (char *)jpg->jpgdata,
-                                            (int)jpg->size);
-                set_free(jpg);
-
-                if (ret < 0)
+                while (1)
                   {
-                    close(wsock);
-                    wsock = -1;
-                    break;
+#ifdef APP_DEBUG
+                    jpg = &g_inst.dummy;
+                    load_dummyjpg(jpg, DUMMYJPG_FNAME);
+#else
+                    jpg = get_recorded_jpeg();
+#endif
+                    printf("Got it data: size = %d", jpg->size);
+                    ret = multiwebcam_sendframe(wsock, (char *)jpg->jpgdata,
+                                                (int)jpg->size);
+                    printf("  Send frame Done : %d\n", ret);
+                    set_free(jpg);
+
+                    if (ret < 0)
+                      {
+                        printf("Close socket by any error\n");
+                        close(wsock);
+                        wsock = -1;
+                        break;
+                      }
                   }
+                printf("End sending stream\n");
               }
             break;
         }
@@ -316,21 +345,19 @@ int main(int argc, char *argv[])
   int ret;
   struct jpeg_dat_s *jpg;
   char *hostip = "192.168.200.10";
-  int frame_num;
-
-#define STATE_MARKER        (0)
-#define STATE_MARKERSEARCH  (1)
-#define STATE_SIZE          (2)
-#define STATE_BODY          (3)
 
   if (argc >= 2) {
     hostip = (char *)argv[1];
   }
   printf("Connecting IP: %s:%d\n", hostip, PORT);
 
+  init_instance();
+
 #ifdef APP_DEBUG
-  /* For DEBUG */ init_instance(); while (1);
+  /* For DEBUG */ while (1);
 #endif
+
+re_connect_to_spresense:
 
   // ソケットを作成する
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -348,14 +375,13 @@ int main(int argc, char *argv[])
               sizeof(serv_addr)) < 0)
     {
       perror("ERROR connecting");
-      exit(1);
+      printf("Sleep 1sec and try connect again.\n");
+      sleep(1);
+      goto re_connect_to_spresense;
     }
-
-  init_instance();
 
   jpg = NULL;
   state = STATE_MARKER;
-  frame_num = 0;
   while (1)
     {
       switch (state)
@@ -365,17 +391,17 @@ int main(int argc, char *argv[])
             if (ret != 0)
               {
                 printf("Data transaction ERROR....\n");
-                goto finish_app;
+                close(sockfd);
+                goto re_connect_to_spresense;
               }
 
-            if (!strncmp(marker, MARKER_STR, 8) || !strncmp(marker, MARKER_YUV, 8))
+            if (!strncmp(marker, MARKER_STR, 8) ||
+                !strncmp(marker, MARKER_YUV, 8))
               {
-                printf("RcvSync\n");
                 state = STATE_SIZE;
               }
             else
               {
-                printf("Go search Sync\n");
                 state = STATE_MARKERSEARCH;
                 shift_marker_data(marker, 8, 1);
               }
@@ -386,12 +412,13 @@ int main(int argc, char *argv[])
             if (ret != 0)
               {
                 printf("Data transaction ERROR....\n");
-                goto finish_app;
+                close(sockfd);
+                goto re_connect_to_spresense;
               }
 
-            if (!strncmp(marker, MARKER_STR, 8) || !strncmp(marker, MARKER_YUV, 8))
+            if (!strncmp(marker, MARKER_STR, 8) ||
+                !strncmp(marker, MARKER_YUV, 8))
               {
-                printf("RcvSync\n");
                 state = STATE_SIZE;
               }
             else
@@ -406,10 +433,11 @@ int main(int argc, char *argv[])
             if (ret != 0)
               {
                 printf("Data transaction ERROR....\n");
-                goto finish_app;
+                set_free(jpg);
+                close(sockfd);
+                goto re_connect_to_spresense;
               }
 
-            printf("JPEG size=%d\n", jpg->size);
             state = STATE_BODY;
             break;
 
@@ -418,16 +446,11 @@ int main(int argc, char *argv[])
             if (ret != 0)
               {
                 printf("Data transaction ERROR....\n");
-                goto finish_app;
+                set_free(jpg);
+                close(sockfd);
+                goto re_connect_to_spresense;
               }
 
-            frame_num++;
-            if (frame_num == 10)
-              {
-                save_jpeg("rcvd.jpg", jpg->jpgdata, jpg->size);
-              }
-
-            printf("Set received\n");
             set_received(jpg);
             jpg = NULL;
 
@@ -440,7 +463,7 @@ int main(int argc, char *argv[])
         }
     }
 
-finish_app:
+    printf("Closing this app\n");
     close(sockfd);
 
     return 0;

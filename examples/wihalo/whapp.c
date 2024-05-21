@@ -227,21 +227,10 @@ static int stream_camdata(int fd)
   return 1;
 }
 
-int app_main(int argc, FAR char *argv[])
+static void start_command_loop(void)
 {
 	char cmd[256];
 	int started = 0;
-
-	exiting = 0;
-printf("Check param first...\n");
-cli_set_show();
-	wh_initialize();
-printf("Check param after wh_initialize()...\n");
-cli_set_show();
-	wh_set_loglevel(1);
-	wh_close_socket(-1);
-
-	srv_sck = cam_sck = echo_sck = -1;
 
 	//printf("STACK: %d\n", CONFIG_EXAMPLES_WHTEST_STACKSIZE);
 
@@ -331,6 +320,50 @@ cli_set_show();
 	return 0;
 }
 
+static void auto_start_demo(void)
+{
+	int started = 0;
+
+  sleep(3);
+
+  set_leds(0xf);
+  while (started == 0)
+    {
+      wh_reset();
+      wh_start(WH_STATION);
+      if (wh_get_state()) {
+        started = 1;
+      }
+    }
+
+  start_camera_server();
+  set_leds(0xf);
+
+  while (1)
+    {
+      sleep(10);
+    }
+}
+
+int app_main(int argc, FAR char *argv[])
+{
+	exiting = 0;
+printf("Check param first...\n");
+cli_set_show();
+	wh_initialize();
+printf("Check param after wh_initialize()...\n");
+cli_set_show();
+	wh_set_loglevel(1);
+	wh_close_socket(-1);
+
+	srv_sck = cam_sck = echo_sck = -1;
+
+#if 0
+  start_command_loop();
+#else
+  auto_start_demo();
+#endif
+}
 
 struct jpg_context
 {
