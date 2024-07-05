@@ -20,6 +20,18 @@
 #include "util.h"
 #include "wihalo.h"
 
+#define SETTING_SSID  "south_2024AHPC"
+#define SETTING_FREQ (925.5f)
+#define SETTING_CONT "JP"
+#define SETTING_SEQU "open"
+#define SETTING_PASS "none"
+#define SETTING_IPAD "192.168.200.10"
+#define SETTING_MASK "255.255.255.0"
+#define SETTING_GATE "192.168.200.1"
+#define SETTING_DHCP (0)
+#define SETTING_SEEN (0)
+
+static const char *my_ipaddr = NULL;
 
 // Macros
 #define SET_FLAG_BIT(bno,b)             flags = (flags & (~(1<<bno)) ) | ( (!(!b)) <<bno)
@@ -225,9 +237,15 @@ int main(int argc, FAR char *argv[])
 {
     int app_main(int argc, FAR char *argv[]);
 
-    if (argc == 2)
+    my_ipaddr = SETTING_IPAD;
+    if (argc >= 2)
       {
-        set_resolution(argv[1]);
+        my_ipaddr = argv[1];
+      }
+
+    if (argc == 3)
+      {
+        set_resolution(argv[2]);
       }
 
 #if !WH_APP_MODE    
@@ -621,18 +639,6 @@ void printer(char *msg, char *b, int len) {
 	printf("\n");
 	pthread_mutex_unlock(&logsem);
 }
-
-#define SETTING_SSID  "south_2024AHPC"
-#define SETTING_FREQ (925.5f)
-#define SETTING_CONT "JP"
-#define SETTING_SEQU "open"
-#define SETTING_PASS "none"
-#define SETTING_IPAD "192.168.200.10"
-#define SETTING_MASK "255.255.255.0"
-#define SETTING_GATE "192.168.200.1"
-#define SETTING_DHCP (0)
-#define SETTING_SEEN (0)
-
 
 typedef struct halo_params_t_ {
     char        ssid[32];
@@ -1243,6 +1249,17 @@ int save_configuration(void) {
 
 void read_configuration(void)
 {
+    haloconfig.frequency = SETTING_FREQ;
+    haloconfig.dhcp_enable = SETTING_DHCP;
+    strcpy(haloconfig.country_code, SETTING_CONT);
+    strcpy(haloconfig.gateway, SETTING_GATE);
+    strcpy(haloconfig.ipaddress, my_ipaddr);
+    strcpy(haloconfig.netmask, SETTING_MASK);
+    strcpy(haloconfig.security, SETTING_SEQU);
+    strcpy(haloconfig.password, SETTING_PASS);
+    strcpy(haloconfig.ssid, SETTING_SSID);
+    haloconfig.security_enable = SETTING_SEEN;
+
     if( initialize_configuration() == 0) {
         // Set other defaults
         spi_clock_rate = 20000000;
@@ -1252,7 +1269,7 @@ void read_configuration(void)
         haloconfig.dhcp_enable = SETTING_DHCP;
         strcpy(haloconfig.country_code, SETTING_CONT);
         strcpy(haloconfig.gateway, SETTING_GATE);
-        strcpy(haloconfig.ipaddress, SETTING_IPAD);
+        strcpy(haloconfig.ipaddress, my_ipaddr);
         strcpy(haloconfig.netmask, SETTING_MASK);
         strcpy(haloconfig.security, SETTING_SEQU);
         strcpy(haloconfig.password, SETTING_PASS);

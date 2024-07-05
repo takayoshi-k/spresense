@@ -41,16 +41,6 @@
 #define IMAGE_JPG_SIZE     (512*1024)  /* 512kB for FullHD Jpeg file. */
 #define VIDEO_BUFNUM       (1)
 
-/* VGA */
-#if 1
-#define HSIZE VIDEO_HSIZE_QVGA
-#define VSIZE VIDEO_VSIZE_QVGA
-#else
-/* QUADVGA */
-#define HSIZE VIDEO_HSIZE_QUADVGA
-#define VSIZE VIDEO_VSIZE_QUADVGA
-#endif
-
 /****************************************************************************
  * Private Types
  ****************************************************************************/
@@ -307,12 +297,14 @@ int initialize_voide_device(void)
   int ret;
   int v_fd = -1;
 
+  printf("Initializing Camera device...  "); fflush(stdout);
   ret = video_initialize("/dev/video");
   if (ret != 0)
     {
       printf("ERROR: Failed to initialize video: errno = %d\n", errno);
       goto exit_without_cleaning_videodriver;
     }
+  printf("1"); fflush(stdout);
 
   /* Open the device file. */
 
@@ -323,6 +315,7 @@ int initialize_voide_device(void)
       ret = ERROR;
       goto exit_without_cleaning_buffer;
     }
+  printf("2"); fflush(stdout);
 
   ret = camera_prepare(v_fd, V4L2_BUF_TYPE_VIDEO_CAPTURE,
                        // V4L2_BUF_MODE_RING, V4L2_PIX_FMT_RGB565,
@@ -333,7 +326,9 @@ int initialize_voide_device(void)
     {
       goto exit_this_app;
     }
+  printf("3"); fflush(stdout);
 
+  printf("OK.\n");
   return v_fd;
 
 exit_this_app:

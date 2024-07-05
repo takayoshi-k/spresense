@@ -633,6 +633,7 @@ int server_ip_events(int evt_type, int sckid, int event, char *remote, uint16_t 
 		if(sckid != cam_sck) return 0;
 		if(len == 0) {
 			// Error or remote closed session, so close the socket or connection
+      printf("DATARCV: Size ZERO it is closed session....\n");
 			connected = 0;
 		}
 		return 1;
@@ -640,6 +641,7 @@ int server_ip_events(int evt_type, int sckid, int event, char *remote, uint16_t 
 	else if(evt_type == 1) {	// Event received
 		
 		if(event == EVENT_TYPE_CONNECT) {
+      printf("EVENT: Connect is comming\n");
 			if(connected) {
 				printf("Cannot accept more connections\n");
 				return 1;					
@@ -648,12 +650,14 @@ int server_ip_events(int evt_type, int sckid, int event, char *remote, uint16_t 
 			connected = 1;
 		}
 		else if( (event == EVENT_TYPE_CLOSED) || (event == EVENT_TYPE_RCVERR) ) {
+      printf("EVENT: Close or Receive error....\n");
 			if(sckid != cam_sck) return 0;
 			cam_sck = -1;
 			connected = 0;
 			return 1;					
 		}
 		else if( event == EVENT_TYPE_SENDIDLE) {
+      printf("EVENT: Send IDLE (What is this??)....\n");
 			if(sckid != cam_sck) return 0;
 			connected = 0;
 			return 1;
@@ -669,7 +673,7 @@ static int wait_for_connection()
 	while(1) {
 		if(exiting || stop_app_thread) return 0;
 		if(!connected ) {
-			sleep(1);
+			usleep(100 * 1000);
 			continue;
 		}
 		break;

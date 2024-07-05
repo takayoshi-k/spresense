@@ -22,6 +22,8 @@
 #define STATE_SIZE          (2)
 #define STATE_BODY          (3)
 
+#define USE_LOCALHOST
+
 // #define APP_DEBUG
 #ifdef APP_DEBUG
 # define DUMMYJPG_FNAME "test.jpg"
@@ -243,7 +245,7 @@ static void *jpeg_sender(void *param)
 #else
                     jpg = get_recorded_jpeg();
 #endif
-                    printf("Got it data: size = %d", jpg->size);
+                    printf("Got JPEG: size = %d", jpg->size);
                     ret = multiwebcam_sendframe(wsock, (char *)jpg->jpgdata,
                                                 (int)jpg->size);
                     printf("  Send frame Done : %d\n", ret);
@@ -344,7 +346,12 @@ int main(int argc, char *argv[])
   int state;
   int ret;
   struct jpeg_dat_s *jpg;
+#ifdef USE_LOCALHOST
+  char *hostip = "127.0.0.1";
+#else
   char *hostip = "192.168.200.10";
+#endif
+  struct timeval tout;
 
   if (argc >= 2) {
     hostip = (char *)argv[1];
@@ -366,6 +373,21 @@ re_connect_to_spresense:
       exit(1);
   }
 
+  tout.tv_sec = 60 * 3;
+  tout.tv_usec = 0;
+  setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tout, sizeof(tout));
+
+/*
+#ifdef USE_LOCALHOST
+  struct hostent *server;
+  server = gethostbyname("localhost");
+  memcpy((char *)&serv_addr.sin_addr.s_addr, (char *)server->h_addr,
+         server->h_length);
+#else
+  serv_addr.sin_addr.s_addr = inet_addr(hostip);
+#endif
+*/
+
   serv_addr.sin_addr.s_addr = inet_addr(hostip);
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_port = htons(PORT);
@@ -377,6 +399,7 @@ re_connect_to_spresense:
       perror("ERROR connecting");
       printf("Sleep 1sec and try connect again.\n");
       sleep(1);
+      close(sockfd);
       goto re_connect_to_spresense;
     }
 
